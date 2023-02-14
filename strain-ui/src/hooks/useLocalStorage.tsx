@@ -5,7 +5,7 @@ export const useLocalStorage = (keyName: string, defaultValue: string) => {
     try {
       const value = window.localStorage.getItem(keyName);
       if (value) {
-        return value;
+        return value
       } else {
         window.localStorage.setItem(keyName, defaultValue);
         return defaultValue;

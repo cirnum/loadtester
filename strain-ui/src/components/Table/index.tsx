@@ -11,6 +11,7 @@ import {
   Button,
   Stack,
   Divider,
+  Tag
 } from "@chakra-ui/react";
 import { TRequest } from "../../types";
 
@@ -42,7 +43,12 @@ export default function CustomTable({
             return (
               <Tr>
                 <Td> {index + 1} </Td>
-                <Td> {url} </Td>
+                <Td>
+                <Tag>
+                      {url}
+                      </Tag>
+                
+                </Td>
                 <Td> {clients} </Td>
                 <Td> {time} </Td>
                 <Td> {requests} </Td>

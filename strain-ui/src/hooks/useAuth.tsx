@@ -38,7 +38,7 @@ export const AuthProvider = ({ children, userData }: IAuthProvider) => {
   };
 
   const logout = () => {
-    setUser(null);
+    setUser("");
     navigate("/", { replace: true });
   };
 

@@ -5,6 +5,7 @@ import Table from "../../components/Table";
 import Spinner from "../../components/Spinner";
 import ErrorComp from "../../components/Error";
 import Drawer from "../../components/Drawer";
+import Request from "../StressRequest";
 
 let headings = [
   { name: "Index" },
@@ -17,14 +18,14 @@ let headings = [
 ];
 const pagination = { page: 1, limit: 10 };
 export default function Dashboard() {
-  const [drawerState, setDrawerState] = useState<boolean>(false);
+  const [drawerState, setDrawerState] = useState<boolean>(true);
   const { isLoading, isError, data, error } = useStressedRequest(pagination);
 
   if (isLoading) {
     return <Spinner />;
   }
   if (isError) {
-    <ErrorComp message={error?.message} />;
+    <ErrorComp message={(error as Error)?.message} />;
   }
   return (
     <>
@@ -40,7 +41,7 @@ export default function Dashboard() {
         <Button colorScheme="blue" onClick={() => setDrawerState(true)}>Add New Request</Button>
       </Stack>
       <Drawer isOpen={drawerState} onClose={() => setDrawerState(false)} title="Add New Request" >
-        <h1>asdasd</h1>
+        <Request />
        </Drawer>
       <Table headers={headings} data={data?.data || []} />
     </>
