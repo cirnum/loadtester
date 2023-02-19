@@ -1,9 +1,6 @@
-import { Box, Center, Flex, Square, Text } from "@chakra-ui/react";
-import { Checkbox, CheckboxGroup } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { RequestBodyHeadings } from "../constants";
 
-import React from "react";
-
-const h = ["KEY", "VALUE"];
 interface IItem {
   isChecked?: boolean;
 }
@@ -26,15 +23,16 @@ export default function Item({ isChecked = true }: IItem) {
           }}
           width="10%"
         >
-          <Text as='b' fontSize="sm" color="gray.500">
+          <Text as="b" fontSize="sm" color="gray.500">
             #
           </Text>
         </Box>
       )}
 
-      {h.map((value) => {
+      {RequestBodyHeadings.map((value) => {
         return (
           <Box
+            key={value}
             sx={{
               border: "1px solid #e2e8f0",
               display: "flex",
@@ -43,7 +41,7 @@ export default function Item({ isChecked = true }: IItem) {
             }}
             width="50%"
           >
-            <Text as='b' fontSize="sm" color="gray.500">
+            <Text as="b" fontSize="sm" color="gray.500">
               {value}
             </Text>
           </Box>

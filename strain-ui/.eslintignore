@@ -1,0 +1,10 @@
+/build/**
+/coverage/**
+/dist/**
+!.eslintrc.json
+/public/**
+/server/**
+*.test.tsx
+setUpTests.ts
+testUtils.tsx
+craco.config.js

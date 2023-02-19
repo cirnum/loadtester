@@ -1,0 +1,64 @@
+{
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "jest": true
+    },
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "airbnb",
+      "airbnb-typescript",
+      "plugin:import/typescript",
+      "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "ecmaVersion": "latest",
+      "sourceType": "module",
+      "project": "./tsconfig.json"
+    },
+    "ignorePatterns": ["config-overrides.js"],
+    "plugins": ["react", "@typescript-eslint", "prettier"],
+    "rules": {
+      "@typescript-eslint/ban-ts-ignore": "off",
+      "quotes": [
+        "error",
+        "double",
+        {
+          "avoidEscape": true
+        }
+      ],
+      "@typescript-eslint/quotes": [
+        "error",
+        "double",
+        {
+          "avoidEscape": true
+        }
+      ],
+      "react/jsx-uses-react": ["off"],
+      "react/react-in-jsx-scope": ["off"],
+      "react/jsx-props-no-spreading": ["off"],
+      "react-hooks/exhaustive-deps": ["off"],
+      "import/prefer-default-export": ["off"],
+      "no-shadow": ["off"],
+      "@typescript-eslint/default-param-last": ["off"],
+      "import/no-cycle": ["off"],
+      "react/button-has-type": ["off"],
+      "react/require-default-props": ["off"],
+      "jsx-a11y/click-events-have-key-events": ["off"],
+      "jsx-a11y/no-static-element-interactions": ["off"],
+      "consistent-return": ["off"],
+      "no-restricted-syntax": ["off"],
+      "jsx-a11y/no-autofocus": ["off"],
+      "react/jsx-no-bind": ["off"],
+      "class-methods-use-this": ["off"],
+      "func-names": ["off"],
+      "require-yield": ["off"],
+      "max-classes-per-file": ["off"]
+    }
+  }
+  
