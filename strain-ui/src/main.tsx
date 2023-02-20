@@ -7,12 +7,13 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import "./index.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 600000, // 10 minutes before fresh data becomes stale
-      cacheTime: 900000, // 15 minutes before cache is emptied
+      staleTime: 600000, 
+      cacheTime: 900000,
       refetchOnMount: false,
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,
@@ -23,7 +24,6 @@ const queryClient = new QueryClient({
 
 const theme = extendTheme(CustomTheme);
 
-import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
