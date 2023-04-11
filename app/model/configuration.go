@@ -10,6 +10,7 @@ type Configuration struct {
 	Time      int                `json:"time" bson:"time"`
 	Clients   int                `json:"clients" bson:"clients"`
 	Headers   interface{}        `json:"headers" bson:"headers"`
+	Params    interface{}        `json:"params" bson:"params"`
 	KeepAlive bool               `json:"keepAlive" bson:"keepAlive"`
 	Method    string             `json:"method" bson:"method"`
 	Ips       []string           `json:"ips" bson:"ips"`

@@ -10,15 +10,14 @@ import React from "react";
 type INumberInputs = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
+  value?: number;
 };
+
 export default function NumberInputComp(props: INumberInputs) {
-  const { placeholder, onChange } = props;
+  const { placeholder, onChange, value = 10 } = props;
   return (
-    <NumberInput clampValueOnBlur={false} ml={2} mr={2}>
-      <NumberInputField
-        placeholder={placeholder}
-        onChange={onChange}
-      />
+    <NumberInput value={value} clampValueOnBlur={false} ml={2} mr={2}>
+      <NumberInputField placeholder={placeholder} onChange={onChange} />
       <NumberInputStepper>
         <NumberIncrementStepper />
         <NumberDecrementStepper />

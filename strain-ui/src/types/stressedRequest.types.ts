@@ -37,7 +37,7 @@ export interface IRequest {
   addHeader: ({ position, key, value, isSelected }: TMethodParams) => void;
   addBody: (payload: object) => void;
   getConstructedUrl: (url: string) => string;
-  getHeader: () => object
+  getHeader: () => object;
 }
 
 export interface TRequestPayload {

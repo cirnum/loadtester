@@ -10,34 +10,17 @@ import {
 import { useState } from "react";
 import TabComp from "../../components/RequestTabs";
 import { TRestAPIMethods } from "../../types";
-import { useRequest } from "../../utils/mutation/stressRequest";
-import { useStore } from "../../utils/store/stressRequest";
 import NumberInput from "../../components/NumberInput";
 import { METHODS_OPTION } from "../constants";
 
 export default function RequestComp() {
-  const sendRequestMutation = useRequest();
   const [method, setMethod] = useState<TRestAPIMethods>("GET");
   const [url, setURL] = useState<string>("");
   const [clients, setClients] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
+  console.log(method, clients, seconds);
 
-  let store = useStore();
-
-  const sendRequest = () => {
-    if (url) {
-      const newPayloadToSend = {
-        postData: store.body,
-        headers: store.getHeader(),
-        url: store.getConstructedUrl(url),
-        method: method,
-        clients,
-        keepAlive: true,
-        time: seconds,
-      };
-      sendRequestMutation.mutate(newPayloadToSend);
-    }
-  };
+  const sendRequest = () => {};
   return (
     <Card>
       <CardBody>
@@ -59,14 +42,20 @@ export default function RequestComp() {
             value={url}
             onChange={(e) => setURL(e.target.value)}
           />
-          <NumberInput placeholder="Clients" onChange={(e) => setClients(parseInt(e.target.value))} />
-          <NumberInput placeholder="Seconds" onChange={(e) => setSeconds(parseInt(e.target.value))} />
+          <NumberInput
+            placeholder="Clients"
+            onChange={(e) => setClients(parseInt(e.target.value, 10))}
+          />
+          <NumberInput
+            placeholder="Seconds"
+            onChange={(e) => setSeconds(parseInt(e.target.value, 10))}
+          />
           <Button
             colorScheme="blue"
             ml="20px"
             rightIcon={<ArrowForwardIcon />}
             value={url}
-            onClick={(e) => sendRequest()}
+            onClick={() => sendRequest()}
           >
             Send
           </Button>

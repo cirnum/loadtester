@@ -21,7 +21,6 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
-  Spacer,
 } from "@chakra-ui/react";
 import {
   FiHome,
@@ -47,79 +46,18 @@ const LinkItems: Array<LinkItemProps> = [
   { name: "Settings", icon: FiSettings },
 ];
 
-export default function SidebarWithHeader({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-      <SidebarContent
-        onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
-      />
-      <Drawer
-        autoFocus={false}
-        isOpen={isOpen}
-        placement="left"
-        onClose={onClose}
-        returnFocusOnClose={false}
-        onOverlayClick={onClose}
-        size="full"
-      >
-        <DrawerContent>
-          <SidebarContent onClose={onClose} />
-        </DrawerContent>
-      </Drawer>
-      {/* mobilenav */}
-      <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
-        {children}
-      </Box>
-    </Box>
-  );
-}
+const Links = [
+  "Requests",
+  "Performance",
+  "Reports",
+  "server",
+  "Download Client",
+];
 
-interface SidebarProps extends BoxProps {
-  onClose: () => void;
-}
-
-const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
-  return (
-    <Box
-      transition="3s ease"
-      bg={useColorModeValue("white", "gray.900")}
-      borderRight="1px"
-      borderRightColor={useColorModeValue("gray.200", "gray.700")}
-      w={{ base: "full", md: 60 }}
-      pos="fixed"
-      h="full"
-      {...rest}
-    >
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Stain-Hub
-        </Text>
-        <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
-      </Flex>
-      {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
-          {link.name}
-        </NavItem>
-      ))}
-    </Box>
-  );
-};
-
-interface NavItemProps extends FlexProps {
-  icon: IconType;
-  children: ReactText;
-}
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+function NavItem({ icon, children, ...rest }: NavItemProps) {
   return (
     <Link
-      href="#"
+      href="/item"
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >
@@ -150,41 +88,31 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
       </Flex>
     </Link>
   );
-};
-
-interface MobileProps extends FlexProps {
-  onOpen: () => void;
 }
 
-const NavLink = ({ children }: { children: ReactNode }) => (
-  <Link
-    px={2}
-    py={1}
-    rounded={"md"}
-    _hover={{
-      textDecoration: "none",
-      bg: useColorModeValue("gray.200", "gray.700"),
-    }}
-    href={"#"}
-  >
-    {children}
-  </Link>
-);
+// function NavLink({ children }: { children: ReactNode }) {
+//   return (
+//     <Link
+//       px={2}
+//       py={1}
+//       rounded="md"
+//       _hover={{
+//         textDecoration: "none",
+//         bg: useColorModeValue("gray.200", "gray.700"),
+//       }}
+//       href="/cat"
+//     >
+//       {children}
+//     </Link>
+//   );
+// }
 
-const Links = [
-  "Requests",
-  "Performance",
-  "Reports",
-  "server",
-  "Download Client",
-];
-
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+function MobileNav({ onOpen, ...rest }: MobileProps) {
   return (
     <Flex
-      ml={{ base: 0, md: 60 }}
-      px={{ base: 4, md: 4 }}
-      height="20"
+      ml={{ base: 0 }}
+      px={{ base: 3, md: 3 }}
+      height="16"
       alignItems="center"
       bg={useColorModeValue("white", "gray.900")}
       borderBottomWidth="1px"
@@ -208,18 +136,17 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       >
         Logo
       </Text>
-
-      <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
-        {Links.map((link) => (
-          <NavLink key={link}>{link}</NavLink>
-        ))}
+      {Links.map((link) => (
+        <NavItem key={link}>{link}</NavItem>
+      ))}
+      <HStack as="nav" spacing={3} display={{ base: "none", md: "flex" }}>
         <IconButton
           size="lg"
           variant="ghost"
           aria-label="open menu"
           icon={<FiBell />}
         />
-        <Flex alignItems={"center"}>
+        <Flex alignItems="center">
           <Menu>
             <MenuButton
               py={2}
@@ -228,10 +155,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             >
               <HStack>
                 <Avatar
-                  size={"sm"}
-                  src={
-                    "https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                  }
+                  size="sm"
+                  src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
                 />
                 <VStack
                   display={{ base: "none", md: "flex" }}
@@ -264,4 +189,78 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       </HStack>
     </Flex>
   );
-};
+}
+
+function SidebarContent({ onClose, ...rest }: SidebarProps) {
+  return (
+    <Box
+      transition="3s ease"
+      bg={useColorModeValue("white", "gray.900")}
+      borderRight="1px"
+      borderRightColor={useColorModeValue("gray.200", "gray.700")}
+      w={{ base: "full", md: 40 }}
+      pos="fixed"
+      h="full"
+      {...rest}
+    >
+      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+        <Text fontSize="1xl" fontFamily="monospace" fontWeight="bold">
+          Strain-Hub
+        </Text>
+        <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
+      </Flex>
+      {LinkItems.map((link) => (
+        <NavItem key={link.name} icon={link.icon}>
+          {link.name}
+        </NavItem>
+      ))}
+    </Box>
+  );
+}
+
+export default function SidebarWithHeader({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+      {/* <SidebarContent
+        onClose={() => onClose}
+        display={{ base: "none", md: "block" }}
+      /> */}
+      <Drawer
+        autoFocus={false}
+        isOpen={isOpen}
+        placement="left"
+        onClose={onClose}
+        returnFocusOnClose={false}
+        onOverlayClick={onClose}
+        size="full"
+      >
+        <DrawerContent>
+          <SidebarContent onClose={onClose} />
+        </DrawerContent>
+      </Drawer>
+      {/* mobilenav */}
+      <MobileNav onOpen={onOpen} />
+      <Box ml={{ base: 0 }} p="">
+        {children}
+      </Box>
+    </Box>
+  );
+}
+
+interface SidebarProps extends BoxProps {
+  onClose: () => void;
+}
+
+interface NavItemProps extends FlexProps {
+  icon?: IconType;
+  children: ReactText;
+}
+
+interface MobileProps extends FlexProps {
+  onOpen: () => void;
+}

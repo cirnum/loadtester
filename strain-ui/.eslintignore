@@ -1,10 +1,14 @@
 /build/**
 /coverage/**
 /dist/**
-!.eslintrc.json
+!.eslintrc.js
 /public/**
 /server/**
 *.test.tsx
 setUpTests.ts
 testUtils.tsx
 craco.config.js
+.eslintrc.json
+tsConfig.js
+tsConfig.*
+vite.config.*

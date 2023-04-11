@@ -1,28 +1,36 @@
 import Heading from "./header";
 import ItemIs from "./item";
-import { TAddParams, TMethodParams } from "../../types";
+import { RequestHeadersAndParamsPayload } from "../../store/stress/dashboard/types";
 
 type ICustomTable = {
-  params: TAddParams[];
-  addKeyValue: (params: TMethodParams) => void;
+  params: RequestHeadersAndParamsPayload[];
+  addKeyValue: (params: RequestHeadersAndParamsPayload) => void;
+  onCheckClick: (position: number, isChecked: boolean) => void;
 };
 
-export default function Table({ params, addKeyValue }: ICustomTable) {
+export default function Table({
+  params,
+  addKeyValue,
+  onCheckClick,
+}: ICustomTable) {
   const savePair = (value: string, position: number, key: string) => {
-    const payload = { value, position, key };
+    const payload: RequestHeadersAndParamsPayload = { value, position, key };
     addKeyValue(payload);
   };
   return (
     <>
-      <Heading isChecked={true} />
-      {params.map(({ key, value, isSelected }, index) => {
+      <Heading isChecked />
+      {params?.map(({ key, value, isChecked }, index) => {
+        const keyIndex = index;
         return (
           <ItemIs
+            key={keyIndex}
             keyName={key}
             value={value}
             position={index}
-            isSelected={isSelected}
+            isSelected={isChecked}
             savePair={savePair}
+            onCheck={onCheckClick}
           />
         );
       })}

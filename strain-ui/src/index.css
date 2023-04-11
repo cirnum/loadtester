@@ -1,6 +1,5 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
@@ -13,3 +12,16 @@
   -webkit-text-size-adjust: 100%;
 }
 
+.error-toast {
+  background: #ED2B2A;
+  color: white;
+  padding: 8px 10px;
+  max-width: 800px;
+}
+
+.success-toast {
+  background: #7AA874;
+  color: white;
+  padding: 8px 10px;
+  max-width: 800px;
+}

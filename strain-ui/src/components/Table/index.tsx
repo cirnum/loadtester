@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Table,
   Thead,
@@ -11,49 +10,52 @@ import {
   Button,
   Stack,
   Divider,
-  Tag
+  Tag,
+  Tooltip,
 } from "@chakra-ui/react";
-import { TRequest } from "../../types";
+import { EditIcon, ViewIcon } from "@chakra-ui/icons";
+import { RequestHistoryPayload } from "../../store/stress/dashboard/types";
 
 export default function CustomTable({
   headers,
   data,
 }: {
   headers: { name: string; isNumaric?: boolean }[];
-  data: TRequest[];
+  data: RequestHistoryPayload[];
 }) {
   const textColor = useColorModeValue("white", "grey.700");
 
   return (
     <TableContainer>
       <Divider />
-      <Table bg={textColor} size="lg" variant="simple">
+      <Table bg={textColor} variant="simple">
         {/* <TableCaption placement="top">
           All the request made so far.
         </TableCaption> */}
         <Thead>
           <Tr>
-            {headers.map(({ name, isNumaric = false }) => {
-              return <Th>{name}</Th>;
+            {headers.map(({ name }) => {
+              return <Th key="name">{name}</Th>;
             })}
           </Tr>
         </Thead>
         <Tbody>
-          {data?.map(({ url, clients, time, requests }, index) => {
+          {data?.map(({ url, clients, time }, index) => {
             return (
-              <Tr>
+              <Tr key={url}>
                 <Td> {index + 1} </Td>
                 <Td>
-                <Tag>
-                      {url}
-                      </Tag>
-                
+                  <Tag isTruncated>{url.slice(0, 60)}</Tag>
                 </Td>
                 <Td> {clients} </Td>
                 <Td> {time} </Td>
-                <Td> {requests} </Td>
-                <Td>
-                  <Button>Edit</Button>
+                <Td gap="10">
+                  <Tooltip label="Edit Request">
+                    <EditIcon margin="3" />
+                  </Tooltip>
+                  <Tooltip label="View Result">
+                    <ViewIcon />
+                  </Tooltip>
                 </Td>
               </Tr>
             );
