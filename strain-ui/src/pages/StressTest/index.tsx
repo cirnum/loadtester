@@ -1,6 +1,3 @@
-
 export default function StressTest() {
-  return (
-    <div>stress test comp</div>
-  )
+  return <div>stress test comp</div>;
 }

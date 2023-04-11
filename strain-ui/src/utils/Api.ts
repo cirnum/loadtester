@@ -2,11 +2,19 @@ import axios from "axios";
 import { TAxiosWrapper } from "../types";
 
 const TOKEN = "token";
+
+const getToken = (token: string) => {
+  const xo = window.localStorage.getItem(token);
+  if (xo) {
+    return JSON.parse(xo).xo;
+  }
+  return "";
+};
 const Instance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 5000,
   headers: {
-    Authorization: localStorage.getItem(TOKEN),
+    Authorization: getToken(TOKEN),
     "Content-Type": "application/json",
   },
 });
@@ -19,7 +27,7 @@ export default function ApiCall<T>({
 }: TAxiosWrapper): Promise<T> {
   return Instance({
     url: path,
-    method: method,
+    method,
     params: param,
     data: body,
     transformResponse: [
@@ -31,7 +39,7 @@ export default function ApiCall<T>({
       },
     ],
     headers: {
-      Authorization: localStorage.getItem(TOKEN),
+      Authorization: getToken(TOKEN),
       "Content-Type": "application/json",
     },
   });
@@ -39,17 +47,17 @@ export default function ApiCall<T>({
 
 Instance.interceptors.response.use(
   function (response) {
-    response = JSON.parse(response.data);
-    return response;
+    const data = JSON.parse(response.data);
+    return data;
   },
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    // if (error.response.status === 401) {
-    //   localStorage.removeItem(TOKEN);
-    //   window.location.reload();
-    // }
-    error.response.data = JSON.parse(error.response.data);
-    return Promise.reject(error);
+    if (error.response.status === 401) {
+      localStorage.removeItem(TOKEN);
+      window.location.reload();
+    }
+    const errorObj = JSON.parse(error.response.data);
+    return Promise.reject(errorObj);
   }
 );

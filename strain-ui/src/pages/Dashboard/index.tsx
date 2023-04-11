@@ -1,48 +1,12 @@
-import { useState } from "react";
-import { Button, Stack } from "@chakra-ui/react";
-import { useStressedRequest } from "../../utils/query/stressedRequest";
-import Table from "../../components/Table";
-import Spinner from "../../components/Spinner";
-import ErrorComp from "../../components/Error";
-import Drawer from "../../components/Drawer";
+import { Stack } from "@chakra-ui/react";
+import Sidebar from "./Sidebar";
+import AddEditRequest from "./AddEditRequest";
 
-let headings = [
-  { name: "Index" },
-  { name: "Url" },
-  { name: "Clients", isNumaric: true },
-  { name: "Times", isNumaric: true },
-  { name: "Result" },
-  { name: "Edit" },
-  // { name: "Delete" },
-];
-const pagination = { page: 1, limit: 10 };
 export default function Dashboard() {
-  const [drawerState, setDrawerState] = useState<boolean>(false);
-  const { isLoading, isError, data, error } = useStressedRequest(pagination);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
-  if (isError) {
-    <ErrorComp message={error?.message} />;
-  }
   return (
-    <>
-      <Stack
-        direction="row"
-        w="100%"
-        height="60px"
-        bg="white"
-        justifyContent="end"
-        align="center"
-        p={5}
-      >
-        <Button colorScheme="blue" onClick={() => setDrawerState(true)}>Add New Request</Button>
-      </Stack>
-      <Drawer isOpen={drawerState} onClose={() => setDrawerState(false)} title="Add New Request" >
-        <h1>asdasd</h1>
-       </Drawer>
-      <Table headers={headings} data={data?.data || []} />
-    </>
+    <Stack direction="row" w="100%" bg="white" h="calc(100vh - 65px)">
+      <Sidebar />
+      <AddEditRequest />
+    </Stack>
   );
 }

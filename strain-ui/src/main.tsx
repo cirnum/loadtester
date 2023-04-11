@@ -1,27 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { Provider } from "react-redux";
-import store from "./app/store";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import App from "./App";
 import CustomTheme from "./theme";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
-
-const theme = extendTheme(CustomTheme);
+import store from "./store";
 
 import "./index.css";
 
+const theme = extendTheme(CustomTheme);
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider theme={theme}>
+    <ChakraProvider theme={theme}>
+      <Provider store={store}>
         <App />
-      </ChakraProvider>
-    </QueryClientProvider>
+      </Provider>
+    </ChakraProvider>
   </React.StrictMode>
 );

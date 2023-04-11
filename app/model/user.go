@@ -8,3 +8,9 @@ type User struct {
 	Email    string             `json:"email" bson:"email"`
 	Password string             `json:"password,omitempty" bson:"password,omitempty"`
 }
+
+type AuthResponse struct {
+	Xo    string `json:"xo"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}

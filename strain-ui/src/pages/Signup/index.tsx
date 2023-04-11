@@ -15,17 +15,15 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
-import { useRegister } from "../../utils/mutation/login";
 import { TRegisterPayload } from "../../types";
-import { useToaster } from "../../utils/toast";
+// import { useToaster } from "../../utils/toast";
 
 export default function SignupCard() {
-  const navigate = useNavigate();
-  const toast = useToaster();
-  const register = useRegister();
+  // const navigate = useNavigate();
+  // const toast = useToaster();
   const [showPassword, setShowPassword] = useState(false);
   const [signupState, setSignupState] = useState<TRegisterPayload>({
     firstName: "",
@@ -33,50 +31,33 @@ export default function SignupCard() {
     password: "",
     email: "",
   });
-
+  console.log("signupState", signupState);
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setSignupState((state) => ({ ...state, [name]: value }));
   };
-  const onRegister = (data: TRegisterPayload) => {
-    register.mutate(data, {
-      onSuccess(data) {
-        const { message = "Register successful" } = data;
-        toast.success({
-          title: message,
-        });
-        navigate("/signin", { replace: true });
-      },
-      onError(error: any) {
-        const { message = "Something went wrong" } = error?.response.data;
-        toast.error({
-          title: message,
-        });
-      },
-    });
-  };
 
   return (
     <Flex
-      minH={"100vh"}
-      align={"center"}
-      justify={"center"}
+      minH="100vh"
+      align="center"
+      justify="center"
       bg={useColorModeValue("gray.50", "gray.800")}
     >
-      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-        <Stack align={"center"}>
-          <Heading fontSize={"4xl"} textAlign={"center"}>
+      <Stack spacing={8} mx="auto" maxW="lg" py={12} px={6}>
+        <Stack align="center">
+          <Heading fontSize="4xl" textAlign="center">
             Sign up
           </Heading>
 
-          <Text fontSize={"lg"} color={"gray.600"}>
+          <Text fontSize="lg" color="gray.600">
             to enjoy all of our cool features ✌️
           </Text>
         </Stack>
         <Box
-          rounded={"lg"}
+          rounded="lg"
           bg={useColorModeValue("white", "gray.700")}
-          boxShadow={"lg"}
+          boxShadow="lg"
           p={8}
         >
           <Stack spacing={4}>
@@ -106,11 +87,11 @@ export default function SignupCard() {
                   name="password"
                   onChange={onChange}
                 />
-                <InputRightElement h={"full"}>
+                <InputRightElement h="full">
                   <Button
-                    variant={"ghost"}
+                    variant="ghost"
                     onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
+                      setShowPassword((showPasswordParam) => !showPasswordParam)
                     }
                   >
                     {showPassword ? <ViewIcon /> : <ViewOffIcon />}
@@ -122,22 +103,24 @@ export default function SignupCard() {
               <Button
                 loadingText="Submitting"
                 size="lg"
-                bg={"blue.400"}
-                color={"white"}
+                bg="blue.400"
+                color="white"
                 _hover={{
                   bg: "blue.500",
                 }}
-                onClick={() => onRegister(signupState)}
+                onClick={() => {}}
               >
                 Sign up
               </Button>
             </Stack>
             <Stack pt={6}>
-              <Text align={"center"}>
+              <Text align="center">
                 Already a user?{" "}
                 <RouterLink to="/signin">
                   {" "}
-                  <Link color={"blue.400"}>Login</Link>
+                  <Link color="blue.400" href="/signin">
+                    Login
+                  </Link>
                 </RouterLink>
               </Text>
             </Stack>

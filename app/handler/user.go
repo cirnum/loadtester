@@ -71,6 +71,7 @@ func Login(DB *config.DbConfig, response http.ResponseWriter, request *http.Requ
 
 	var user model.User
 	var dbUser model.User
+	var tokenResponse model.AuthResponse
 
 	err := json.NewDecoder(request.Body).Decode(&user)
 	Collection := DB.Collection("user")
@@ -97,6 +98,8 @@ func Login(DB *config.DbConfig, response http.ResponseWriter, request *http.Requ
 		services.ResponseWriter(response, methodName, http.StatusInternalServerError, "Something went wrong.", err)
 		return
 	}
-
-	services.ResponseWriter(response, methodName, http.StatusOK, "User loggedIn successfully.", jwtToken)
+	tokenResponse.Xo = jwtToken
+	tokenResponse.Email = dbUser.Email
+	tokenResponse.Name = dbUser.Name
+	services.ResponseWriter(response, methodName, http.StatusOK, "User loggedIn successfully.", tokenResponse)
 }
