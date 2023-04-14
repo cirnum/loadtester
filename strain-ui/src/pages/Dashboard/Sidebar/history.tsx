@@ -32,6 +32,7 @@ function ItemList({ item }: { item: RequestHistoryPayload }) {
       background={selectedRequestId === item.id ? "#e2e8f1" : ""}
       color={selectedRequestId === item.id ? "black" : ""}
       onClick={() => clickOnRequest(item)}
+      borderBottom={selectedRequestId === item.id ? "2px solid tomato" : ""}
     >
       <Text fontSize="sm" color="tomato" as="b">
         {item.method}

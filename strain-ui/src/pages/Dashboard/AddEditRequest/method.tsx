@@ -18,7 +18,11 @@ export default function Method(props: IMethod) {
       <MenuList w="200px">
         {METHODS_OPTION.map((item: ItemType) => {
           return (
-            <MenuItem key={item.value} onClick={() => setMethod(item.value)}>
+            <MenuItem
+              key={item.value}
+              onClick={() => setMethod(item.value)}
+              zIndex="1000"
+            >
               {item.value}
             </MenuItem>
           );
