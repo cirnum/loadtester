@@ -22,18 +22,19 @@ export interface FetchHistoryRequestPayload {
   page: number;
 }
 
+export interface SelectedRequest {
+  request?: RequestHistoryPayload;
+  requestHeader: RequestHeadersAndParamsPayload[];
+  requestParams: RequestHeadersAndParamsPayload[];
+  requestBody: Record<string, any>[] | Object;
+}
 export interface IDashboard {
   history: {
     loading: boolean;
     error?: FetchHistoryFailurePayload;
     requests?: FetchHistorySuccessPayload;
   };
-  selectedRequest: {
-    request?: RequestHistoryPayload;
-    requestHeader: RequestHeadersAndParamsPayload[];
-    requestParams: RequestHeadersAndParamsPayload[];
-    requestBody: Record<string, any>[] | Object;
-  };
+  selectedRequest: SelectedRequest;
 }
 
 export interface FetchHistorySuccessPayload {

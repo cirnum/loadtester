@@ -21,6 +21,8 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Spacer,
+  Image,
 } from "@chakra-ui/react";
 import {
   FiHome,
@@ -33,6 +35,7 @@ import {
   FiChevronDown,
 } from "react-icons/fi";
 import { IconType } from "react-icons";
+import LogoImg from "../../assets/logo.png";
 
 interface LinkItemProps {
   name: string;
@@ -63,13 +66,13 @@ function NavItem({ icon, children, ...rest }: NavItemProps) {
     >
       <Flex
         align="center"
-        p="4"
-        mx="4"
+        p="2"
+        mx="2"
         borderRadius="lg"
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "cyan.400",
+          bg: "tomato",
           color: "white",
         }}
         {...rest}
@@ -117,9 +120,20 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
       bg={useColorModeValue("white", "gray.900")}
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue("gray.200", "gray.700")}
-      justifyContent={{ base: "space-between", md: "flex-end" }}
+      justifyContent={{ base: "space-between", md: "flex-start" }}
       {...rest}
     >
+      <Flex alignItems="center" width="260px" justifyContent="center">
+        <Image width="260px" height="50px" src={LogoImg} alt="loadster" />
+        {/* <Text
+          fontSize="2xl"
+          fontFamily="monospace"
+          fontWeight="bold"
+          color="tomato"
+        >
+          Strain-Hub
+        </Text> */}
+      </Flex>
       <IconButton
         display={{ base: "flex", md: "none" }}
         onClick={onOpen}
@@ -136,10 +150,16 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
       >
         Logo
       </Text>
+      <Spacer />
       {Links.map((link) => (
         <NavItem key={link}>{link}</NavItem>
       ))}
-      <HStack as="nav" spacing={3} display={{ base: "none", md: "flex" }}>
+      <HStack
+        as="nav"
+        spacing={3}
+        display={{ base: "none", md: "flex" }}
+        justifyContent={{ base: "space-between", md: "flex-end" }}
+      >
         <IconButton
           size="lg"
           variant="ghost"

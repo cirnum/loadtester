@@ -19,9 +19,10 @@ import Method from "./method";
 import RequestOptions from "./requestOptions";
 import { sendPayloadToSaga } from "../../../store/stress/dashboard/actions";
 
-export default function AddEditRequest() {
+export default function SelectedAddEditRequest() {
   const dispatch = useDispatch();
   const selectedRequest = useSelector(getSelectedRequest);
+
   const [method, setMethod] = useState<RestMethods>(
     selectedRequest?.method || "GET"
   );
@@ -31,6 +32,9 @@ export default function AddEditRequest() {
 
   const parse = (val) => val.replace(/^\$/, "");
 
+  useEffect(() => {
+    setMethod(() => selectedRequest?.method || "GET");
+  }, [selectedRequest?.id]);
   const sendRequest = () => {
     dispatch(
       sendPayloadToSaga({
@@ -50,16 +54,16 @@ export default function AddEditRequest() {
   }, [selectedRequest]);
 
   return (
-    <Box w="full" h="full" borderRight="2px solid #e2e8f0">
+    <Box w="full" borderRight="2px solid #e2e8f0">
       <HStack m={4}>
         <Text fontSize="sm" color="tomato" as="b">
           {selectedRequest?.method}
         </Text>
-        <Tag m={4}>{selectedRequest?.url}</Tag>
+        <Tag m={4}>{url}</Tag>
       </HStack>
       <Divider />
       <HStack m={4}>
-        <InputGroup>
+        <InputGroup zIndex="1">
           <InputLeftAddon>
             <Method method={method} setMethod={setMethod} />
           </InputLeftAddon>

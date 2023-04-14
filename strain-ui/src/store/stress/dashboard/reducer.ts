@@ -1,3 +1,8 @@
+import queryString from "query-string";
+import {
+  commonRequestHeader,
+  selectedRequestConst,
+} from "../../../constants/dashboard.const";
 import {
   FETCH_STRESS_HISTORY_REQUEST,
   FETCH_STRESS_HISTORY_SUCCESS,
@@ -8,9 +13,13 @@ import {
   USER_CLICK_CHECKBOX,
   SET_JSON_BODY,
 } from "./actionTypes";
-import { IDashboard, DashboardAction } from "./types";
+import {
+  IDashboard,
+  DashboardAction,
+  SelectedRequest,
+  RequestHeadersAndParamsPayload,
+} from "./types";
 
-type Accumlator = Record<string, any>[];
 const initialState: IDashboard = {
   history: {
     loading: false,
@@ -21,16 +30,12 @@ const initialState: IDashboard = {
     request: undefined,
     requestHeader: [
       {
-        key: "",
-        value: "",
-        isChecked: true,
+        ...commonRequestHeader,
       },
     ],
     requestParams: [
       {
-        key: "",
-        value: "",
-        isChecked: true,
+        ...commonRequestHeader,
       },
     ],
     requestBody: {},
@@ -41,13 +46,42 @@ const mapHeaderAndParas = (
   headers: Record<string, string>[] | Record<string, string>
 ) => {
   if (Array.isArray(headers)) {
-    return headers?.reduce((acc, data) => {
+    const totalItem = headers.length - 1;
+    return headers?.reduce((acc, data, index) => {
       const { Key, Value } = data;
       acc.push({ key: Key, value: Value, isChecked: true });
+      if (index === totalItem) {
+        acc.push({ ...commonRequestHeader });
+      }
       return acc;
-    }, [] as Accumlator);
+    }, [] as RequestHeadersAndParamsPayload[]);
   }
   return [];
+};
+
+const mapPrams = (headers: Record<string, string>) => {
+  const allPramsKey = Object.keys(headers);
+  const totalItem = allPramsKey.length - 1;
+  return allPramsKey?.reduce((acc, key, index) => {
+    acc.push({ key, value: headers[key], isChecked: true });
+    if (index === totalItem) {
+      acc.push({ ...commonRequestHeader });
+    }
+    return acc;
+  }, [] as RequestHeadersAndParamsPayload[]);
+};
+
+const mapRequestBody = (
+  body: Record<string, string>[] | Record<string, string>
+) => {
+  if (Array.isArray(body)) {
+    return body?.reduce((acc, data) => {
+      const { Key, Value } = data;
+      acc[Key] = Value;
+      return acc;
+    }, {} as Record<string, string>);
+  }
+  return {};
 };
 
 export default (state = initialState, action: DashboardAction) => {
@@ -58,7 +92,7 @@ export default (state = initialState, action: DashboardAction) => {
       requestToUpdate[action.payload.key] = action.payload.value;
       requestToUpdate.isChecked = true;
       if (requestHeader.length - 1 === action.payload?.position) {
-        requestHeader.push({ key: "", value: "", isChecked: false });
+        requestHeader.push({ ...commonRequestHeader });
       }
       return {
         ...state,
@@ -89,11 +123,7 @@ export default (state = initialState, action: DashboardAction) => {
       requestToUpdate[action.payload.key] = action.payload.value;
       requestToUpdate.isChecked = true;
       if (requestParams.length - 1 === action.payload?.position) {
-        requestParams = requestParams.concat({
-          key: "",
-          value: "",
-          isChecked: false,
-        });
+        requestParams = requestParams.concat({ ...commonRequestHeader });
       }
       return {
         ...state,
@@ -104,19 +134,27 @@ export default (state = initialState, action: DashboardAction) => {
       };
     }
     case SELECT_REQUEST: {
-      const common: any = {};
+      const [url, queryParams] = action.payload.url.split("?");
+      const parsed = queryString.parse(queryParams);
+      const common: SelectedRequest = { ...selectedRequestConst };
       const requestHeader = mapHeaderAndParas(action.payload?.headers);
-      const requestparams = mapHeaderAndParas(action.payload?.params);
+      const requestparams = mapPrams(parsed as Record<string, any>);
+      const requestBody = mapRequestBody(action.payload?.postData);
+      const payload = {
+        ...action.payload,
+        url: url.slice(0, url.lastIndexOf("/")),
+      };
 
       if (Object.keys(requestHeader).length)
         common.requestHeader = requestHeader;
       if (Object.keys(requestparams).length)
         common.requestParams = requestparams;
+      if (Object.keys(requestBody).length) common.requestBody = requestBody;
       return {
         ...state,
         selectedRequest: {
           ...state.selectedRequest,
-          request: action.payload,
+          request: payload,
           ...common,
         },
       };
@@ -128,7 +166,7 @@ export default (state = initialState, action: DashboardAction) => {
           loading: true,
         },
       };
-    case FETCH_STRESS_HISTORY_SUCCESS:
+    case FETCH_STRESS_HISTORY_SUCCESS: {
       return {
         ...state,
         history: {
@@ -137,6 +175,7 @@ export default (state = initialState, action: DashboardAction) => {
           error: undefined,
         },
       };
+    }
     case FETCH_STRESS_HISTORY_FAILURE:
       return {
         ...state,

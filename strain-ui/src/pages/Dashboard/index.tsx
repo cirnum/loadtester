@@ -1,6 +1,6 @@
 import { Stack } from "@chakra-ui/react";
 import Sidebar from "./Sidebar";
-import AddEditRequest from "./AddEditRequest";
+import AddEditRequest from "./LoadRequest";
 
 export default function Dashboard() {
   return (
