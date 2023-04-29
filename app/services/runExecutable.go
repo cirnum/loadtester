@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/manojown/api-testing-premium/app/model"
+	"github.com/cirnum/strain-hub/app/model"
 )
 
 func Run(conf model.Configuration) string {
@@ -16,7 +16,7 @@ func Run(conf model.Configuration) string {
 	// cmdName := ""
 	cmdArgs := strings.Fields(cmdName)
 
-	cmd := exec.Command(cmdArgs[0], cmdArgs[1:len(cmdArgs)]...)
+	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		log.Fatal(err)

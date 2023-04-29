@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/manojown/api-testing-premium/app/model"
+	"github.com/cirnum/strain-hub/app/model"
 	log "github.com/sirupsen/logrus"
 )
 

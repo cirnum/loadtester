@@ -61,6 +61,8 @@ const parseRequest = (
   const method = action.payload.method as RestMethods;
   return {
     ...action.payload,
+    clients: parseInt(action.payload.clients.toString(), 10),
+    time: parseInt(action.payload.time.toString(), 10),
     url,
     headers,
     postData,

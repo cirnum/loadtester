@@ -6,11 +6,16 @@ import (
 	"os"
 	"time"
 
-	"github.com/manojown/api-testing-premium/app/model"
+	"github.com/cirnum/strain-hub/app/model"
 	_ "github.com/mattn/go-sqlite3"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+type Provider struct {
+	DB    *DbConfig
+	Redis *RedisConfig
+}
 
 type DbConfig struct {
 	Client *mongo.Client

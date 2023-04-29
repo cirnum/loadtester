@@ -6,26 +6,34 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/cirnum/strain-hub/app/model"
+	"github.com/cirnum/strain-hub/app/services"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/manojown/api-testing-premium/app/model"
-	"github.com/manojown/api-testing-premium/app/services"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
+)
+
+const (
+	GetHashMethod            string = "GetHash"
+	GenerateJWTMethod        string = "GenerateJWT"
+	AutheticateRequestMethod string = "AutheticateRequest"
+)
+const (
+	ErrorWhileRetrivingHash string = "Error while retrive hash"
+	ErrorGenJwt             string = "Error while Generate jwt"
 )
 
 var SECRET_KEY = []byte("asdjasjdhjashjdajhkshjdhjasdhjkkhj")
 
 func GetHash(pwd []byte) string {
-	var methodName string = "GetHash"
 	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
 	if err != nil {
-		services.ResponseWriter(nil, methodName, 1, "Error while retrive hash", err)
+		services.ResponseWriter(nil, GetHashMethod, 1, ErrorWhileRetrivingHash, err)
 	}
 	return string(hash)
 }
 
 func GenerateJWT(user model.User) (string, error) {
-	var methodName string = "GenerateJWT"
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
 	atClaims["email"] = user.Email
@@ -35,14 +43,13 @@ func GenerateJWT(user model.User) (string, error) {
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	token, err := at.SignedString([]byte(SECRET_KEY))
 	if err != nil {
-		services.ResponseWriter(nil, methodName, 1, "Error while Generate jwt", err)
+		services.ResponseWriter(nil, GenerateJWTMethod, 1, ErrorGenJwt, err)
 		return "", err
 	}
 	return token, nil
 }
 
 func AutheticateRequest(r *http.Request) (bool, model.User) {
-	var methodName string = "AutheticateRequest"
 	var user model.User
 	jwtToken := r.Header.Get("Authorization")
 	if jwtToken == "" {
@@ -51,7 +58,7 @@ func AutheticateRequest(r *http.Request) (bool, model.User) {
 	token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			message := fmt.Sprintf("Unexpected signing method: %v", token.Header["alg"])
-			services.ResponseWriter(nil, methodName, 1, message, errors.New(message))
+			services.ResponseWriter(nil, AutheticateRequestMethod, 1, message, errors.New(message))
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(SECRET_KEY), nil

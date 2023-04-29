@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"math"
@@ -9,16 +10,20 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	helpers "github.com/manojown/api-testing-premium/app/helper"
-	"github.com/manojown/api-testing-premium/app/services"
-	"github.com/manojown/api-testing-premium/config"
+	httpClient "github.com/cirnum/strain-hub/app/clients"
+	"github.com/cirnum/strain-hub/app/executor"
+	helpers "github.com/cirnum/strain-hub/app/helper"
+
+	"github.com/cirnum/strain-hub/app/services"
+	"github.com/cirnum/strain-hub/config"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	"github.com/manojown/api-testing-premium/app/model"
+	"github.com/cirnum/strain-hub/app/model"
 )
 
-func UserRequest(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request) {
+func UserRequest(provider config.Provider, rw http.ResponseWriter, r *http.Request) {
+	var DB = provider.DB
 	var methodName string = "UserRequest"
 	var response []model.Configuration
 	criteria := bson.M{"userID": DB.User.ID}
@@ -36,7 +41,8 @@ func UserRequest(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetPerformance(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request) {
+func GetPerformance(provider config.Provider, rw http.ResponseWriter, r *http.Request) {
+	var DB = provider.DB
 	var methodName string = "GetPerformance"
 	var testResponse []model.TestResponse
 	criteria := bson.M{"userID": DB.User.ID}
@@ -56,13 +62,52 @@ func GetPerformance(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request
 
 }
 
+func NewSessionRequest(provider config.Provider, rw http.ResponseWriter, r *http.Request) {
+	var DB = provider.DB
+	var methodName string = "NewSessionRequest"
+	var conf model.Configuration
+	var paylodResponse model.PayloadResponder
+	err := json.NewDecoder(r.Body).Decode(&conf)
+	ctx, _ := context.WithTimeout(context.Background(), time.Duration(conf.Time)*time.Second)
+
+	if err != nil {
+		services.ResponseWriter(rw, methodName, http.StatusInternalServerError, "Please check your input, is it valid!", err.Error())
+		return
+	}
+
+	requestID := helpers.CreateNewRequest(DB, conf)
+	paylodResponse.Conf = conf
+	paylodResponse.RequestID = requestID
+	paylodResponse.UserID = DB.User.ID
+
+	go func() {
+		err, respon := helpers.ProcessRequest(DB, paylodResponse)
+		if err != nil {
+			log.Println("err", err)
+		}
+		services.ResponseWriter(nil, methodName, 1, "All Request SuccessFully sent to all saved server.", respon)
+	}()
+
+	// fmt.Printf("conf2 %+v \n", conf)
+
+	executor := executor.NewExecutor(requestID.Hex())
+
+	go executor.Run(ctx, paylodResponse)
+	client, _ := httpClient.Initializer(requestID.Hex())
+	go client.RunScen(ctx, paylodResponse)
+	services.ResponseWriter(rw, methodName, http.StatusOK, "New request added, wait till you time entered. ", requestID)
+
+}
+
 // NewSessionRequest is ...
-func NewSessionRequest(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request) {
+func NewSessionRequest1(provider config.Provider, rw http.ResponseWriter, r *http.Request) {
+	var DB = provider.DB
 	var methodName string = "NewSessionRequest"
 	var response model.TestResponse
 	var conf model.Configuration
 	var paylodResponse model.PayloadResponder
 	responseReciever := make(chan model.TestResponse, 1)
+	realTimeReciever := make(chan model.TestResponse, 1)
 
 	err := json.NewDecoder(r.Body).Decode(&conf)
 
@@ -86,7 +131,7 @@ func NewSessionRequest(DB *config.DbConfig, rw http.ResponseWriter, r *http.Requ
 	go func() {
 
 		processStartTime := time.Now()
-		services.Initialize(&conf, responseReciever)
+		services.Initialize(&conf, responseReciever, realTimeReciever)
 		response = <-responseReciever
 		t := time.Now()
 
@@ -104,7 +149,8 @@ func NewSessionRequest(DB *config.DbConfig, rw http.ResponseWriter, r *http.Requ
 
 }
 
-func CreateServer(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request) {
+func CreateServer(provider config.Provider, rw http.ResponseWriter, r *http.Request) {
+	var DB = provider.DB
 	var methodName string = "CreateServer"
 	var server model.Server
 	var dbServer model.Server
@@ -141,7 +187,8 @@ func CreateServer(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request) 
 
 }
 
-func GetServer(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request) {
+func GetServer(provider config.Provider, rw http.ResponseWriter, r *http.Request) {
+	var DB = provider.DB
 	var methodName string = "GetServer"
 	criteria := bson.M{"userID": DB.User.ID}
 	_, options := helpers.ValidatePagination(r.URL.Query())
@@ -158,7 +205,8 @@ func GetServer(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetServerRespone(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request) {
+func GetServerRespone(provider config.Provider, rw http.ResponseWriter, r *http.Request) {
+	var DB = provider.DB
 	var methodName string = "GetServerRespone"
 	var payloadReciever model.PayloadReciever
 	var response model.TestResponse
@@ -178,7 +226,8 @@ func GetServerRespone(DB *config.DbConfig, rw http.ResponseWriter, r *http.Reque
 	services.ResponseWriter(rw, methodName, http.StatusInternalServerError, message, insertionID)
 }
 
-func Connector(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request) {
+func Connector(provider config.Provider, rw http.ResponseWriter, r *http.Request) {
+	var DB = provider.DB
 	var methodName string = "Connector"
 	var server model.Server
 	_ = json.NewDecoder(r.Body).Decode(&server)
@@ -208,7 +257,8 @@ func checkErr(err error) {
 	}
 }
 
-func GetPerformanceByUrl(DB *config.DbConfig, rw http.ResponseWriter, r *http.Request) {
+func GetPerformanceByUrl(provider config.Provider, rw http.ResponseWriter, r *http.Request) {
+	var DB = provider.DB
 	var methodName string = "GetPerformanceByUrl"
 	var data model.PerformanceCriteria
 	criteria := bson.M{"userID": DB.User.ID}

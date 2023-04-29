@@ -9,25 +9,26 @@ import (
 	"os/signal"
 	"syscall"
 
-	helper "github.com/manojown/api-testing-premium/app/helper"
+	"github.com/cirnum/strain-hub/app/handler"
+	helper "github.com/cirnum/strain-hub/app/helper"
 
+	"github.com/cirnum/strain-hub/config"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/manojown/api-testing-premium/app/handler"
-	"github.com/manojown/api-testing-premium/config"
 )
 
 var PORT string = ":8080"
 
 type App struct {
-	Router *mux.Router
-	DB     *config.DbConfig
+	Router   *mux.Router
+	Provider config.Provider
 }
 
 func Initialize() {
 	app := new(App)
 	app.Router = mux.NewRouter()
-	app.DB = config.NewConfig()
+	app.Provider.DB = config.NewConfig()
+	app.Provider.Redis = config.InitRedisConfig()
 	app.setRouter()
 	app.run()
 }
@@ -65,7 +66,7 @@ func (app *App) setRouter() {
 	app.apiHandler("/performancebyurl", "POST", handler.GetPerformanceByUrl, true)
 	app.apiHandler("/registration", "POST", handler.Registeration, false)
 	app.apiHandler("/login", "POST", handler.Login, false)
-	app.apiHandler("/test", "GET", handler.Test, true)
+	app.apiHandler("/test", "GET", handler.Test, false)
 	app.apiHandler("/request", "POST", handler.NewSessionRequest, true)
 	app.apiHandler("/request/{id}", "GET", handler.UserRequest, true)
 	app.apiHandler("/request", "GET", handler.UserRequest, true)
@@ -88,21 +89,21 @@ func (app *App) apiHandler(path string, method string, handler handlerFunction, 
 	}
 }
 
-type handlerFunction func(db *config.DbConfig, w http.ResponseWriter, r *http.Request)
+type handlerFunction func(provider config.Provider, w http.ResponseWriter, r *http.Request)
 
 func (app *App) withoutAuthHandler(handler handlerFunction) http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
-		handler(app.DB, rw, r)
+		handler(app.Provider, rw, r)
 	}
 }
 
 func (app *App) withAuthHandler(handler handlerFunction) http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		auth, user := helper.AutheticateRequest(r)
-		app.DB.User = user
+		app.Provider.DB.User = user
 
 		if auth {
-			handler(app.DB, rw, r)
+			handler(app.Provider, rw, r)
 		} else {
 			rw.WriteHeader(http.StatusUnauthorized)
 			rw.Write([]byte("Unauthorized"))

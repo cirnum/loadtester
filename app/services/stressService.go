@@ -11,7 +11,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/manojown/api-testing-premium/app/model"
+	"github.com/cirnum/strain-hub/app/model"
 	"github.com/valyala/fasthttp"
 )
 
@@ -78,7 +78,7 @@ func printResult(results map[int]*Result, sentResponse chan<- model.TestResponse
 	sentResponse <- testResult
 
 }
-func Initialize(conf *model.Configuration, sentResponse chan<- model.TestResponse) {
+func Initialize(conf *model.Configuration, sentResponse chan<- model.TestResponse, realTimeResponse chan<- model.TestResponse) {
 
 	var done sync.WaitGroup
 	results := make(map[int]*Result)

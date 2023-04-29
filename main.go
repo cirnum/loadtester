@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/cirnum/strain-hub/app"
 	"github.com/joho/godotenv"
-	"github.com/manojown/api-testing-premium/app"
 	log "github.com/sirupsen/logrus"
 )
 

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/manojown/api-testing-premium/app/model"
-	"github.com/manojown/api-testing-premium/app/services"
-	"github.com/manojown/api-testing-premium/config"
+	"github.com/cirnum/strain-hub/app/model"
+	"github.com/cirnum/strain-hub/app/services"
+	"github.com/cirnum/strain-hub/config"
 	"github.com/valyala/fasthttp"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

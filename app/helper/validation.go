@@ -8,15 +8,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	Page  = "page"
+	Limit = "limit"
+)
+
 func ValidatePagination(query url.Values) (bool, options.FindOptions) {
 	options := options.FindOptions{}
-	options.SetSort(bson.D{{"_id", -1}})
+	options.SetSort(bson.D{{Key: "_id", Value: -1}})
 
-	page, err := strconv.ParseInt(query.Get("page"), 10, 16)
+	page, err := strconv.ParseInt(query.Get(Page), 10, 16)
 	if err != nil {
 		return false, options
 	}
-	limit, err := strconv.ParseInt(query.Get("limit"), 10, 16)
+	limit, err := strconv.ParseInt(query.Get(Limit), 10, 16)
 	if err != nil {
 		return false, options
 	}
