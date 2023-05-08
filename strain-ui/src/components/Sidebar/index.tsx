@@ -51,7 +51,7 @@ const LinkItems: Array<LinkItemProps> = [
 
 const Links = [
   { name: "Requests", path: "/dashboard" },
-  { name: "Performance", path: "performace" },
+  // { name: "Performance", path: "performace" },
   { name: "Reports", path: "report" },
   { name: "Download Client", path: "client" },
 ];

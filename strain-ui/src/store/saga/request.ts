@@ -15,7 +15,7 @@ import {
   RestMethods,
   RequestHistoryPayload,
   SendRequestSuccess,
-  SelectRequestAction,
+  SelectRequestActionOnGet,
 } from "../stress/dashboard/types";
 
 // function validURL(str: string) {
@@ -75,7 +75,7 @@ const parseRequest = (
   };
 };
 /*
-  Worker Saga: Fired on FETCH_TODO_REQUEST action
+  Worker Saga: Fired on Request action
 */
 function* requestSaga(action: SendPayloadToSagaAction) {
   const selectedRequest: ReturnType<typeof getChangedSelectedRequest> =
@@ -84,15 +84,15 @@ function* requestSaga(action: SendPayloadToSagaAction) {
   yield put(sendRequestAction(payloadToSend as RequestHistoryPayload));
 }
 
-function* requestSuccessSaga(action: SelectRequestAction) {
-  yield put(selectRequestAction(action.payload?.data as RequestHistoryPayload));
+function* requestSuccessSaga(action: SelectRequestActionOnGet) {
+  yield put(selectRequestAction(action.payload?.data));
 }
 
 /*
   Starts worker saga on latest dispatched `FETCH_TODO_REQUEST` action.
   Allows concurrent increments.
 */
-function* todoSaga() {
+function* combineSaga() {
   yield all([
     takeLatest<SendPayloadToSagaAction["type"], typeof requestSaga>(
       SEND_PAYLOAD_TO_SAGA,
@@ -105,4 +105,4 @@ function* todoSaga() {
   ]);
 }
 
-export default todoSaga;
+export default combineSaga;

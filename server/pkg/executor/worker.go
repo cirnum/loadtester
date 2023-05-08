@@ -52,7 +52,7 @@ type Executor struct {
 	units map[string]unit //title - gometrics
 }
 
-// the singleton instance of executor
+// singleton instance of executor
 var executorInstance Executor
 
 func getExecutor() *Executor {
@@ -149,7 +149,6 @@ func (e *Executor) Run(ctx context.Context, conf models.Request) (err error) {
 	case <-ctx.Done():
 		err = ErrAppCancel
 	}
-	// todo: update status
 	e.status = Finished
 	return
 }

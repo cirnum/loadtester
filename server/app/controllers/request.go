@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	_ "github.com/cirnum/strain-hub/server/app/models"
@@ -20,7 +19,6 @@ import (
 func GetAllRequest(c *fiber.Ctx) error {
 	ctx := context.Background()
 	pagination := utils.GetPagination(c)
-	fmt.Printf("request pagination is : %+v \n", pagination)
 	listUsers, err := db.Provider.RequestList(ctx, &pagination)
 
 	if err != nil {
@@ -31,15 +29,12 @@ func GetAllRequest(c *fiber.Ctx) error {
 }
 func NewRequest(c *fiber.Ctx) error {
 
+	ctx := context.Background()
 	requestpayload := &models.Request{}
-	// requestBody := &customModels.Request{}
 
 	if err := c.BodyParser(requestpayload); err != nil {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
-
-	// Start request with cancel context
-	ctx := context.Background()
 
 	request, err := db.Provider.AddRequest(ctx, *requestpayload)
 	executor := executor.NewExecutor(request.ID)

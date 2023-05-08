@@ -124,7 +124,7 @@ export interface FetchHistoryRequest extends Action {
 
 export interface FetchHistorySuccess extends Action {
   type: typeof FETCH_STRESS_HISTORY_SUCCESS;
-  payload: FetchLoadsterSuccessPayload;
+  payload: FetchHistorySuccessPayload;
 }
 
 export interface FetchHistoryFailure extends Action {
@@ -146,6 +146,15 @@ export interface SelectRequestAction extends Action {
   payload: RequestHistoryPayload;
 }
 
+export interface SelectRequestActionOnGet extends Action {
+  type: typeof SELECT_REQUEST;
+  payload: SelectedRequestResponse;
+}
+export interface SelectedRequestResponse {
+  data: RequestHistoryPayload;
+  error: string;
+  msg: string;
+}
 // Add request Header
 export interface RequestHeadersAndParamsPayload {
   key: string;
