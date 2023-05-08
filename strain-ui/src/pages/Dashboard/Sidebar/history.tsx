@@ -44,7 +44,7 @@ function ItemList({ item }: { item: RequestHistoryPayload }) {
   );
 }
 
-const pagination = { page: 1, limit: 40 };
+const pagination = { page: 1, limit: 20 };
 export default function History() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -62,7 +62,7 @@ export default function History() {
   }
   return (
     <div>
-      {requests?.data?.map((item) => {
+      {requests?.data?.data?.map((item) => {
         return <ItemList key={item.id} item={item} />;
       })}
     </div>

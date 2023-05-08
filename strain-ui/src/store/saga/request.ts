@@ -1,45 +1,50 @@
 import { all, takeLatest, select, put } from "redux-saga/effects";
-import { sendRequestAction } from "../stress/dashboard/actions";
+import {
+  selectRequestAction,
+  sendRequestAction,
+} from "../stress/dashboard/actions";
 
-import { SEND_PAYLOAD_TO_SAGA } from "../stress/dashboard/actionTypes";
+import {
+  SEND_PAYLOAD_TO_SAGA,
+  SEND_REQUEST_SUCCESS,
+} from "../stress/dashboard/actionTypes";
 import { getChangedSelectedRequest } from "../stress/dashboard/selectors";
 import {
   RequestHeadersAndParamsPayload,
   SendPayloadToSagaAction,
   RestMethods,
   RequestHistoryPayload,
+  SendRequestSuccess,
+  SelectRequestAction,
 } from "../stress/dashboard/types";
 
-function validURL(str: string) {
-  const pattern = new RegExp(
-    "^(https?:\\/\\/)?" + // protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-      "(\\#[-a-z\\d_]*)?$",
-    "i"
-  ); // fragment locator
-  return !!pattern.test(str);
-}
+// function validURL(str: string) {
+//   const pattern = new RegExp(
+//     "^(https?:\\/\\/)?" + // protocol
+//       "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+//       "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+//       "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+//       "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+//       "(\\#[-a-z\\d_]*)?$",
+//     "i"
+//   ); // fragment locator
+//   return !!pattern.test(str);
+// }
 
 const constructUrl = (
   url: string,
   params: RequestHeadersAndParamsPayload[]
 ) => {
-  if (validURL(url)) {
-    const updatedUrl = new URL(url);
-    for (const val in params) {
-      if (params[val].isChecked && params[val].key && params[val].value) {
-        updatedUrl.searchParams.set(
-          params[val].key,
-          params[val].value.toString()
-        );
-      }
+  const updatedUrl = new URL(url);
+  for (const val in params) {
+    if (params[val].isChecked && params[val].key && params[val].value) {
+      updatedUrl.searchParams.set(
+        params[val].key,
+        params[val].value.toString()
+      );
     }
-    return updatedUrl.toString();
   }
-  return url;
+  return updatedUrl.toString();
 };
 
 const constructHeader = (headers: RequestHeadersAndParamsPayload[]) => {
@@ -79,6 +84,10 @@ function* requestSaga(action: SendPayloadToSagaAction) {
   yield put(sendRequestAction(payloadToSend as RequestHistoryPayload));
 }
 
+function* requestSuccessSaga(action: SelectRequestAction) {
+  yield put(selectRequestAction(action.payload?.data as RequestHistoryPayload));
+}
+
 /*
   Starts worker saga on latest dispatched `FETCH_TODO_REQUEST` action.
   Allows concurrent increments.
@@ -88,6 +97,10 @@ function* todoSaga() {
     takeLatest<SendPayloadToSagaAction["type"], typeof requestSaga>(
       SEND_PAYLOAD_TO_SAGA,
       requestSaga
+    ),
+    takeLatest<SendRequestSuccess["type"], typeof requestSuccessSaga>(
+      SEND_REQUEST_SUCCESS,
+      requestSuccessSaga
     ),
   ]);
 }

@@ -11,6 +11,9 @@ import {
   SEND_REQUEST_FAILURE,
   SET_JSON_BODY,
   SEND_PAYLOAD_TO_SAGA,
+  SEND_LOADSTER_REQUEST,
+  SEND_LOADSTER_SUCCESS,
+  SEND_LOADSTER_FAILURE,
 } from "./actionTypes";
 import {
   FetchHistoryRequest,
@@ -34,6 +37,12 @@ import {
   SetJsonBody,
   SendRequestSagaPayload,
   SendPayloadToSagaAction,
+  GetLoadsterRequest,
+  LoadsterPayload,
+  LoadsterRequestPayload,
+  GetLoadsterSuccess,
+  GetLoadsterFailure,
+  LoadsterAction,
 } from "./types";
 
 export const fetchHistoryRequest = (
@@ -141,6 +150,39 @@ export const sendRequestAction = (
   onRequest: sendRequestRequest,
   onSuccess: sendRequestSuccess,
   onFailure: sendRequestFailure,
+});
+
+// Get Loadster data
+// Send request
+export const getLoadsterRequest = (
+  payload: LoadsterRequestPayload
+): GetLoadsterRequest => ({
+  type: SEND_LOADSTER_REQUEST,
+  payload,
+});
+
+export const getLoadsterSuccess = (
+  payload: LoadsterPayload
+): GetLoadsterSuccess => ({
+  type: SEND_LOADSTER_SUCCESS,
+  payload,
+});
+
+export const getLoadsterFailure = (payload: string): GetLoadsterFailure => ({
+  type: SEND_LOADSTER_FAILURE,
+  payload,
+});
+
+export const getLoadsterAction = (
+  payload: LoadsterRequestPayload
+): LoadsterAction => ({
+  type: "@app/API_CALL",
+  method: "GET",
+  path: `/loadster/${payload.reqId}`,
+  payload,
+  onRequest: getLoadsterRequest,
+  onSuccess: getLoadsterSuccess,
+  onFailure: getLoadsterFailure,
 });
 
 // Send action for saga

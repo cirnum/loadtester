@@ -14,7 +14,7 @@ const Instance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 5000,
   headers: {
-    Authorization: getToken(TOKEN),
+    Authorization: `Bearer ${getToken(TOKEN)}`,
     "Content-Type": "application/json",
   },
 });
@@ -39,7 +39,7 @@ export default function ApiCall<T>({
       },
     ],
     headers: {
-      Authorization: getToken(TOKEN),
+      Authorization: `Bearer ${getToken(TOKEN)}`,
       "Content-Type": "application/json",
     },
   });

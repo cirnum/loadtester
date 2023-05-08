@@ -27,7 +27,7 @@ export const loginFailure = (payload: LoginFailurePayload): LoginFailure => ({
 export const loginAction = (payload: LoginRequestPayload): LoginAction => ({
   type: "@app/API_CALL",
   method: "POST",
-  path: "/login",
+  path: "/user/signin",
   payload,
   onRequest: loginRequest,
   onSuccess: loginSuccess,

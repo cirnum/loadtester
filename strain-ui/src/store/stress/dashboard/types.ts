@@ -12,6 +12,9 @@ import {
   SEND_REQUEST_FAILURE,
   SET_JSON_BODY,
   SEND_PAYLOAD_TO_SAGA,
+  SEND_LOADSTER_REQUEST,
+  SEND_LOADSTER_SUCCESS,
+  SEND_LOADSTER_FAILURE,
 } from "./actionTypes";
 import { ApiCallAction } from "../../types";
 
@@ -34,30 +37,80 @@ export interface IDashboard {
     error?: FetchHistoryFailurePayload;
     requests?: FetchHistorySuccessPayload;
   };
+  analysis: {
+    loading: boolean;
+    error?: string;
+    data?: FetchLoadsterSuccessPayload;
+  };
   selectedRequest: SelectedRequest;
 }
 
+export interface FetchLoadsterSuccessPayload {
+  message: string;
+  data: LoadsterResponse[];
+  status: string;
+}
 export interface FetchHistorySuccessPayload {
   message: string;
-  data: RequestHistoryPayload[];
+  data: RequestList;
   status: string;
 }
 
+export interface LoadsterResponse {
+  id: string;
+  count: number;
+  type: string;
+  Title: string;
+  min: number;
+  max: number;
+  mean: number;
+  stddev: number;
+  median: number;
+  p75: number;
+  p95: number;
+  p99: number;
+  p999: number;
+  reqId: string;
+  created: number;
+  updated_at: number;
+  created_at: number;
+  finish: boolean;
+  startTime: number;
+}
+
+export interface RequestList {
+  pagination: Pagination;
+  data: RequestHistoryPayload[];
+}
+export interface Pagination {
+  limit: number;
+  page: number;
+  offset: number;
+  total: number;
+}
 export interface RequestHistoryPayload {
   clients: number;
   created: number;
-  headers: Record<string, string>[] | Record<string, string>;
+  created_at: number;
+  headers: Record<string, string>;
   id: string;
   ips: string[];
   keepAlive: boolean;
   method: RestMethods;
-  postData: Record<string, string>[] | Record<string, string>;
+  postData: Record<string, string>;
   requests: number;
   time: number;
   url: string;
   params: Record<string, string>[] | Record<string, string>;
 }
 
+export interface LoadsterRequestPayload {
+  reqId: string;
+}
+export interface LoadsterPayload {
+  pagination: Pagination;
+  requestId: string;
+}
 export interface FetchHistoryFailurePayload {
   message: string;
   data: undefined;
@@ -71,7 +124,7 @@ export interface FetchHistoryRequest extends Action {
 
 export interface FetchHistorySuccess extends Action {
   type: typeof FETCH_STRESS_HISTORY_SUCCESS;
-  payload: FetchHistorySuccessPayload;
+  payload: FetchLoadsterSuccessPayload;
 }
 
 export interface FetchHistoryFailure extends Action {
@@ -152,6 +205,29 @@ export interface SendRequestAction extends ApiCallAction {
   onFailure?: ActionCreator<SendRequestFailure>;
 }
 
+// Get Result data
+export interface GetLoadsterRequest extends Action {
+  type: typeof SEND_LOADSTER_REQUEST;
+  payload: LoadsterRequestPayload;
+}
+
+export interface GetLoadsterSuccess extends Action {
+  type: typeof SEND_LOADSTER_SUCCESS;
+  payload: LoadsterPayload;
+}
+
+export interface GetLoadsterFailure extends Action {
+  type: typeof SEND_LOADSTER_FAILURE;
+  payload: string;
+}
+
+export interface LoadsterAction extends ApiCallAction {
+  method: "GET";
+  payload: LoadsterRequestPayload;
+  onRequest?: ActionCreator<GetLoadsterRequest>;
+  onSuccess?: ActionCreator<GetLoadsterSuccess>;
+  onFailure?: ActionCreator<GetLoadsterFailure>;
+}
 // SendRequestPayloadSet
 export interface SendRequestSagaPayload {
   url: string;
@@ -178,4 +254,8 @@ export type DashboardAction =
   | SendRequestFailure
   | SendRequestAction
   | SetJsonBody
-  | SendPayloadToSagaAction;
+  | SendPayloadToSagaAction
+  | LoadsterAction
+  | GetLoadsterRequest
+  | GetLoadsterSuccess
+  | GetLoadsterFailure;

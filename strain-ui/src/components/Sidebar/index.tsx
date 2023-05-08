@@ -50,17 +50,16 @@ const LinkItems: Array<LinkItemProps> = [
 ];
 
 const Links = [
-  "Requests",
-  "Performance",
-  "Reports",
-  "server",
-  "Download Client",
+  { name: "Requests", path: "/dashboard" },
+  { name: "Performance", path: "performace" },
+  { name: "Reports", path: "report" },
+  { name: "Download Client", path: "client" },
 ];
 
-function NavItem({ icon, children, ...rest }: NavItemProps) {
+function NavItem({ icon, children, path, ...rest }: NavItemProps) {
   return (
     <Link
-      href="/item"
+      href={path}
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >
@@ -151,8 +150,10 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
         Logo
       </Text>
       <Spacer />
-      {Links.map((link) => (
-        <NavItem key={link}>{link}</NavItem>
+      {Links.map(({ name, path }) => (
+        <NavItem key={path} path={path}>
+          {name}
+        </NavItem>
       ))}
       <HStack
         as="nav"
@@ -278,6 +279,7 @@ interface SidebarProps extends BoxProps {
 
 interface NavItemProps extends FlexProps {
   icon?: IconType;
+  path?: string;
   children: ReactText;
 }
 

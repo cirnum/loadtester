@@ -12,6 +12,9 @@ import {
   ADD_REQUEST_PARAMS,
   USER_CLICK_CHECKBOX,
   SET_JSON_BODY,
+  SEND_LOADSTER_REQUEST,
+  SEND_LOADSTER_SUCCESS,
+  SEND_LOADSTER_FAILURE,
 } from "./actionTypes";
 import {
   IDashboard,
@@ -25,6 +28,10 @@ const initialState: IDashboard = {
     loading: false,
     requests: undefined,
     error: undefined,
+  },
+  analysis: {
+    loading: false,
+    data: undefined,
   },
   selectedRequest: {
     request: undefined,
@@ -42,23 +49,6 @@ const initialState: IDashboard = {
   },
 };
 
-const mapHeaderAndParas = (
-  headers: Record<string, string>[] | Record<string, string>
-) => {
-  if (Array.isArray(headers)) {
-    const totalItem = headers.length - 1;
-    return headers?.reduce((acc, data, index) => {
-      const { Key, Value } = data;
-      acc.push({ key: Key, value: Value, isChecked: true });
-      if (index === totalItem) {
-        acc.push({ ...commonRequestHeader });
-      }
-      return acc;
-    }, [] as RequestHeadersAndParamsPayload[]);
-  }
-  return [];
-};
-
 const mapPrams = (headers: Record<string, string>) => {
   const allPramsKey = Object.keys(headers);
   const totalItem = allPramsKey.length - 1;
@@ -69,19 +59,6 @@ const mapPrams = (headers: Record<string, string>) => {
     }
     return acc;
   }, [] as RequestHeadersAndParamsPayload[]);
-};
-
-const mapRequestBody = (
-  body: Record<string, string>[] | Record<string, string>
-) => {
-  if (Array.isArray(body)) {
-    return body?.reduce((acc, data) => {
-      const { Key, Value } = data;
-      acc[Key] = Value;
-      return acc;
-    }, {} as Record<string, string>);
-  }
-  return {};
 };
 
 export default (state = initialState, action: DashboardAction) => {
@@ -135,11 +112,11 @@ export default (state = initialState, action: DashboardAction) => {
     }
     case SELECT_REQUEST: {
       const [url, queryParams] = action.payload.url.split("?");
-      const parsed = queryString.parse(queryParams);
+      const parsed = queryString.parse(queryParams) as Record<string, any>;
       const common: SelectedRequest = { ...selectedRequestConst };
-      const requestHeader = mapHeaderAndParas(action.payload?.headers);
-      const requestparams = mapPrams(parsed as Record<string, any>);
-      const requestBody = mapRequestBody(action.payload?.postData);
+      const requestHeader = mapPrams(action.payload?.headers);
+      const requestparams = mapPrams(parsed);
+      const requestBody = action.payload?.postData;
       const payload = {
         ...action.payload,
         url: url.slice(0, url.lastIndexOf("/")),
@@ -191,6 +168,33 @@ export default (state = initialState, action: DashboardAction) => {
         selectedRequest: {
           ...state.selectedRequest,
           requestBody: action.payload,
+        },
+      };
+    case SEND_LOADSTER_REQUEST:
+      return {
+        ...state,
+        analysis: {
+          ...state.analysis,
+          loading: true,
+        },
+      };
+    case SEND_LOADSTER_SUCCESS: {
+      return {
+        ...state,
+        analysis: {
+          loading: false,
+          data: action.payload,
+          error: undefined,
+        },
+      };
+    }
+    case SEND_LOADSTER_FAILURE:
+      return {
+        ...state,
+        analysis: {
+          pending: false,
+          data: undefined,
+          error: action.payload,
         },
       };
     default:

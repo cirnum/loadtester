@@ -19,6 +19,11 @@ const getUserData = () =>
     }, 500)
   );
 
+const RequestPage = lazy(() =>
+  import("../pages/Request").then((m) => ({
+    default: m.default,
+  }))
+);
 const LoginPage = lazy(() =>
   import("../pages/Login").then((m) => ({
     default: m.default,
@@ -48,11 +53,11 @@ const Dashboard = lazy(() =>
     default: m.default,
   }))
 );
-const StressTest = lazy(() =>
-  import("../pages/StressTest").then((m) => ({
-    default: m.default,
-  }))
-);
+// const StressTest = lazy(() =>
+//   import("../pages/StressTest").then((m) => ({
+//     default: m.default,
+//   }))
+// );
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -68,7 +73,8 @@ export const router = createBrowserRouter(
 
       <Route path="/" element={<ProtectedLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
-        <Route path="stress" element={<StressTest />} />
+        <Route path="stress" element={<RequestPage />} />
+        <Route path="request/:requestId" element={<RequestPage />} />
       </Route>
       <Route path="/*" element={<NotFound />} />
     </Route>

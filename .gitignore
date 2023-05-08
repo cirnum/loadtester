@@ -10,8 +10,13 @@
 
 # production
 /strain-ui/build
+/strain-ui/dist
 /strain-ui/docs
 /*.log
+memory*
+
+
+logfile.*
 # misc
 .DS_Store
 .env.local

@@ -5,7 +5,7 @@ export const getRequestHistory = (state: ApplicationState) => {
 };
 
 export const getSelectedRequestId = (state: ApplicationState) => {
-  return state.dashboard?.selectedRequest?.request?.id || {};
+  return state.dashboard?.selectedRequest?.request?.id || "";
 };
 
 export const getSelectedRequest = (state: ApplicationState) => {
@@ -26,4 +26,11 @@ export const getSelectedRequestBody = (state: ApplicationState) => {
 
 export const getChangedSelectedRequest = (state: ApplicationState) => {
   return state.dashboard?.selectedRequest;
+};
+
+export const getLoadsterData = (state: ApplicationState) => {
+  return state.dashboard?.analysis;
+};
+export const getLoadsterList = (state: ApplicationState) => {
+  return state.dashboard?.analysis?.data;
 };

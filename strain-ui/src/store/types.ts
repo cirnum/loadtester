@@ -1,7 +1,7 @@
 import { Action, ActionCreator } from "redux";
 import { AUTH, AuthAction } from "./auth/types";
 import { IDashboard, DashboardAction } from "./stress/dashboard/types";
-
+import { IRequestReport, RequestAction } from "./stress/request/types";
 
 export interface ApiCallAction extends Action {
   type: "@app/API_CALL";
@@ -18,10 +18,11 @@ export interface ApiCallAction extends Action {
 
 export interface ApplicationState {
   auth: AUTH;
-  dashboard: IDashboard
+  dashboard: IDashboard;
+  requestReport: IRequestReport;
 }
 
-export type ApplicationActions = AuthAction | DashboardAction;
+export type ApplicationActions = AuthAction | DashboardAction | RequestAction;
 
 export type ResponseBody = {
   status: number;
