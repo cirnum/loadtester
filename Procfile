@@ -1,1 +1,1 @@
-web: api-testing-premium
+web: strain-hub
