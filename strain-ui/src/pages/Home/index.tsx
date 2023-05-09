@@ -7,9 +7,9 @@ import {
   Button,
   Icon,
   IconProps,
-  Link,
   Box,
 } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
 import { WithSubnavigation } from "./Nav";
 
 export function Illustration(props: IconProps) {
@@ -861,7 +861,7 @@ export default function CallToActionWithIllustration() {
             users.
           </Text>
           <Stack spacing={6} direction="row">
-            <Link href="signin">
+            <RouterLink to="signin">
               <Button
                 rounded="full"
                 px={6}
@@ -871,12 +871,12 @@ export default function CallToActionWithIllustration() {
               >
                 Login
               </Button>
-            </Link>
-            <Link href="signup">
+            </RouterLink>
+            <RouterLink to="signup">
               <Button rounded="full" px={6}>
                 Register
               </Button>
-            </Link>
+            </RouterLink>
           </Stack>
           <Flex w="full">
             <Illustration

@@ -95,10 +95,10 @@ export default function Login() {
               <Text align="center">
                 Don&apos;t have an account?
                 <RouterLink to="/signup">
-                  <Link color="tomato" href="/signup">
-                    {" "}
+                  {" "}
+                  <Button as="a" variant="link" color="tomato">
                     Signup
-                  </Link>
+                  </Button>
                 </RouterLink>
               </Text>
             </Stack>

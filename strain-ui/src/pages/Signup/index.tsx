@@ -12,7 +12,6 @@ import {
   Heading,
   Text,
   useColorModeValue,
-  Link,
 } from "@chakra-ui/react";
 import { useState } from "react";
 // import { useNavigate } from "react-router-dom";
@@ -117,10 +116,9 @@ export default function SignupCard() {
               <Text align="center">
                 Already a user?{" "}
                 <RouterLink to="/signin">
-                  {" "}
-                  <Link color="tomato" href="/signin">
+                  <Button as="a" variant="link" color="tomato">
                     Login
-                  </Link>
+                  </Button>
                 </RouterLink>
               </Text>
             </Stack>
