@@ -1,7 +1,7 @@
 package sql
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -51,7 +51,7 @@ func NewProvider() (*provider, error) {
 
 	dbType := os.Getenv(constants.DbType)
 	dbDNS := os.Getenv(constants.DbDns)
-	fmt.Println("dbDNS:", constants.DbDns)
+	log.Println("dbDNS:", dbType, dbDNS)
 	switch dbType {
 	case constants.DbTypeSQL:
 		sqlDB, err = gorm.Open(mysql.Open(dbDNS), ormConfig)
