@@ -17,6 +17,7 @@ import { useInterval } from "../../hooks/useInterval";
 import { getRequestByIdAction } from "../../store/stress/request/actions";
 import { getSelectedRequest } from "../../store/stress/request/selectors";
 import Spinner from "../../components/Spinner";
+import { StatFields } from "../../constants/request.const";
 
 function getOptions(latency: LoadsterResponse[]) {
   const keyToMap = ["mean", "median", "p99", "p75", "stddev"];
@@ -119,7 +120,11 @@ function Request({
   return (
     <Stack direction="row" w="100%" bg="white">
       <Box width="full" height="full" bg="white" p={10} pt={5}>
-        <Stats isMainPage selectedRequest={request} />
+        <Stats
+          isMainPage
+          selectedRequest={request}
+          fieldsToPopulate={StatFields}
+        />
         <AccordianArea title="Response Times (ms)" margin={2}>
           <ELoadChart options={getLatencyOption} />
         </AccordianArea>

@@ -83,7 +83,7 @@ func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
 			for _, m := range graph.Metrics {
 				if m.Type == metrics.Counter {
 					c := gometrics.NewCounter()
-					if err := gometrics.Register(m.Title, c); err != nil {
+					if err := gometrics.Register(e.appID+m.Title, c); err != nil {
 						if _, ok := err.(gometrics.DuplicateMetric); ok {
 							continue
 						}
@@ -177,11 +177,12 @@ func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]mo
 		switch u.Type {
 		case metrics.Counter:
 			counter := models.Loadster{
-				Count:   u.c.Count(),
-				Type:    string(u.Type),
-				Title:   u.Title,
-				ReqId:   e.appID,
-				Created: now,
+				Count:     u.c.Count(),
+				Type:      string(u.Type),
+				Title:     u.Title,
+				ReqId:     e.appID,
+				Created:   now,
+				StartTime: e.startTime,
 			}
 			data = append(data, counter)
 		case metrics.Histogram:

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "../../../components/Spinner";
 import { Stats } from "../../../components/Stats";
+import { StatFields } from "../../../constants/request.const";
 import { useInterval } from "../../../hooks/useInterval";
 import { getLoadsterAction } from "../../../store/stress/dashboard/actions";
 import {
@@ -33,7 +34,10 @@ export function RequestStats({
       <Divider />
       {selectedRequestId && selectedRequest && (
         <Box w="full" p={10} borderRight="2px solid #e2e8f0">
-          <Stats selectedRequest={selectedRequest} />
+          <Stats
+            selectedRequest={selectedRequest}
+            fieldsToPopulate={StatFields}
+          />
         </Box>
       )}
     </Box>

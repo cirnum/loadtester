@@ -6,81 +6,38 @@ import {
   StatGroup,
   StatLabel,
   StatNumber,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-// eslint-disable-next-line import/no-extraneous-dependencies
-import AnimatedNumber from "react-animated-number";
 import { getLoadsterList } from "../../store/stress/dashboard/selectors";
 import { RequestHistoryPayload } from "../../store/stress/dashboard/types";
+import { StatFields } from "../../constants/request.const";
+import { getRequestStats, NumberFormat } from "../../utils/request";
+import { Animate } from "./Animation";
+import { CustomStats } from "./CustomStat";
 
-const resultData = {
-  finish: false,
-  rps: 0,
-  count: 0,
-  totalRequst: 0,
-  ".latency": 0,
-  ".http_ok": 0,
-  httpFail: 0,
-  timeTaken: 0,
-  max: 0,
-  min: 0,
-};
-
-function Animate({ value }: { value: number }) {
-  return (
-    <AnimatedNumber
-      value={value}
-      style={{
-        fontSize: 20,
-      }}
-      duration={1000}
-      formatValue={(n) => n.toFixed(0)}
-      frameStyle={(percentage) =>
-        percentage > 20 && percentage < 80 ? { opacity: 0.5 } : {}
-      }
-    />
-  );
-}
 export function Stats({
   isMainPage = false,
   selectedRequest,
+  fieldsToPopulate,
 }: {
   isMainPage?: boolean;
   selectedRequest: RequestHistoryPayload;
+  fieldsToPopulate: typeof StatFields;
 }) {
   const navigate = useNavigate();
   const data = useSelector(getLoadsterList);
   const result = useMemo(() => {
-    const resultIs = { ...resultData };
-    const stressData = data?.data?.filter((item) => item.type === "histogram");
-    const isFinish = data?.data?.filter((item) => item.finish);
-    if (stressData) {
-      const last = stressData[stressData.length - 1];
-      const [first] = stressData;
-      resultIs.finish = last?.finish;
-      resultIs.max = last?.max;
-      resultIs.min = last?.min;
-      const timeTaken = (last?.created || 0) - (first?.startTime || 0);
-      resultIs.timeTaken = !isFinish?.length
-        ? timeTaken
-        : selectedRequest?.time || 1;
-      resultIs.count = last?.count || 0;
-      resultIs.rps = parseInt(
-        (resultIs.count / resultIs.timeTaken).toString(),
-        10
-      );
-      return resultIs;
-    }
-    return resultIs;
+    return getRequestStats(data?.data, selectedRequest);
   }, [data?.data]);
 
   if (!data?.data) return null;
   return (
     <>
-      <StatGroup>
-        <Stat>
+      <StatGroup width="100%">
+        <Stat borderRight="1px solid #e2e8f0" mr={2}>
           <StatLabel>Status</StatLabel>
           <StatNumber>
             <Badge colorScheme={result.finish ? "red" : "green"}>
@@ -88,43 +45,31 @@ export function Stats({
             </Badge>
           </StatNumber>
         </Stat>
-        <Stat>
-          <StatLabel>Worker</StatLabel>
-          <StatNumber>{selectedRequest?.clients}</StatNumber>
-        </Stat>
-        <Stat>
-          <StatLabel>Time</StatLabel>
-
-          <StatNumber>
-            <Animate value={result.timeTaken} />
-          </StatNumber>
-        </Stat>
-        <Stat>
-          <StatLabel>Total Request</StatLabel>
-          <StatNumber>
-            <Animate value={result.count} />
-          </StatNumber>
-        </Stat>
-
-        <Stat>
-          <StatLabel>RPS</StatLabel>
-          <StatNumber color="green">
-            <Animate value={result.rps} />
-          </StatNumber>
-        </Stat>
-
-        <Stat>
-          <StatLabel>Failure Request</StatLabel>
-          <StatNumber>{result.httpFail}</StatNumber>
-        </Stat>
-        <Stat>
-          <StatLabel>Min-Max latency</StatLabel>
-          <StatNumber>
-            <Animate value={result.min} />
-            -
-            <Animate value={result.max} /> ms
-          </StatNumber>
-        </Stat>
+        {fieldsToPopulate.map((section) => {
+          const { formate = false } = section;
+          if (!result[section.key]) return null;
+          return (
+            <CustomStats title={section.title} color={section?.color}>
+              {formate ? (
+                <Tooltip label={result[section.key]} aria-label="A tooltip">
+                  {NumberFormat(result[section.key])}
+                </Tooltip>
+              ) : (
+                <Animate value={result[section.key]} />
+              )}
+            </CustomStats>
+          );
+        })}
+        {isMainPage && (
+          <Stat borderRight="1px solid #e2e8f0" mr={2}>
+            <StatLabel>Min-Max latency</StatLabel>
+            <StatNumber>
+              <Animate value={result.min} />
+              -
+              <Animate value={result.max} /> ms
+            </StatNumber>
+          </Stat>
+        )}
         {!isMainPage && (
           <Stat>
             <Button onClick={() => navigate(`/request/${selectedRequest?.id}`)}>
