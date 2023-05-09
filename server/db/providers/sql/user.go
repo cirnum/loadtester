@@ -21,23 +21,25 @@ func (p *provider) AddUser(ctx context.Context, user models.User) (models.User, 
 	user.CreatedAt = time.Now().Unix()
 	user.UpdatedAt = time.Now().Unix()
 
-	user, err := p.GetUserByEmail(ctx, user.Email)
+	_, err := p.GetUserByEmail(ctx, user.Email)
 	if err != nil {
-		return user, err
-	} else if user.Email != "" {
-		return user, errors.New("User Already Register with us.")
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			result := p.db.Clauses(
+				clause.OnConflict{
+					Columns: []clause.Column{{Name: "email"}},
+				}).Create(&user)
+
+			if result.Error != nil {
+				return user, result.Error
+			}
+
+			return user, nil
+		} else {
+			return user, err
+		}
 	}
 
-	result := p.db.Clauses(
-		clause.OnConflict{
-			Columns: []clause.Column{{Name: "email"}},
-		}).Create(&user)
-
-	if result.Error != nil {
-		return user, result.Error
-	}
-
-	return user, nil
+	return user, errors.New("User with this Email already Register with us.")
 }
 
 // UpdateUser to update user information in database
