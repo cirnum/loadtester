@@ -1,6 +1,6 @@
 {
   "name": "strain-ui",
-  "private": true,
+  "homepage": ".",
   "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
