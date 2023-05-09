@@ -6,7 +6,6 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Checkbox,
   Stack,
   Link,
   Button,
@@ -47,9 +46,9 @@ export default function Login() {
           <Heading fontSize="4xl">Sign in to your account</Heading>
           <Text fontSize="lg" color="gray.600">
             to enjoy all of our cool{" "}
-            <Link color="blue.400" href="/feature">
+            <Link color="blue.400" href="/signin">
               features
-            </Link>{" "}
+            </Link>
             ✌️
           </Text>
         </Stack>
@@ -71,32 +70,33 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </FormControl>
-            <Stack spacing={10}>
+            <Stack spacing={6}>
               <Stack
                 direction={{ base: "column", sm: "row" }}
                 align="start"
                 justify="space-between"
               >
-                <Checkbox>Remember me</Checkbox>
-                <Link color="blue.400" href="/forgot">
+                {/* <Checkbox>Remember me</Checkbox> */}
+                {/* <Link color="blue.400" href="/forgot">
                   Forgot password?
-                </Link>
+                </Link> */}
               </Stack>
 
               <Button
                 onClick={handleSubmit}
-                bg="blue.400"
+                bg="tomato"
                 color="white"
                 _hover={{
-                  bg: "blue.500",
+                  bg: "orange.400",
                 }}
               >
                 Sign in
               </Button>
               <Text align="center">
-                New on Stain?
+                Don&apos;t have an account?
                 <RouterLink to="/signup">
-                  <Link color="blue.400" href="/signup">
+                  <Link color="tomato" href="/signup">
+                    {" "}
                     Signup
                   </Link>
                 </RouterLink>

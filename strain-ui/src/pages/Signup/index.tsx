@@ -103,10 +103,10 @@ export default function SignupCard() {
               <Button
                 loadingText="Submitting"
                 size="lg"
-                bg="blue.400"
+                bg="tomato"
                 color="white"
                 _hover={{
-                  bg: "blue.500",
+                  bg: "orange.500",
                 }}
                 onClick={() => {}}
               >
@@ -118,7 +118,7 @@ export default function SignupCard() {
                 Already a user?{" "}
                 <RouterLink to="/signin">
                   {" "}
-                  <Link color="blue.400" href="/signin">
+                  <Link color="tomato" href="/signin">
                     Login
                   </Link>
                 </RouterLink>
