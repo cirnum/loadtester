@@ -45,7 +45,7 @@ func ConnectionURLBuilder(n string) (string, error) {
 		url = fmt.Sprintf(
 			"%s:%s",
 			os.Getenv("SERVER_HOST"),
-			os.Getenv("SERVER_PORT"),
+			os.Getenv("PORT"),
 		)
 	default:
 		// Return error message.

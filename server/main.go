@@ -38,7 +38,7 @@ func main() {
 	routes.RequestRoutes(app)
 
 	// Custom config
-	app.Static("/", "../strain-ui/dist", fiber.Static{
+	app.Static("/", "dist", fiber.Static{
 		Compress:      true,
 		ByteRange:     true,
 		Browse:        true,
@@ -48,7 +48,7 @@ func main() {
 	})
 
 	app.Get("/*", func(c *fiber.Ctx) error {
-		if err := c.SendFile("../strain-ui/dist/index.html"); err != nil {
+		if err := c.SendFile("dist/index.html"); err != nil {
 			return c.Next()
 		}
 		return nil

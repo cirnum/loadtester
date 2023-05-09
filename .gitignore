@@ -14,7 +14,9 @@
 /strain-ui/docs
 /*.log
 inMemory*
-
+/build/*
+/server/dist
+/server/main
 
 logfile.*
 # misc
