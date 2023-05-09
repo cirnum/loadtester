@@ -1,10 +1,13 @@
 package sql
 
 import (
+	"fmt"
 	"os"
 	"time"
 
 	"github.com/cirnum/strain-hub/server/db/models"
+	"github.com/cirnum/strain-hub/server/pkg/constants"
+	"github.com/glebarez/sqlite"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -46,7 +49,15 @@ func NewProvider() (*provider, error) {
 		AllowGlobalUpdate: true,
 	}
 
-	sqlDB, err = gorm.Open(mysql.Open(os.Getenv("DSN")), ormConfig)
+	dbType := os.Getenv(constants.DbType)
+	dbDNS := os.Getenv(constants.DbDns)
+	fmt.Println("dbDNS:", constants.DbDns)
+	switch dbType {
+	case constants.DbTypeSQL:
+		sqlDB, err = gorm.Open(mysql.Open(dbDNS), ormConfig)
+	case constants.DbTypeSQLITE:
+		sqlDB, err = gorm.Open(sqlite.Open(dbDNS+"?_pragma=busy_timeout(5000)&_pragma=journal_mode(WAL)"), ormConfig)
+	}
 
 	if err != nil {
 		return nil, err

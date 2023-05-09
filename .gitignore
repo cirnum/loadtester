@@ -13,7 +13,7 @@
 /strain-ui/dist
 /strain-ui/docs
 /*.log
-memory*
+inMemory*
 
 
 logfile.*
