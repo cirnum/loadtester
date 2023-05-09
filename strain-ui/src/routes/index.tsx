@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import {
   Route,
   createBrowserRouter,
@@ -8,6 +8,7 @@ import {
 import { ProtectedLayout } from "../layout/ProtectedRoute";
 import { AuthLayout } from "../layout/AuthLayout";
 import { HomeLayout } from "../layout/HomeLayout";
+import Spinner from "../components/Spinner";
 
 // ideally this would be an API call to server to get logged in user data
 const getUserData = () =>
@@ -67,14 +68,42 @@ export const router = createBrowserRouter(
     >
       <Route element={<HomeLayout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/signin" element={<LoginPage />} />
+        <Route
+          path="/signup"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <SignUpPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/signin"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <LoginPage />
+            </Suspense>
+          }
+        />
       </Route>
 
       <Route path="/" element={<ProtectedLayout />}>
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route
+          path="dashboard"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <Dashboard />
+            </Suspense>
+          }
+        />
         <Route path="stress" element={<RequestPage />} />
-        <Route path="request/:requestId" element={<RequestPage />} />
+        <Route
+          path="request/:requestId"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <RequestPage />
+            </Suspense>
+          }
+        />
       </Route>
       <Route path="/*" element={<NotFound />} />
     </Route>
