@@ -60,6 +60,7 @@ func SingUp(c *fiber.Ctx) error {
 	insertedUser, err := db.Provider.AddUser(ctx, *user)
 
 	userResponse.Email = insertedUser.Email
+	userResponse.Name = insertedUser.Name
 	userResponse.ID = insertedUser.ID
 
 	if err != nil {
