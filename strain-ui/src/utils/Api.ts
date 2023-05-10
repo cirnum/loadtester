@@ -55,7 +55,9 @@ Instance.interceptors.response.use(
     // Do something with response error
     if (error.response.status === 401) {
       localStorage.removeItem(TOKEN);
-      window.location.reload();
+      if (!error.request.responseURL.includes("user/signin")) {
+        window.location.reload();
+      }
     }
     const errorObj = JSON.parse(error.response.data);
     return Promise.reject(errorObj);
