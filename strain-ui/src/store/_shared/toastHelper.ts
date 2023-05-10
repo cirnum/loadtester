@@ -1,5 +1,15 @@
-import { LOGIN_FAILURE, LOGIN_SUCCESS } from "../auth/actionTypes";
-import { LoginFailure, LoginSuccess } from "../auth/types";
+import {
+  LOGIN_FAILURE,
+  LOGIN_SUCCESS,
+  SIGNUP_FAILURE,
+  SIGNUP_SUCCESS,
+} from "../auth/actionTypes";
+import {
+  LoginFailure,
+  LoginSuccess,
+  SignUpFailure,
+  SignUpSuccess,
+} from "../auth/types";
 import { ToastConfig } from "../middleware/toast";
 import { ApplicationActions } from "../types";
 
@@ -14,6 +24,14 @@ export const toastActions: {
   }),
   [LOGIN_FAILURE]: (action: LoginFailure) => ({
     type: "error",
+    message: action.payload.message,
+  }),
+  [SIGNUP_FAILURE]: (action: SignUpFailure) => ({
+    type: "error",
+    message: action.payload.message,
+  }),
+  [SIGNUP_SUCCESS]: (action: SignUpSuccess) => ({
+    type: "success",
     message: action.payload.message,
   }),
 };

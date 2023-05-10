@@ -1,5 +1,13 @@
 import { Action, ActionCreator } from "redux";
-import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE } from "./actionTypes";
+import {
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
+  LOGIN_FAILURE,
+  SIGNUP_REQUEST,
+  SIGNUP_SUCCESS,
+  SIGNUP_FAILURE,
+  SIGNUP_CLEAR,
+} from "./actionTypes";
 import { ApiCallAction } from "../types";
 
 export interface LoginRequestPayload {
@@ -11,6 +19,10 @@ export interface AUTH {
   loading: boolean;
   error?: LoginFailurePayload;
   user?: LoginSuccessPayload;
+  signup: {
+    loading: boolean;
+    data?: SignUpSuccessPayload;
+  };
 }
 
 export interface LoginSuccessPayload {
@@ -48,8 +60,59 @@ export interface LoginAction extends ApiCallAction {
   onFailure?: ActionCreator<LoginFailure>;
 }
 
+export interface SignUpRequestPayload {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface SignUpFailurePayload {
+  message: string;
+  data: string;
+  error: boolean;
+}
+export interface SignUpSuccessPayload {
+  message: string;
+  data: {
+    name: string;
+    email: string;
+  };
+  error: boolean;
+}
+export interface SignUpRequest extends Action {
+  type: typeof SIGNUP_REQUEST;
+  payload: SignUpRequestPayload;
+}
+
+export interface SignUpSuccess extends Action {
+  type: typeof SIGNUP_SUCCESS;
+  payload: SignUpSuccessPayload;
+}
+
+export interface SignUpFailure extends Action {
+  type: typeof SIGNUP_FAILURE;
+  payload: SignUpFailurePayload;
+}
+
+export interface ClearSingupState extends Action {
+  type: typeof SIGNUP_CLEAR;
+}
+
+export interface SignUpAction extends ApiCallAction {
+  method: "POST";
+  payload: SignUpRequestPayload;
+  onRequest?: ActionCreator<SignUpRequest>;
+  onSuccess?: ActionCreator<SignUpSuccess>;
+  onFailure?: ActionCreator<SignUpFailure>;
+}
+
 export type AuthAction =
   | LoginRequest
   | LoginSuccess
   | LoginFailure
-  | LoginAction;
+  | LoginAction
+  | SignUpRequest
+  | SignUpSuccess
+  | SignUpFailure
+  | SignUpAction
+  | ClearSingupState;

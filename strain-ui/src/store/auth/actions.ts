@@ -1,5 +1,14 @@
-import { LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS } from "./actionTypes";
 import {
+  LOGIN_FAILURE,
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
+  SIGNUP_CLEAR,
+  SIGNUP_FAILURE,
+  SIGNUP_REQUEST,
+  SIGNUP_SUCCESS,
+} from "./actionTypes";
+import {
+  ClearSingupState,
   LoginAction,
   LoginFailure,
   LoginFailurePayload,
@@ -7,6 +16,13 @@ import {
   LoginRequestPayload,
   LoginSuccess,
   LoginSuccessPayload,
+  SignUpAction,
+  SignUpFailure,
+  SignUpFailurePayload,
+  SignUpRequest,
+  SignUpRequestPayload,
+  SignUpSuccess,
+  SignUpSuccessPayload,
 } from "./types";
 
 export const loginRequest = (payload: LoginRequestPayload): LoginRequest => ({
@@ -32,4 +48,39 @@ export const loginAction = (payload: LoginRequestPayload): LoginAction => ({
   onRequest: loginRequest,
   onSuccess: loginSuccess,
   onFailure: loginFailure,
+});
+
+export const singupRequest = (
+  payload: SignUpRequestPayload
+): SignUpRequest => ({
+  type: SIGNUP_REQUEST,
+  payload,
+});
+
+export const singupSuccess = (
+  payload: SignUpSuccessPayload
+): SignUpSuccess => ({
+  type: SIGNUP_SUCCESS,
+  payload,
+});
+
+export const singupFailure = (
+  payload: SignUpFailurePayload
+): SignUpFailure => ({
+  type: SIGNUP_FAILURE,
+  payload,
+});
+
+export const singupAction = (payload: SignUpRequestPayload): SignUpAction => ({
+  type: "@app/API_CALL",
+  method: "POST",
+  path: "/user/signup",
+  payload,
+  onRequest: singupRequest,
+  onSuccess: singupSuccess,
+  onFailure: singupFailure,
+});
+
+export const clearSingupState = (): ClearSingupState => ({
+  type: SIGNUP_CLEAR,
 });

@@ -28,7 +28,7 @@ export const apiMiddleware: Middleware =
       .catch((err) => {
         if (action.onFailure) {
           //   const message = getErrorMessage(action.onFailure().type, err);
-          store.dispatch(action.onFailure(err.response?.data));
+          store.dispatch(action.onFailure(err));
         }
       });
   };
