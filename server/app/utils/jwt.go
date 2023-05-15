@@ -44,6 +44,19 @@ func GenerateJWT(user models.User) (string, error) {
 	return token, nil
 }
 
+func GenerateTokenKey(server models.Server) (string, error) {
+	atClaims := jwt.MapClaims{}
+	atClaims["authorized"] = true
+	atClaims["id"] = server.ID
+	atClaims["user"] = server.UserID
+
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+	token, err := at.SignedString([]byte(os.Getenv("CLIENT_SECRET_KEY")))
+	if err != nil {
+		return "", err
+	}
+	return token, nil
+}
 func AutheticateRequest(r *http.Request) (bool, models.User) {
 	var user models.User
 	jwtToken := r.Header.Get("Authorization")
