@@ -57,9 +57,11 @@ export default function RequestTabs() {
   const [, setTabIndex] = useState(0);
   return (
     <Tabs onChange={(index) => setTabIndex(index)} w="100%">
-      <TabList>
+      <TabList color="grey">
         {TABS.map((value) => (
-          <Tab key={value}>{value}</Tab>
+          <Tab key={value} fontWeight="bold">
+            {value}
+          </Tab>
         ))}
       </TabList>
       <TabPanels>

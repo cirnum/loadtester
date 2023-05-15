@@ -7,8 +7,8 @@ export default function Sidebar() {
     <Box w="20%" color="grey" h="full" borderRight="2px solid #e2e8f0">
       <Tabs isFitted>
         <TabList mb="1em">
-          <Tab>History</Tab>
-          <Tab>Collection</Tab>
+          <Tab fontWeight="bold">History</Tab>
+          <Tab fontWeight="bold">Collection</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>

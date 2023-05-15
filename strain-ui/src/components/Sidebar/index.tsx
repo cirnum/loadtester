@@ -74,6 +74,7 @@ function NavItem({ icon, children, path, ...rest }: NavItemProps) {
           bg: "tomato",
           color: "white",
         }}
+        fontWeight="bold"
         {...rest}
       >
         {icon && (

@@ -37,7 +37,7 @@ function ItemList({ item }: { item: RequestHistoryPayload }) {
       <Text fontSize="sm" color="tomato" as="b">
         {item.method}
       </Text>
-      <Text fontSize="sm" isTruncated>
+      <Text fontSize="sm" isTruncated fontWeight="medium">
         {item.url}
       </Text>
     </HStack>
