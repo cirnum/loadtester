@@ -29,4 +29,15 @@ type Provider interface {
 	AddLoadByRequestId(ctx context.Context, load models.Loadster) (models.Loadster, error)
 	// Get load
 	GetLoadByRequestId(ctx context.Context, pagination models.Pagination, requestId string) ([]models.Loadster, error)
+	// Add server
+	AddServer(ctx context.Context, server models.Server) (models.Server, error)
+	// UpdateUser to update user information in database
+	UpdateServer(ctx context.Context, server models.Server) (models.Server, error)
+	// DeleteUser to delete user information from database
+	DeleteServerById(ctx context.Context, id string) error
+	// ListUsers to get list of users from database
+	ListServer(ctx context.Context, pagination *models.Pagination) (*models.ServerList, error)
+	// GetuserByEmail
+	GetServerById(ctx context.Context, email string) (models.Server, error)
+	// Update server
 }
