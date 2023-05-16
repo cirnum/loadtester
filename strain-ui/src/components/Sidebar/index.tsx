@@ -9,7 +9,6 @@ import {
   VStack,
   Icon,
   useColorModeValue,
-  Link,
   Drawer,
   DrawerContent,
   Text,
@@ -24,6 +23,7 @@ import {
   Spacer,
   Image,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import {
   FiHome,
   FiTrendingUp,
@@ -53,13 +53,14 @@ const Links = [
   { name: "Requests", path: "/dashboard" },
   // { name: "Performance", path: "performace" },
   { name: "Reports", path: "report" },
+  { name: "Server", path: "server" },
   { name: "Download Client", path: "client" },
 ];
 
 function NavItem({ icon, children, path, ...rest }: NavItemProps) {
   return (
     <Link
-      href={path}
+      to={path}
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >
@@ -186,7 +187,7 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
                   spacing="1px"
                   ml="2"
                 >
-                  <Text fontSize="sm">Justina Clark</Text>
+                  <Text fontSize="sm">Manoj Choudhary</Text>
                   <Text fontSize="xs" color="gray.600">
                     Admin
                   </Text>
@@ -202,7 +203,6 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
             >
               <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
               <MenuDivider />
               <MenuItem>Sign out</MenuItem>
             </MenuList>
