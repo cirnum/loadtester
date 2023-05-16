@@ -2,19 +2,33 @@ package sql
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/cirnum/strain-hub/server/db/models"
 	"github.com/google/uuid"
 )
 
+const LENGth = 3
+
+func UniqueToken(size int) string {
+	n := size
+	b := make([]byte, n)
+	if _, err := rand.Read(b); err != nil {
+		panic(err)
+	}
+	return fmt.Sprintf("%X", b)
+
+}
+
 // AddServer to update user information in database
 func (p *provider) AddServer(ctx context.Context, server models.Server) (models.Server, error) {
 	if server.ID == "" {
 		server.ID = uuid.New().String()
 	}
-	server.Token = uuid.New().String()
+	server.Token = UniqueToken(LENGth)
 	server.CreatedAt = time.Now().Unix()
 	server.UpdatedAt = time.Now().Unix()
 

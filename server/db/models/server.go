@@ -17,15 +17,17 @@ package models
 //		CreatedAt int64  `json:"created_at" bson:"created_at"`
 //	}
 type Server struct {
-	ID        string `gorm:"primaryKey;type:char(36)" json:"id,omitempty"`
-	UserID    string `json:"userID,omitempty"`
-	IP        string `json:"ip"`
-	Port      int64  `json:"port"`
-	Token     string `json:"token"`
-	Active    bool   `json:"active"`
-	Interval  int    `json:"interval"`
-	UpdatedAt int64  `json:"updated_at" bson:"updated_at"`
-	CreatedAt int64  `json:"created_at" bson:"created_at"`
+	ID          string `gorm:"primaryKey;type:char(36)" json:"id,omitempty"`
+	Alias       string `json:"alias,omitempty"`
+	Description string `json:"description,omitempty"`
+	UserID      string `json:"userID,omitempty"`
+	IP          string `json:"ip"`
+	Port        int64  `json:"port"`
+	Token       string `json:"token"`
+	Active      bool   `json:"active"`
+	Interval    int    `json:"interval"`
+	UpdatedAt   int64  `json:"updated_at" bson:"updated_at"`
+	CreatedAt   int64  `json:"created_at" bson:"created_at"`
 }
 
 type ServerList struct {
