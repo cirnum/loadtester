@@ -39,17 +39,18 @@ import LogoImg from "../../assets/logo.png";
 
 interface LinkItemProps {
   name: string;
-  icon: IconType;
+  icon?: IconType;
+  path: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Home", icon: FiHome },
-  { name: "Task", icon: FiTrendingUp },
-  { name: "Monitoring", icon: FiCompass },
-  { name: "Favourites", icon: FiStar },
-  { name: "Settings", icon: FiSettings },
+  { name: "Home", icon: FiHome, path: "/dashboard" },
+  { name: "Task", icon: FiTrendingUp, path: "/task" },
+  { name: "Monitoring", icon: FiCompass, path: "/monitor" },
+  { name: "Favourites", icon: FiStar, path: "/fav" },
+  { name: "Settings", icon: FiSettings, path: "/setting" },
 ];
 
-const Links = [
+const Links: Array<LinkItemProps> = [
   { name: "Requests", path: "/dashboard" },
   // { name: "Performance", path: "performace" },
   { name: "Reports", path: "report" },
@@ -59,11 +60,7 @@ const Links = [
 
 function NavItem({ icon, children, path, ...rest }: NavItemProps) {
   return (
-    <Link
-      to={path}
-      style={{ textDecoration: "none" }}
-      _focus={{ boxShadow: "none" }}
-    >
+    <Link to={path || "/"} style={{ textDecoration: "none" }}>
       <Flex
         align="center"
         p="2"
@@ -232,7 +229,7 @@ function SidebarContent({ onClose, ...rest }: SidebarProps) {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem key={link.name} icon={link.icon} path={link.path}>
           {link.name}
         </NavItem>
       ))}

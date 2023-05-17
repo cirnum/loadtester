@@ -16,7 +16,7 @@ interface DialogProps {
 }
 export function Dialog(props: DialogProps) {
   const { isOpen, onClose, children } = props;
-  const cancelRef = React.useRef();
+  const cancelRef = React.useRef<any>();
 
   return (
     <AlertDialog
