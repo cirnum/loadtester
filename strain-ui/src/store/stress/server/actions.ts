@@ -33,6 +33,7 @@ import {
   DeleteServerFailure,
   DeleteServerRequest,
   DeleteServerSuccess,
+  EditServerAction,
   GetAllServerAction,
   GetAllServerFailure,
   GetAllServerRequest,
@@ -80,6 +81,17 @@ export const addServerAction = (
   onFailure: addServerFailure,
 });
 
+export const editServerAction = (
+  payload: AddServerRequestPayload
+): EditServerAction => ({
+  type: "@app/API_CALL",
+  method: "PUT",
+  path: "/server",
+  payload,
+  onRequest: addServerRequest,
+  onSuccess: addServerSuccess,
+  onFailure: addServerFailure,
+});
 // Get All request
 export const getAllServerRequest = (
   params: PaginationPayload

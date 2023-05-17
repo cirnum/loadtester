@@ -9,13 +9,19 @@ import {
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { addServerAction } from "../../../store/stress/server/actions";
+import {
+  addServerAction,
+  editServerAction,
+} from "../../../store/stress/server/actions";
 import { getAddServerState } from "../../../store/stress/server/selectors";
-import { Server } from "../../../store/stress/server/types";
+import {
+  AddServerRequestPayload,
+  Server,
+} from "../../../store/stress/server/types";
 
-const EditableField = ["alias", "description", "ip", "port"];
 export default function AddOrEdit({ server }: { server?: Server }) {
-  const { loading } = useSelector(getAddServerState);
+  const { loading, addOrEdit } = useSelector(getAddServerState);
+  const actionState = addOrEdit?.actionState || undefined;
   const {
     handleSubmit,
     register,
@@ -28,16 +34,24 @@ export default function AddOrEdit({ server }: { server?: Server }) {
     if (server) {
       // eslint-disable-next-line guard-for-in
       for (const field in server) {
-        if (EditableField.includes(field)) {
-          setValue(field, server[field]);
-        }
+        setValue(field, server[field]);
       }
     }
   }, []);
   function onSubmit(values) {
-    console.log("values", values);
-    const payload = { alias: values.alias, description: values.description };
-    dispatch(addServerAction(payload));
+    let payload: AddServerRequestPayload = values;
+    if (actionState === "EDIT") {
+      if (values.port) {
+        payload = { ...payload, port: parseInt(values.port, 10) };
+      }
+      dispatch(editServerAction(payload as AddServerRequestPayload));
+    } else {
+      payload = {
+        alias: values.alias,
+        description: values.description,
+      };
+      dispatch(addServerAction(payload));
+    }
   }
 
   return (
@@ -66,7 +80,7 @@ export default function AddOrEdit({ server }: { server?: Server }) {
           {errors.name && errors.name.message?.toString()}
         </FormErrorMessage>
         <FormLabel htmlFor="description">Add Your Remote IP</FormLabel>
-        <Input id="IP" placeholder="Add remote server IP" {...register("ip")} />
+        <Input id="ip" placeholder="Add remote server IP" {...register("ip")} />
         <FormErrorMessage>
           {errors.name && errors.name.message?.toString()}
         </FormErrorMessage>
@@ -90,7 +104,7 @@ export default function AddOrEdit({ server }: { server?: Server }) {
         isLoading={loading}
         type="submit"
       >
-        Submit
+        {actionState === "EDIT" ? "Update" : "Add"}
       </Button>
     </form>
   );

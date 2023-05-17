@@ -58,7 +58,10 @@ export interface ServerList {
 export interface AddServerRequestPayload {
   alias: string;
   description: string;
+  ip?: string;
+  port?: number;
 }
+
 export interface AddServerRequestResponse {
   error: boolean;
   message: string;
@@ -77,7 +80,7 @@ export interface DeleteRequestResponse {
 }
 
 export interface AddOrEditServerPayload {
-  actionState?: "ADD" | "EDIT";
+  actionState: "ADD" | "EDIT" | undefined;
   server?: Server;
 }
 // Get sevrer data
@@ -102,6 +105,14 @@ export interface ClearServerState extends Action {
 
 export interface AddServerAction extends ApiCallAction {
   method: "POST";
+  payload: AddServerRequestPayload;
+  onRequest?: ActionCreator<AddServerRequest>;
+  onSuccess?: ActionCreator<AddServerSuccess>;
+  onFailure?: ActionCreator<AddServerFailure>;
+}
+
+export interface EditServerAction extends ApiCallAction {
+  method: "PUT";
   payload: AddServerRequestPayload;
   onRequest?: ActionCreator<AddServerRequest>;
   onSuccess?: ActionCreator<AddServerSuccess>;
@@ -184,4 +195,5 @@ export type ServerAction =
   | DeleteServerAction
   | ChangeAlertDialogState
   | SelectDeleteRequest
-  | AddOrEditServer;
+  | AddOrEditServer
+  | EditServerAction;
