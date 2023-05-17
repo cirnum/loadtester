@@ -2,6 +2,7 @@ import { Action, ActionCreator } from "redux";
 import { ApiCallAction, CommonError, PaginationPayload } from "../../types";
 import { Pagination } from "../dashboard/types";
 import {
+  ADD_OR_EDIT_SERVER,
   ADD_SERVER_FAILURE,
   ADD_SERVER_REQUEST,
   ADD_SERVER_SUCCESS,
@@ -19,6 +20,7 @@ import {
 export interface IServer {
   serverList: ServerList;
   server: {
+    addOrEdit: AddOrEditServerPayload;
     loading: boolean;
     data?: Server;
     error?: string;
@@ -72,6 +74,11 @@ export interface DeleteRequestResponse {
   error: boolean;
   message: string;
   data: null;
+}
+
+export interface AddOrEditServerPayload {
+  actionState?: "ADD" | "EDIT";
+  server?: Server;
 }
 // Get sevrer data
 export interface AddServerRequest extends Action {
@@ -144,6 +151,11 @@ export interface ChangeAlertDialogState extends Action {
   payload: boolean;
 }
 
+export interface AddOrEditServer extends Action {
+  type: typeof ADD_OR_EDIT_SERVER;
+  payload: AddOrEditServerPayload;
+}
+
 export interface SelectDeleteRequest extends Action {
   type: typeof SELECT_DELETE_REQUEST;
   payload?: Server;
@@ -171,4 +183,5 @@ export type ServerAction =
   | DeleteServerFailure
   | DeleteServerAction
   | ChangeAlertDialogState
-  | SelectDeleteRequest;
+  | SelectDeleteRequest
+  | AddOrEditServer;

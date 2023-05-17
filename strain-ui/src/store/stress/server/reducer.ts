@@ -1,4 +1,5 @@
 import {
+  ADD_OR_EDIT_SERVER,
   ADD_SERVER_FAILURE,
   ADD_SERVER_REQUEST,
   ADD_SERVER_SUCCESS,
@@ -21,6 +22,10 @@ const initialState: IServer = {
     error: undefined,
   },
   server: {
+    addOrEdit: {
+      actionState: undefined,
+      server: undefined,
+    },
     loading: false,
     data: undefined,
     error: undefined,
@@ -140,6 +145,14 @@ export default (state = initialState, action: ServerAction) => {
         deleteRequest: {
           ...state.deleteRequest,
           selectedRequest: action.payload || undefined,
+        },
+      };
+    case ADD_OR_EDIT_SERVER:
+      return {
+        ...state,
+        server: {
+          ...state.server,
+          addOrEdit: action.payload,
         },
       };
     default:

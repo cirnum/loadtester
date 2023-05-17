@@ -12,7 +12,6 @@ import {
   Button,
   Text,
   Badge,
-  useDisclosure,
   Spinner as SP,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
@@ -20,9 +19,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { CheckIcon, CopyIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
-import { Dialog } from "../../components/Modal";
-import ServerForm from "../../components/ServerForm";
 import {
+  addOrEditServer,
   getAllServerAction,
   selectDeleteRequest,
 } from "../../store/stress/server/actions";
@@ -31,6 +29,7 @@ import { Server } from "../../store/stress/server/types";
 import { getServerList } from "../../store/stress/server/selectors";
 import Spinner from "../../components/Spinner";
 import { DeleteDialog } from "./DeleteRequest";
+import AddOrEditComp from "./AddEdit";
 
 const pagination = {
   limit: 10,
@@ -66,6 +65,14 @@ function TableBody({
     token,
   } = server;
   const dispatch = useDispatch();
+  const onEdit = (action: "ADD" | "EDIT", serverDetails?: Server) => {
+    dispatch(
+      addOrEditServer({
+        actionState: action,
+        server: serverDetails,
+      })
+    );
+  };
 
   return (
     <motion.tr key={id} layout transition={{ duration: 0.5 }}>
@@ -91,7 +98,7 @@ function TableBody({
             cursor="pointer"
             onClick={() => dispatch(selectDeleteRequest(server))}
           />
-          <EditIcon cursor="pointer" />
+          <EditIcon cursor="pointer" onClick={() => onEdit("EDIT", server)} />
         </Stack>
       </Td>
     </motion.tr>
@@ -99,11 +106,19 @@ function TableBody({
 }
 
 export default function ServerBoard() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { loading, data } = useSelector(getServerList);
   const [copy, setCopy] = useState<string>("");
-
   const dispatch = useDispatch();
+
+  const onOpen = (action: "ADD" | "EDIT", server?: Server) => {
+    dispatch(
+      addOrEditServer({
+        actionState: action,
+        server,
+      })
+    );
+  };
+
   useEffect(() => {
     dispatch(getAllServerAction(pagination));
   }, []);
@@ -118,9 +133,7 @@ export default function ServerBoard() {
   }
   return (
     <Box w="100%" bg="white" h="calc(100vh - 65px)" p={10}>
-      <Dialog isOpen={isOpen} onClose={onClose}>
-        <ServerForm onClose={onClose} />
-      </Dialog>
+      <AddOrEditComp />
       <DeleteDialog />
       <TableContainer border="1px solid #f6f6f6">
         <Stack
@@ -133,7 +146,7 @@ export default function ServerBoard() {
           <Text fontSize="1xl" fontWeight="bold">
             Server Details
           </Text>
-          <Button onClick={onOpen}>Add New Server</Button>
+          <Button onClick={() => onOpen("ADD")}>Add New Server</Button>
         </Stack>
         <Table variant="simple">
           <Thead>

@@ -14,8 +14,11 @@ import {
   DELETE_SERVER_FAILURE,
   DELETE_DIALOG_STATE,
   SELECT_DELETE_REQUEST,
+  ADD_OR_EDIT_SERVER,
 } from "./actionTypes";
 import {
+  AddOrEditServer,
+  AddOrEditServerPayload,
   AddServerAction,
   AddServerFailure,
   AddServerRequest,
@@ -147,5 +150,12 @@ export const changeAlertDialogState = (
 
 export const selectDeleteRequest = (payload?: Server): SelectDeleteRequest => ({
   type: SELECT_DELETE_REQUEST,
+  payload,
+});
+
+export const addOrEditServer = (
+  payload: AddOrEditServerPayload
+): AddOrEditServer => ({
+  type: ADD_OR_EDIT_SERVER,
   payload,
 });

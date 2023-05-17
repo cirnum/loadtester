@@ -10,3 +10,7 @@ export const getServerList = (state: ApplicationState) => {
 export const getDeleteRequest = (state: ApplicationState) => {
   return state.server.deleteRequest;
 };
+
+export const getAddOrEditState = (state: ApplicationState) => {
+  return state.server.server?.addOrEdit || {};
+};
