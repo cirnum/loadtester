@@ -44,7 +44,8 @@ func (p *provider) AddServer(ctx context.Context, server models.Server) (models.
 // AddServer to update user information in database
 func (p *provider) UpdateServer(ctx context.Context, server models.Server) (models.Server, error) {
 	server.UpdatedAt = time.Now().Unix()
-	result := p.db.Model(&server).Where("id = ?", server.ID).Update("UpdatedAt", server.UpdatedAt)
+
+	result := p.db.Save(&server)
 	if result.Error != nil {
 		return server, result.Error
 	}

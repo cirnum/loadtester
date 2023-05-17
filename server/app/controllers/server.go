@@ -33,6 +33,10 @@ func UpdateServer(c *fiber.Ctx) error {
 	if err := c.BodyParser(serverPayload); err != nil {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
+
+	if serverPayload.ID == "" {
+		return utils.ResponseError(c, nil, "Server id missing to update.", 0)
+	}
 	updatedServer, err := db.Provider.UpdateServer(ctx, *serverPayload)
 
 	if err != nil {
