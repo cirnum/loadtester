@@ -27,6 +27,7 @@
     "react": "^18.2.0",
     "react-animated-number": "^0.4.4",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.9",
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.7.1",
     "react-json-ide": "^2.6.0",

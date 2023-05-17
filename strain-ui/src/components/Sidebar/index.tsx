@@ -9,7 +9,6 @@ import {
   VStack,
   Icon,
   useColorModeValue,
-  Link,
   Drawer,
   DrawerContent,
   Text,
@@ -24,6 +23,7 @@ import {
   Spacer,
   Image,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import {
   FiHome,
   FiTrendingUp,
@@ -39,30 +39,28 @@ import LogoImg from "../../assets/logo.png";
 
 interface LinkItemProps {
   name: string;
-  icon: IconType;
+  icon?: IconType;
+  path: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Home", icon: FiHome },
-  { name: "Task", icon: FiTrendingUp },
-  { name: "Monitoring", icon: FiCompass },
-  { name: "Favourites", icon: FiStar },
-  { name: "Settings", icon: FiSettings },
+  { name: "Home", icon: FiHome, path: "/dashboard" },
+  { name: "Task", icon: FiTrendingUp, path: "/task" },
+  { name: "Monitoring", icon: FiCompass, path: "/monitor" },
+  { name: "Favourites", icon: FiStar, path: "/fav" },
+  { name: "Settings", icon: FiSettings, path: "/setting" },
 ];
 
-const Links = [
+const Links: Array<LinkItemProps> = [
   { name: "Requests", path: "/dashboard" },
   // { name: "Performance", path: "performace" },
   { name: "Reports", path: "report" },
+  { name: "Server", path: "server" },
   { name: "Download Client", path: "client" },
 ];
 
 function NavItem({ icon, children, path, ...rest }: NavItemProps) {
   return (
-    <Link
-      href={path}
-      style={{ textDecoration: "none" }}
-      _focus={{ boxShadow: "none" }}
-    >
+    <Link to={path || "/"} style={{ textDecoration: "none" }}>
       <Flex
         align="center"
         p="2"
@@ -186,7 +184,7 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
                   spacing="1px"
                   ml="2"
                 >
-                  <Text fontSize="sm">Justina Clark</Text>
+                  <Text fontSize="sm">Manoj Choudhary</Text>
                   <Text fontSize="xs" color="gray.600">
                     Admin
                   </Text>
@@ -202,7 +200,6 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
             >
               <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
               <MenuDivider />
               <MenuItem>Sign out</MenuItem>
             </MenuList>
@@ -232,7 +229,7 @@ function SidebarContent({ onClose, ...rest }: SidebarProps) {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem key={link.name} icon={link.icon} path={link.path}>
           {link.name}
         </NavItem>
       ))}

@@ -54,11 +54,11 @@ const Dashboard = lazy(() =>
     default: m.default,
   }))
 );
-// const StressTest = lazy(() =>
-//   import("../pages/StressTest").then((m) => ({
-//     default: m.default,
-//   }))
-// );
+const ServerPage = lazy(() =>
+  import("../pages/Server").then((m) => ({
+    default: m.default,
+  }))
+);
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -101,6 +101,14 @@ export const router = createBrowserRouter(
           element={
             <Suspense fallback={<Spinner />}>
               <RequestPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="server"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <ServerPage />
             </Suspense>
           }
         />

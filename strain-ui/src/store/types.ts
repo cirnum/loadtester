@@ -2,6 +2,7 @@ import { Action, ActionCreator } from "redux";
 import { AUTH, AuthAction } from "./auth/types";
 import { IDashboard, DashboardAction } from "./stress/dashboard/types";
 import { IRequestReport, RequestAction } from "./stress/request/types";
+import { IServer, ServerAction } from "./stress/server/types";
 
 export interface ApiCallAction extends Action {
   type: "@app/API_CALL";
@@ -20,9 +21,24 @@ export interface ApplicationState {
   auth: AUTH;
   dashboard: IDashboard;
   requestReport: IRequestReport;
+  server: IServer;
 }
 
-export type ApplicationActions = AuthAction | DashboardAction | RequestAction;
+export interface CommonError {
+  error: boolean;
+  message: string;
+  data?: null;
+}
+
+export interface PaginationPayload {
+  page: number;
+  limit: number;
+}
+export type ApplicationActions =
+  | AuthAction
+  | DashboardAction
+  | RequestAction
+  | ServerAction;
 
 export type ResponseBody = {
   status: number;

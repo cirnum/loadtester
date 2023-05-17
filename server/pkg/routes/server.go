@@ -16,5 +16,5 @@ func ServerRoutes(a *fiber.App) {
 	route.Get(server, middleware.JWTProtected(), controllers.GetAllServer)
 	route.Get(server+"/:id", middleware.JWTProtected(), controllers.GetServerById)
 	route.Delete(server+"/:id", middleware.JWTProtected(), controllers.DeleteServerById)
-	route.Put(server, middleware.JWTProtectedClient(), controllers.UpdateServer)
+	route.Put(server, middleware.JWTProtected(), controllers.UpdateServer)
 }

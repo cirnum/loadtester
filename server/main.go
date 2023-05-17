@@ -36,6 +36,7 @@ func main() {
 	// Routes.
 	routes.PublicRoutes(app)
 	routes.RequestRoutes(app)
+	routes.ServerRoutes(app)
 
 	// Custom config
 	app.Static("/", "dist", fiber.Static{

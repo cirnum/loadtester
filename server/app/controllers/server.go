@@ -5,7 +5,6 @@ import (
 
 	_ "github.com/cirnum/strain-hub/server/app/models"
 	"github.com/cirnum/strain-hub/server/app/utils"
-	"github.com/google/uuid"
 
 	"github.com/cirnum/strain-hub/server/db"
 	"github.com/cirnum/strain-hub/server/db/models"
@@ -34,6 +33,10 @@ func UpdateServer(c *fiber.Ctx) error {
 	if err := c.BodyParser(serverPayload); err != nil {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
+
+	if serverPayload.ID == "" {
+		return utils.ResponseError(c, nil, "Server id missing to update.", 0)
+	}
 	updatedServer, err := db.Provider.UpdateServer(ctx, *serverPayload)
 
 	if err != nil {
@@ -44,21 +47,12 @@ func UpdateServer(c *fiber.Ctx) error {
 }
 
 func AddServer(c *fiber.Ctx) error {
-
 	ctx := context.Background()
 	serverPayload := &models.Server{}
 
 	if err := c.BodyParser(serverPayload); err != nil {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
-	serverPayload.ID = uuid.New().String()
-	jwtToken, err := utils.GenerateTokenKey(*serverPayload)
-
-	if err != nil {
-		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
-	}
-
-	serverPayload.Token = jwtToken
 	server, err := db.Provider.AddServer(ctx, *serverPayload)
 
 	if err != nil {
@@ -86,5 +80,5 @@ func DeleteServerById(c *fiber.Ctx) error {
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
-	return utils.ResponseSuccess(c, nil, "Fetched Server lists.", fiber.StatusOK)
+	return utils.ResponseSuccess(c, nil, "Server deleted successfully.", fiber.StatusOK)
 }
