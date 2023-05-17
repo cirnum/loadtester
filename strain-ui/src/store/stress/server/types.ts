@@ -39,7 +39,7 @@ export interface Server {
   alias: string;
   description: string;
   ip?: string;
-  port?: string;
+  port?: number;
   active?: boolean;
   created_at: number;
   updated_at: number;

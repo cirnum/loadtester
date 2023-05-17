@@ -78,7 +78,12 @@ function TableBody({
     <motion.tr key={id} layout transition={{ duration: 0.5 }}>
       <Td>{alias}</Td>
       <Td>{description}</Td>
-      <Td>{ip ? `${ip}:${port}` : "Not connected"}</Td>
+
+      <Td>
+        <Badge color={ip ? "grey" : "red"}>
+          {ip ? `${ip}${port ? `:${port}` : ""}` : "Not connected"}{" "}
+        </Badge>
+      </Td>
       <Td
         cursor="pointer"
         color={copy === token ? "green" : ""}

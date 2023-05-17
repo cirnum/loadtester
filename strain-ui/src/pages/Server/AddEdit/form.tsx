@@ -40,16 +40,14 @@ export default function AddOrEdit({ server }: { server?: Server }) {
   }, []);
   function onSubmit(values) {
     let payload: AddServerRequestPayload = values;
+    if (values.port) {
+      payload = { ...payload, port: parseInt(values.port, 10) };
+    } else {
+      payload.port = 0;
+    }
     if (actionState === "EDIT") {
-      if (values.port) {
-        payload = { ...payload, port: parseInt(values.port, 10) };
-      }
       dispatch(editServerAction(payload as AddServerRequestPayload));
     } else {
-      payload = {
-        alias: values.alias,
-        description: values.description,
-      };
       dispatch(addServerAction(payload));
     }
   }
