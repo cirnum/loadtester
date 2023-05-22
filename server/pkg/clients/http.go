@@ -3,9 +3,9 @@ package httpRequest
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"reflect"
 	"strings"
@@ -97,12 +97,12 @@ func (h *HttpClient) RunScen(ctx context.Context, conf models.Request) {
 		case err = <-finished:
 			ctx.Done()
 		case <-ctx.Done():
-			fmt.Println("trigger Done because of timeout")
+			log.Println("Job Completed")
 			return
 		}
 	}()
 	h.Manager(ctx, conf, finished)
-	fmt.Println("Error", err)
+	log.Println("Error", err)
 }
 
 func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan<- error) {

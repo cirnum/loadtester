@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 
 	_ "github.com/cirnum/strain-hub/server/app/models"
 	"github.com/cirnum/strain-hub/server/app/utils"
@@ -77,7 +76,6 @@ func GetWorkerById(c *fiber.Ctx) error {
 func GetWorkerByReqId(c *fiber.Ctx) error {
 	ctx := context.Background()
 	id := c.Params("id")
-	fmt.Println("Get Worker", id)
 
 	worker, err := db.Provider.GetWorkerByReqId(ctx, id)
 	if err != nil {

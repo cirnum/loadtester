@@ -3,7 +3,6 @@ package utils
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 
@@ -38,7 +37,6 @@ func RunWorker(request models.Request) error {
 
 		if url != "" {
 			worker.ServerId = element.ID
-			fmt.Println("worker.ServerId ", worker.ServerId)
 			url = strings.TrimSpace(strings.TrimSpace(url) + "/worker/request")
 			headers := map[string]string{
 				"Content-Type": "application/json",

@@ -3,7 +3,6 @@ package sql
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/cirnum/strain-hub/server/db/models"
@@ -102,7 +101,6 @@ func (p *provider) GetWorkerByReqId(ctx context.Context, id string) ([]models.Wo
 	}
 
 	result := p.db.Joins("Server", p.db.Select("Alias", "Description", "IP", "CreatedAt")).Where("req_id = ?", id).Find(&workers)
-	fmt.Printf("data %+v \n ", result)
 
 	if result.Error != nil {
 		return workers, result.Error

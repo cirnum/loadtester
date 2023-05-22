@@ -5,6 +5,7 @@ import (
 
 	_ "github.com/cirnum/strain-hub/server/app/models"
 	"github.com/cirnum/strain-hub/server/app/utils"
+	pkgUtils "github.com/cirnum/strain-hub/server/pkg/utils"
 
 	"github.com/cirnum/strain-hub/server/db"
 	"github.com/cirnum/strain-hub/server/db/models"
@@ -19,11 +20,11 @@ func GetAllServer(c *fiber.Ctx) error {
 	pagination := utils.GetPagination(c)
 
 	listServer, err := db.Provider.ListServer(ctx, &pagination)
-
+	serverList := pkgUtils.ServerStatus(listServer)
 	if err != nil {
 		return utils.ResponseError(c, err, "Failed to add the server.", 0)
 	}
-	return utils.ResponseSuccess(c, listServer, "Server added successfully.", 0)
+	return utils.ResponseSuccess(c, serverList, "Server added successfully.", 0)
 
 }
 
