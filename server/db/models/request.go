@@ -29,6 +29,8 @@ type Request struct {
 	Params    datatypes.JSON `json:"params"`
 	KeepAlive bool           `json:"keepAlive"`
 	Method    string         `json:"method"`
+	ServerId  string         `json:"serverId"`
+	WorkerId  string         `json:"workerId"`
 	Ips       string         `json:"ips" bson:"ips"`
 	PostData  datatypes.JSON `json:"postData,omitempty"`
 	Created   int64          `json:"created" bson:"created"`

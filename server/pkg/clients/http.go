@@ -3,11 +3,12 @@ package httpRequest
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"reflect"
+	"strings"
 	"sync"
 	"time"
 
@@ -96,12 +97,12 @@ func (h *HttpClient) RunScen(ctx context.Context, conf models.Request) {
 		case err = <-finished:
 			ctx.Done()
 		case <-ctx.Done():
-			fmt.Println("trigger Done because of timeout")
+			log.Println("Job Completed")
 			return
 		}
 	}()
 	h.Manager(ctx, conf, finished)
-	fmt.Println("Error", err)
+	log.Println("Error", err)
 }
 
 func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan<- error) {
@@ -179,7 +180,7 @@ func (h *HttpClient) do(method, url string, body []byte, headers map[string]stri
 		executor.Notify(h.title.success, 1)
 	}()
 
-	req, err := http.NewRequest(method, url, nil)
+	req, err := http.NewRequest(method, url, strings.NewReader(string(body)))
 
 	if err != nil {
 		return

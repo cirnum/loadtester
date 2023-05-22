@@ -20,7 +20,7 @@ type Server struct {
 	ID          string `gorm:"primaryKey;type:char(36)" json:"id,omitempty"`
 	Alias       string `json:"alias,omitempty"`
 	Description string `json:"description,omitempty"`
-	UserID      string `json:"userID,omitempty"`
+	UserID      string `json:"userId,omitempty"`
 	IP          string `json:"ip"`
 	Port        int64  `json:"port"`
 	Token       string `json:"token"`

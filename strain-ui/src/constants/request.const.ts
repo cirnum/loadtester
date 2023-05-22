@@ -1,4 +1,23 @@
-export const StatFields = [
+export interface StatsFieldInterface {
+  title: string;
+  key: string;
+  isStatus?: boolean;
+  toShowInWidget?: boolean;
+  formate?: boolean;
+  color?: string;
+  type?: string;
+}
+export const StatFields: StatsFieldInterface[] = [
+  {
+    title: "Server Alias",
+    key: "alias",
+    type: "string",
+  },
+  {
+    title: "Status",
+    key: "finish",
+    isStatus: true,
+  },
   {
     title: "Worker",
     key: "clients",
@@ -11,30 +30,30 @@ export const StatFields = [
   },
   {
     title: "Total Request",
-    key: "count",
+    key: "totalRequest",
     toShowInWidget: true,
     formate: true,
   },
   {
     title: "Success",
-    key: "httpSuccess",
+    key: "totalSuccessRequest",
     toShowInWidget: false,
     formate: true,
   },
   {
     title: "Failed",
-    key: "httpFail",
+    key: "totalFailRequest",
     toShowInWidget: false,
     formate: true,
   },
   {
     title: "Failure %",
-    key: "failedPer",
+    key: "failPercentage",
     toShowInWidget: true,
   },
   {
     title: "Failed RPS",
-    key: "failedRPS",
+    key: "totalFailRPS",
     color: "red",
     toShowInWidget: false,
   },
@@ -46,10 +65,31 @@ export const StatFields = [
   },
   {
     title: "RPS",
-    key: "rps",
+    key: "totalRPS",
     color: "tomato",
     toShowInWidget: true,
   },
 ];
 
-export const TypeOfStatFields = typeof StatFields;
+export const WorkerFields: StatsFieldInterface[] = [
+  {
+    title: "Status",
+    key: "status",
+    isStatus: true,
+  },
+  {
+    title: "Alias",
+    key: "alias",
+    type: "string",
+  },
+  {
+    title: "Description",
+    key: "description",
+    type: "string",
+  },
+  {
+    title: "Server URL",
+    key: "ip",
+    type: "string",
+  },
+];

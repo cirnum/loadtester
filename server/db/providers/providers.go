@@ -33,11 +33,24 @@ type Provider interface {
 	AddServer(ctx context.Context, server models.Server) (models.Server, error)
 	// UpdateUser to update user information in database
 	UpdateServer(ctx context.Context, server models.Server) (models.Server, error)
+	// Update server by ServerID
+	UpdateWorkerStatusBySId(ctx context.Context, worker *models.Worker) (*models.Worker, error)
 	// DeleteUser to delete user information from database
 	DeleteServerById(ctx context.Context, id string) error
 	// ListUsers to get list of users from database
 	ListServer(ctx context.Context, pagination *models.Pagination) (*models.ServerList, error)
+	// server by UserId
+	ListServerByUserId(ctx context.Context, userId string) ([]models.Server, error)
 	// GetuserByEmail
 	GetServerById(ctx context.Context, email string) (models.Server, error)
-	// Update server
+	// Add Worker
+	AddWorker(ctx context.Context, worker models.Worker) (models.Worker, error)
+	// Update Worker
+	UpdateWorker(ctx context.Context, worker models.Worker) (models.Worker, error)
+	// Get a list of workers
+	ListWorker(ctx context.Context, pagination *models.Pagination) (*models.WorkerList, error)
+	//  Get worker by id
+	GetWorkerById(ctx context.Context, id string) (models.Worker, error)
+	// get worker by req id
+	GetWorkerByReqId(ctx context.Context, id string) ([]models.Worker, error)
 }

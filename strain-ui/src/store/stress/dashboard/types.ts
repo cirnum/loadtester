@@ -17,6 +17,7 @@ import {
   SEND_LOADSTER_FAILURE,
 } from "./actionTypes";
 import { ApiCallAction } from "../../types";
+import { Server } from "../server/types";
 
 export type RestMethods = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
@@ -47,7 +48,7 @@ export interface IDashboard {
 
 export interface FetchLoadsterSuccessPayload {
   message: string;
-  data: LoadsterResponse[];
+  data: LoadsterRequestedResponse;
   status: string;
 }
 export interface FetchHistorySuccessPayload {
@@ -56,6 +57,48 @@ export interface FetchHistorySuccessPayload {
   status: string;
 }
 
+export interface Jobs extends Server {
+  status: boolean;
+  created: string;
+  error?: string;
+  server?: Server;
+  serverId: string;
+}
+export interface LoadsterRequestedResponse {
+  workers: Jobs[];
+  totalRPS: number;
+  totalRequest: number;
+  successRPS: number;
+  totalSuccessRequest: number;
+  failRPS: number;
+  totalFailRequest: number;
+  otherFailRPS: number;
+  totalFailRPS: number;
+  totalOtherFailRequest: number;
+  finish: number;
+  serverMap: Record<string, ServerMapData>;
+  failPercentage: number;
+  timeTaken: number;
+  maxLatency: number;
+  minLatency: number;
+}
+
+export interface ServerMapData {
+  serverId: string;
+  totalRPS: number;
+  successRPS: number;
+  failRPS: number;
+  otherFailRPS: number;
+  totalFailRPS: number;
+  latency: LoadsterResponse[];
+  success: LoadsterResponse[];
+  fail: LoadsterResponse[];
+  otherFail: LoadsterResponse[];
+  failPercentage: number;
+  timeTaken: number;
+  maxLatency: number;
+  minLatency: number;
+}
 export interface LoadsterResponse {
   id: string;
   count: number;
@@ -70,7 +113,10 @@ export interface LoadsterResponse {
   p95: number;
   p99: number;
   p999: number;
+  rps: number;
   reqId: string;
+  serverId: string;
+  token: string;
   created: number;
   updated_at: number;
   created_at: number;

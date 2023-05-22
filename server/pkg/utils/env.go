@@ -3,6 +3,8 @@ package utils
 import (
 	"fmt"
 	"os"
+
+	"github.com/cirnum/strain-hub/server/pkg/configs"
 )
 
 // ConnectionURLBuilder func for building URL connection.
@@ -44,8 +46,8 @@ func ConnectionURLBuilder(n string) (string, error) {
 		// URL for Fiber connection.
 		url = fmt.Sprintf(
 			"%s:%s",
-			os.Getenv("SERVER_HOST"),
-			os.Getenv("PORT"),
+			configs.ConfigProvider.IP,
+			configs.ConfigProvider.Port,
 		)
 	default:
 		// Return error message.

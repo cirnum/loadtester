@@ -16,3 +16,18 @@ export function CustomStats({
     </Stat>
   );
 }
+
+export function StatusStat({
+  children,
+  title,
+}: {
+  children: any;
+  title: string;
+}) {
+  return (
+    <Stat borderRight="1px solid #e2e8f0" mr={2}>
+      <StatLabel>{title}</StatLabel>
+      <StatNumber>{children}</StatNumber>
+    </Stat>
+  );
+}

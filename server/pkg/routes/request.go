@@ -11,9 +11,11 @@ func RequestRoutes(a *fiber.App) {
 	// Create routes group.
 	route := a.Group("/api/v1")
 	// user routes
-	route.Post("/request", middleware.JWTProtected(), controllers.NewRequest)
-	route.Get("/request", middleware.JWTProtected(), controllers.GetAllRequest)
-	route.Get("/request/:id", middleware.JWTProtected(), controllers.GetRequest)
-	route.Delete("/request/:id", middleware.JWTProtected(), controllers.DeleteRequest)
-	route.Get("/loadster/:id", middleware.JWTProtected(), controllers.GetLoadByRequestId)
+	route.Post("/request", middleware.JWTProtected, controllers.NewRequest)
+	route.Get("/request", middleware.JWTProtected, controllers.GetAllRequest)
+	route.Get("/request/:id", middleware.JWTProtected, controllers.GetRequest)
+	route.Delete("/request/:id", middleware.JWTProtected, controllers.DeleteRequest)
+	route.Get("/loadster/:id", middleware.JWTProtected, controllers.GetLoadByRequestId)
+	route.Post("/loadster", controllers.AddLoadRequest)
+
 }

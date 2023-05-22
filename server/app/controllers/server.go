@@ -5,6 +5,7 @@ import (
 
 	_ "github.com/cirnum/strain-hub/server/app/models"
 	"github.com/cirnum/strain-hub/server/app/utils"
+	pkgUtils "github.com/cirnum/strain-hub/server/pkg/utils"
 
 	"github.com/cirnum/strain-hub/server/db"
 	"github.com/cirnum/strain-hub/server/db/models"
@@ -14,14 +15,16 @@ import (
 
 // To Get all the Server
 func GetAllServer(c *fiber.Ctx) error {
-	ctx := context.Background()
-	pagination := utils.GetPagination(c)
-	listServer, err := db.Provider.ListServer(ctx, &pagination)
+	ctx := context.WithValue(context.Background(), "userId", c.Locals("userId").(string))
 
+	pagination := utils.GetPagination(c)
+
+	listServer, err := db.Provider.ListServer(ctx, &pagination)
+	serverList := pkgUtils.ServerStatus(listServer)
 	if err != nil {
 		return utils.ResponseError(c, err, "Failed to add the server.", 0)
 	}
-	return utils.ResponseSuccess(c, listServer, "Server added successfully.", 0)
+	return utils.ResponseSuccess(c, serverList, "Server added successfully.", 0)
 
 }
 
@@ -47,12 +50,14 @@ func UpdateServer(c *fiber.Ctx) error {
 }
 
 func AddServer(c *fiber.Ctx) error {
+
 	ctx := context.Background()
 	serverPayload := &models.Server{}
 
 	if err := c.BodyParser(serverPayload); err != nil {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
+	serverPayload.UserID = c.Locals("userId").(string)
 	server, err := db.Provider.AddServer(ctx, *serverPayload)
 
 	if err != nil {
@@ -73,8 +78,9 @@ func GetServerById(c *fiber.Ctx) error {
 }
 
 func DeleteServerById(c *fiber.Ctx) error {
-	ctx := context.Background()
 	id := c.Params("id")
+
+	ctx := context.WithValue(context.Background(), "userId", c.Locals("userId").(string))
 
 	err := db.Provider.DeleteServerById(ctx, id)
 	if err != nil {

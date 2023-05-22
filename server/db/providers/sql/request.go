@@ -30,7 +30,9 @@ func (p *provider) AddRequest(ctx context.Context, request models.Request) (mode
 // ListRequest to get list of users from database
 func (p *provider) RequestList(ctx context.Context, pagination *models.Pagination) (*models.RequestList, error) {
 	var requests []models.Request
-	result := p.db.Limit(int(pagination.Limit)).Offset(int(pagination.Offset)).Order("created_at DESC").Find(&requests)
+	userId := ctx.Value("userId")
+
+	result := p.db.Where("user_id = ?", userId).Limit(int(pagination.Limit)).Offset(int(pagination.Offset)).Order("created_at DESC").Find(&requests)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -73,12 +75,13 @@ func (p *provider) GetRequestById(ctx context.Context, id string) (models.Reques
 
 // Delete Request by id to update user information in database
 func (p *provider) DeleteRequestById(ctx context.Context, id string) error {
+	userId := ctx.Value("userId")
 
 	if id == "" {
 		return errors.New("Request id missing.")
 	}
 
-	result := p.db.Delete(&models.Request{
+	result := p.db.Where("user_id = ? ", userId).Delete(&models.Request{
 		ID: id,
 	})
 	if result.Error != nil {

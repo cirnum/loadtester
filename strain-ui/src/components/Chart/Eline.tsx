@@ -4,7 +4,7 @@ import ReactEcharts from "echarts-for-react";
 export function ELoadChart({ options }: { options: any }) {
   return (
     <ReactEcharts
-      style={{ width: "100%", height: "500px" }}
+      style={{ width: "50%", height: "350px" }}
       option={options}
       theme="dark"
     />
