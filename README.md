@@ -1,6 +1,6 @@
 # api-stress-testing-tool (stress testing tool)
 
-Demo - https://stress-testing-tool.web.app
+Demo - strain-hub.vercel.app
 
 # How to Use
 
