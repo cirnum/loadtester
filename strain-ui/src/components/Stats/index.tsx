@@ -1,82 +1,62 @@
-import {
-  Badge,
-  Button,
-  Divider,
-  Stat,
-  StatGroup,
-  StatLabel,
-  StatNumber,
-  Tooltip,
-} from "@chakra-ui/react";
-import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { getLoadsterList } from "../../store/stress/dashboard/selectors";
-import { RequestHistoryPayload } from "../../store/stress/dashboard/types";
-import { StatFields } from "../../constants/request.const";
-import { getRequestStats, NumberFormat } from "../../utils/request";
+import { Badge, Divider, StatGroup, Text, Tooltip } from "@chakra-ui/react";
+import { ReactElement } from "react";
+import { StatsFieldInterface } from "../../constants/request.const";
+import { NumberFormat } from "../../utils/_shared";
 import { Animate } from "./Animation";
 import { CustomStats } from "./CustomStat";
+import {
+  LoadsterRequestedResponse,
+  Jobs,
+  ServerMapData,
+} from "../../store/stress/dashboard/types";
 
 export function Stats({
-  isMainPage = false,
-  selectedRequest,
   fieldsToPopulate,
+  children,
+  data,
 }: {
-  isMainPage?: boolean;
-  selectedRequest: RequestHistoryPayload;
-  fieldsToPopulate: typeof StatFields;
+  data?: LoadsterRequestedResponse | Jobs | ServerMapData;
+  fieldsToPopulate: StatsFieldInterface[];
+  children?: ReactElement;
 }) {
-  const navigate = useNavigate();
-  const data = useSelector(getLoadsterList);
-  const result = useMemo(() => {
-    return getRequestStats(data?.data, selectedRequest);
-  }, [data?.data]);
-
-  if (!data?.data) return null;
+  if (!data) {
+    return null;
+  }
   return (
     <>
       <StatGroup width="100%">
-        <Stat borderRight="1px solid #e2e8f0" mr={2}>
-          <StatLabel>Status</StatLabel>
-          <StatNumber>
-            <Badge colorScheme={result.finish ? "red" : "green"}>
-              {result.finish ? "Completed" : "Active"}
-            </Badge>
-          </StatNumber>
-        </Stat>
         {fieldsToPopulate.map((section) => {
           const { formate = false } = section;
-          if (!result[section.key]) return null;
+          if (!data[section.key] && data[section.key] !== false) return null;
+          if (section.isStatus) {
+            return (
+              <CustomStats title={section.title}>
+                <Badge color={data?.[section.key] ? "tomato" : "green"}>
+                  {data?.[section.key] ? "Completed" : "Active"}
+                </Badge>
+              </CustomStats>
+            );
+          }
+          if (section?.type === "string") {
+            return (
+              <CustomStats title={section.title}>
+                <Text fontSize="18px">{data[section.key]}</Text>
+              </CustomStats>
+            );
+          }
           return (
             <CustomStats title={section.title} color={section?.color}>
               {formate ? (
-                <Tooltip label={result[section.key]} aria-label="A tooltip">
-                  {NumberFormat(result[section.key])}
+                <Tooltip label={data[section.key]} aria-label="A tooltip">
+                  {NumberFormat(data[section.key])}
                 </Tooltip>
               ) : (
-                <Animate value={result[section.key]} />
+                <Animate value={data[section.key]} />
               )}
             </CustomStats>
           );
         })}
-        {isMainPage && (
-          <Stat borderRight="1px solid #e2e8f0" mr={2}>
-            <StatLabel>Min-Max latency</StatLabel>
-            <StatNumber>
-              <Animate value={result.min} />
-              -
-              <Animate value={result.max} /> ms
-            </StatNumber>
-          </Stat>
-        )}
-        {!isMainPage && (
-          <Stat>
-            <Button onClick={() => navigate(`/request/${selectedRequest?.id}`)}>
-              View In Details
-            </Button>
-          </Stat>
-        )}
+        {children}
       </StatGroup>
       <Divider />
     </>

@@ -2,12 +2,15 @@ package main
 
 import (
 	"embed"
+	"flag"
+	"fmt"
 	"log"
 	"os"
 	"time"
 
 	"github.com/cirnum/strain-hub/server/db"
 	"github.com/cirnum/strain-hub/server/pkg/configs"
+
 	"github.com/cirnum/strain-hub/server/pkg/middleware"
 	"github.com/cirnum/strain-hub/server/pkg/routes"
 	"github.com/cirnum/strain-hub/server/pkg/utils"
@@ -23,37 +26,44 @@ func main() {
 
 	app := fiber.New(config)
 
+	isWorker := isWorkerMode()
 	// initialize db provider
-	err := db.InitDB()
-
-	if err != nil {
-		log.Fatalln("Error while initializing db: ", err)
+	if !isWorker {
+		err := db.InitDB()
+		if err != nil {
+			log.Fatalln("Error while initializing db: ", err)
+		}
 	}
 
 	// Middlewares.
 	middleware.FiberMiddleware(app)
 
-	// Routes.
-	routes.PublicRoutes(app)
-	routes.RequestRoutes(app)
-	routes.ServerRoutes(app)
+	if isWorker {
+		routes.WorkerModeRoutes(app)
+	} else {
+		// Routes.
+		routes.PublicRoutes(app)
+		routes.RequestRoutes(app)
+		routes.ServerRoutes(app)
+		routes.JobsRoutes(app)
 
-	// Custom config
-	app.Static("/", "dist", fiber.Static{
-		Compress:      true,
-		ByteRange:     true,
-		Browse:        true,
-		Index:         "index.html",
-		CacheDuration: 10 * time.Second,
-		MaxAge:        3600,
-	})
+		// Custom config
+		app.Static("/", "dist", fiber.Static{
+			Compress:      true,
+			ByteRange:     true,
+			Browse:        true,
+			Index:         "index.html",
+			CacheDuration: 10 * time.Second,
+			MaxAge:        3600,
+		})
 
-	app.Get("/*", func(c *fiber.Ctx) error {
-		if err := c.SendFile("dist/index.html"); err != nil {
-			return c.Next()
-		}
-		return nil
-	})
+		app.Get("/*", func(c *fiber.Ctx) error {
+			if err := c.SendFile("dist/index.html"); err != nil {
+				return c.Next()
+			}
+			return nil
+		})
+	}
 
 	routes.NotFoundRoute(app)
 
@@ -63,4 +73,28 @@ func main() {
 	} else {
 		utils.StartServerWithGracefulShutdown(app)
 	}
+}
+
+func isWorkerMode() bool {
+	portPtr := flag.String("port", "5001", "Take the dafault port if port is empty (Required)")
+	token := flag.String("token", "", "Please pass the token (Required)")
+	masterIp := flag.String("masterIp", "", "Please pass the master node ip.")
+	flag.Parse()
+
+	localIp := utils.GetPublicIp()
+	if *token == "" || *masterIp == "" {
+		configs.ConfigProvider = configs.Initialize(os.Getenv("PORT"), "", "")
+		configs.ConfigProvider.HostIp = localIp
+		configs.ConfigProvider.IsSlave = false
+		configs.ConfigProvider.IP = os.Getenv("SERVER_HOST")
+		fmt.Printf("Master %+v \n", configs.ConfigProvider)
+		return false
+	}
+	log.Println("Started node as worker.")
+	configs.ConfigProvider = configs.Initialize(*portPtr, *token, *masterIp)
+	configs.ConfigProvider.IsSlave = true
+	configs.ConfigProvider.IP = "0.0.0.0"
+	configs.ConfigProvider.HostIp = localIp
+	fmt.Printf("Worker %+v \n", configs.ConfigProvider)
+	return true
 }

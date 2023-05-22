@@ -54,8 +54,9 @@ func (p *provider) UpdateServer(ctx context.Context, server models.Server) (mode
 
 // ListServer to get list of users from database
 func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination) (*models.ServerList, error) {
+	userId := ctx.Value("userId")
 	var servers []models.Server
-	result := p.db.Limit(int(pagination.Limit)).Offset(int(pagination.Offset)).Order("created_at DESC").Find(&servers)
+	result := p.db.Where("user_id = ?", userId).Limit(int(pagination.Limit)).Offset(int(pagination.Offset)).Order("created_at DESC").Find(&servers)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -80,6 +81,22 @@ func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination
 	}, nil
 }
 
+// ListServer  by Userid to get list of users from database
+func (p *provider) ListServerByUserId(ctx context.Context, userId string) ([]models.Server, error) {
+	var servers []models.Server
+	result := p.db.Where("user_id = ?", userId).Find(&servers)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	serverList := []models.Server{}
+	for _, request := range servers {
+		serverList = append(serverList, request)
+	}
+
+	return serverList, nil
+}
+
 // GetServerById to update user information in database
 func (p *provider) GetServerById(ctx context.Context, id string) (models.Server, error) {
 	var server models.Server
@@ -98,12 +115,13 @@ func (p *provider) GetServerById(ctx context.Context, id string) (models.Server,
 
 // DeleteServerById Request by id to update user information in database
 func (p *provider) DeleteServerById(ctx context.Context, id string) error {
+	userId := ctx.Value("userId")
 
 	if id == "" {
 		return errors.New("Request id missing.")
 	}
 
-	result := p.db.Delete(&models.Server{
+	result := p.db.Where("userId = ?", userId).Delete(&models.Server{
 		ID: id,
 	})
 	if result.Error != nil {

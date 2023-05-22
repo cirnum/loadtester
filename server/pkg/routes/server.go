@@ -12,9 +12,9 @@ func ServerRoutes(a *fiber.App) {
 	server := "/server"
 	route := a.Group("/api/v1")
 	// user routes
-	route.Post(server, middleware.JWTProtected(), controllers.AddServer)
-	route.Get(server, middleware.JWTProtected(), controllers.GetAllServer)
-	route.Get(server+"/:id", middleware.JWTProtected(), controllers.GetServerById)
-	route.Delete(server+"/:id", middleware.JWTProtected(), controllers.DeleteServerById)
-	route.Put(server, middleware.JWTProtected(), controllers.UpdateServer)
+	route.Post(server, middleware.JWTProtected, controllers.AddServer)
+	route.Get(server, middleware.JWTProtected, controllers.GetAllServer)
+	route.Get(server+"/:id", middleware.JWTProtected, controllers.GetServerById)
+	route.Delete(server+"/:id", middleware.JWTProtected, controllers.DeleteServerById)
+	route.Put(server, middleware.JWTProtected, controllers.UpdateServer)
 }

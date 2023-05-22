@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"strings"
 	"sync"
 	"time"
 
@@ -179,7 +180,7 @@ func (h *HttpClient) do(method, url string, body []byte, headers map[string]stri
 		executor.Notify(h.title.success, 1)
 	}()
 
-	req, err := http.NewRequest(method, url, nil)
+	req, err := http.NewRequest(method, url, strings.NewReader(string(body)))
 
 	if err != nil {
 		return

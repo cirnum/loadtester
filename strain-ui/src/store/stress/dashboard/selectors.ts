@@ -32,5 +32,5 @@ export const getLoadsterData = (state: ApplicationState) => {
   return state.dashboard?.analysis;
 };
 export const getLoadsterList = (state: ApplicationState) => {
-  return state.dashboard?.analysis?.data;
+  return state.dashboard?.analysis?.data?.data;
 };

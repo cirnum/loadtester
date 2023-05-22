@@ -15,6 +15,9 @@ type Loadster struct {
 	P99       float64 `json:"p99,omitempty"`
 	P999      float64 `json:"p999,omitempty"`
 	ReqId     string  `json:"reqId,omitempty"`
+	ServerId  string  `json:"serverId,omitempty"`
+	Token     string  `json:"token,omitempty"`
+	RPS       int64   `json:"rps" bson:"updated_at"`
 	Created   int64   `json:"created" bson:"created"`
 	UpdatedAt int64   `json:"updated_at" bson:"updated_at"`
 	CreatedAt int64   `json:"created_at" bson:"created_at"`

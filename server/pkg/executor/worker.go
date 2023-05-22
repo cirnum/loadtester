@@ -2,6 +2,7 @@ package executor
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -11,7 +12,9 @@ import (
 
 	"github.com/cirnum/strain-hub/server/db"
 	"github.com/cirnum/strain-hub/server/db/models"
+	"github.com/cirnum/strain-hub/server/pkg/configs"
 	metrics "github.com/cirnum/strain-hub/server/pkg/executor/metrics"
+	"github.com/cirnum/strain-hub/server/pkg/utils"
 	gometrics "github.com/rcrowley/go-metrics"
 )
 
@@ -46,6 +49,7 @@ type Executor struct {
 	mu        sync.Mutex
 	id        string
 	appID     string
+	serverId  string
 	startTime int64
 	endTime   int64
 	status
@@ -68,10 +72,11 @@ func init() {
 	}
 }
 
-func NewExecutor(reqId string) (e *Executor) {
+func NewExecutor(reqId string, serverId string) (e *Executor) {
 	e = getExecutor()
 	e.units = make(map[string]unit)
 	e.appID = reqId
+	e.serverId = serverId
 	e.status = Idle
 	return
 }
@@ -181,6 +186,7 @@ func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]mo
 				Type:      string(u.Type),
 				Title:     u.Title,
 				ReqId:     e.appID,
+				ServerId:  e.serverId,
 				Created:   now,
 				StartTime: e.startTime,
 			}
@@ -202,6 +208,7 @@ func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]mo
 				Type:      string(u.Type),
 				Title:     u.Title,
 				ReqId:     e.appID,
+				ServerId:  e.serverId,
 				Created:   now,
 				StartTime: e.startTime,
 			}
@@ -222,15 +229,38 @@ func (e *Executor) logScaledOnCue(ctx context.Context, ch chan interface{}) erro
 			ctx := context.Background()
 			for _, value := range data {
 				if value.Count > 0 {
-					db.Provider.AddLoadByRequestId(ctx, value)
+					config := configs.ConfigProvider
+					value.Token = config.Token
+
+					if config.IsSlave == true {
+						body, _ := json.Marshal(value)
+						url := config.MasterIp + "/api/v1/loadster"
+						headers := map[string]string{
+							"Content-Type": "application/json",
+						}
+						utils.Do("POST", url, body, headers)
+					} else {
+						db.Provider.AddLoadByRequestId(ctx, value)
+					}
 				}
 			}
 		case <-ctx.Done():
+			config := configs.ConfigProvider
 			data, _ := e.GrabCounter(ctx, e.units)
 			for _, value := range data {
+				value.Finish = true
 				if value.Count > 0 {
-					value.Finish = true
-					db.Provider.AddLoadByRequestId(ctx, value)
+					value.Token = config.Token
+					if config.IsSlave == true {
+						headers := map[string]string{
+							"Content-Type": "application/json",
+						}
+						body, _ := json.Marshal(value)
+						url := config.MasterIp + "/api/v1/loadster"
+						utils.Do("POST", url, body, headers)
+					} else {
+						db.Provider.AddLoadByRequestId(ctx, value)
+					}
 				}
 			}
 			return nil

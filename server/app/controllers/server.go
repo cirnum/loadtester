@@ -14,8 +14,10 @@ import (
 
 // To Get all the Server
 func GetAllServer(c *fiber.Ctx) error {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), "userId", c.Locals("userId").(string))
+
 	pagination := utils.GetPagination(c)
+
 	listServer, err := db.Provider.ListServer(ctx, &pagination)
 
 	if err != nil {
@@ -47,12 +49,14 @@ func UpdateServer(c *fiber.Ctx) error {
 }
 
 func AddServer(c *fiber.Ctx) error {
+
 	ctx := context.Background()
 	serverPayload := &models.Server{}
 
 	if err := c.BodyParser(serverPayload); err != nil {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
+	serverPayload.UserID = c.Locals("userId").(string)
 	server, err := db.Provider.AddServer(ctx, *serverPayload)
 
 	if err != nil {
@@ -73,8 +77,9 @@ func GetServerById(c *fiber.Ctx) error {
 }
 
 func DeleteServerById(c *fiber.Ctx) error {
-	ctx := context.Background()
 	id := c.Params("id")
+
+	ctx := context.WithValue(context.Background(), "userId", c.Locals("userId").(string))
 
 	err := db.Provider.DeleteServerById(ctx, id)
 	if err != nil {
