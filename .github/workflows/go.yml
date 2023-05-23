@@ -15,20 +15,6 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
-<<<<<<< Updated upstream
-      - name: Checkout the repository
-        run: |
-          pwd
-      - name: Generate build files
-        uses: thatisuday/go-cross-build@v1
-        with:
-            platforms: 'linux/amd64, darwin/amd64, windows/amd64'
-            package: './server'
-            name: 'program'
-            compress: 'true'
-            dest: 'dist'
-=======
-
       - name: Install gox
         run: go install github.com/mitchellh/gox@latest
       - name: Set VERSION env
@@ -47,4 +33,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: "./dist/*.tar.gz"
->>>>>>> Stashed changes
