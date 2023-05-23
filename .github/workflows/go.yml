@@ -19,7 +19,7 @@ jobs:
           node-version: '16'
         # Add support for more platforms with QEMU (optional)
         # https://github.com/docker/setup-qemu-action
-      - name: Set up QEMU
+       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -40,11 +40,13 @@ jobs:
       - name: Install gox
         run: go install github.com/mitchellh/gox@latest
       - name: Set VERSION env
-        run: echo VERSION=$(basename ${GITHUB_REF}) >> ${GITHUB_ENV}
+        run: echo VERSION=$(basename ${GITHUB_REF}) >> ${GITHUB_ENV
       - name: Build package
         run: |
           make clean && \
           make build && \
+          mv .env.example .env && \
+          pwd && \
           mkdir -p loadster-${VERSION}-darwin-amd64/build && cp build/darwin/amd64/server loadster-${VERSION}-darwin-amd64/build/ && cp .env loadster-${VERSION}-darwin-amd64/.env && tar cvfz loadster-${VERSION}-darwin-amd64.tar.gz loadster-${VERSION}-darwin-amd64 && \
           ls && pwd
 
