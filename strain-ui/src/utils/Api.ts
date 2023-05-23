@@ -2,6 +2,7 @@ import axios from "axios";
 import { TAxiosWrapper } from "../types";
 
 const TOKEN = "token";
+const PATH_PREFIX = "/api/v1/";
 
 const getToken = (token: string) => {
   const xo = window.localStorage.getItem(token);
@@ -11,8 +12,10 @@ const getToken = (token: string) => {
   return "";
 };
 const Instance = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
-  timeout: 5000,
+  baseURL: import.meta.env.VITE_BASE_URL
+    ? import.meta.env.VITE_BASE_URL
+    : window.location.origin + PATH_PREFIX,
+  timeout: 8000,
   headers: {
     Authorization: `Bearer ${getToken(TOKEN)}`,
     "Content-Type": "application/json",

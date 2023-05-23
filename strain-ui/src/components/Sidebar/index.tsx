@@ -1,4 +1,4 @@
-import { ReactNode, ReactText } from "react";
+import { ReactNode, ReactText, useState } from "react";
 import {
   IconButton,
   Avatar,
@@ -109,6 +109,19 @@ function NavItem({ icon, children, path, ...rest }: NavItemProps) {
 // }
 
 function MobileNav({ onOpen, ...rest }: MobileProps) {
+  const [user] = useState(() => {
+    const getItem = localStorage.getItem("token");
+    const userPrasedData = getItem && JSON.parse(getItem);
+    return {
+      name: userPrasedData?.name,
+      email: userPrasedData?.email,
+    };
+  });
+  const onLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
+
   return (
     <Flex
       ml={{ base: 0 }}
@@ -184,9 +197,9 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
                   spacing="1px"
                   ml="2"
                 >
-                  <Text fontSize="xs">Manoj Choudhary</Text>
+                  <Text fontSize="xs">{user?.name}</Text>
                   <Text fontSize="xs" color="gray.600">
-                    Admin
+                    {user?.email}
                   </Text>
                 </VStack>
                 <Box display={{ base: "none", md: "flex" }}>
@@ -201,7 +214,7 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
               <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
               <MenuDivider />
-              <MenuItem>Sign out</MenuItem>
+              <MenuItem onClick={onLogout}>Sign out</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
