@@ -47,8 +47,9 @@ jobs:
           make build && \
           pwd && \
           mkdir -p loadster-${VERSION}-darwin-amd64/build && cp build/darwin/amd64/server loadster-${VERSION}-darwin-amd64/build/ && tar cvfz loadster-${VERSION}-darwin-amd64.tar.gz loadster-${VERSION}-darwin-amd64 && \
-          ls && pwd && \
-          ls build
+          tar -czvf loadster-${VERSION}-darwin.tar.gz build && \
+          pwd && \
+          ls
 
       # step 3: Copy build-artifacts in the GitHub release
       - name: Copy build-artifacts
@@ -56,4 +57,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: "./build/*.tar.gz"
+          args: "./*.tar.gz"
