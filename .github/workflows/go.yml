@@ -45,9 +45,8 @@ jobs:
         run: |
           make clean && \
           make build && \
-          mv .env.example .env && \
           pwd && \
-          mkdir -p loadster-${VERSION}-darwin-amd64/build && cp build/darwin/amd64/server loadster-${VERSION}-darwin-amd64/build/ && cp .env loadster-${VERSION}-darwin-amd64/.env && tar cvfz loadster-${VERSION}-darwin-amd64.tar.gz loadster-${VERSION}-darwin-amd64 && \
+          mkdir -p loadster-${VERSION}-darwin-amd64/build && cp build/darwin/amd64/server loadster-${VERSION}-darwin-amd64/build/ && tar cvfz loadster-${VERSION}-darwin-amd64.tar.gz loadster-${VERSION}-darwin-amd64 && \
           ls && pwd
 
       # step 3: Copy build-artifacts in the GitHub release
