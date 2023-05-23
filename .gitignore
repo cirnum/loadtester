@@ -17,6 +17,7 @@ inMemory*
 /build/*
 /server/dist
 /server/main
+*.tar.gz
 
 logfile.*
 # misc
