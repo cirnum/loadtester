@@ -15,7 +15,7 @@ build/server:
 		./...
 ui/build:
 	@echo "Building UI..."
-	cd strain-ui && npm i && npm run build
+	cd strain-ui && npm i --force && npm run build
 ui/node_module:
 	@echo "Installing node modules..."
 	cd strain-ui && npm install
