@@ -45,11 +45,12 @@ jobs:
         run: |
           make clean && \
           make build && \
+          mv server/.env.example build/.env
           pwd && \
-          mkdir -p loadster-${VERSION}-darwin-amd64/build && cp build/darwin/amd64/server build/.env loadster-${VERSION}-darwin-amd64/build/ && tar cvfz loadster-${VERSION}-darwin-amd64.tar.gz loadster-${VERSION}-darwin-amd64 && \
-          mkdir -p loadster-${VERSION}-linux-amd64/build && cp build/linux/amd64/server build/.env loadster-${VERSION}-linux-amd64/build/ && tar cvfz loadster-${VERSION}-linux-amd64.tar.gz loadster-${VERSION}-linux-amd64 && \
-          mkdir -p loadster-${VERSION}-linux-arm64/build && cp build/linux/arm64/server build/.env loadster-${VERSION}-linux-arm64/build/ && tar cvfz loadster-${VERSION}-linux-arm64.tar.gz loadster-${VERSION}-linux-arm64 && \
-          mkdir -p loadster-${VERSION}-windows-amd64/build && cp build/windows/amd64/server.exe build/.env loadster-${VERSION}-windows-amd64/build/ && tar cvfz loadster-${VERSION}-windows-amd64.tar.gz loadster-${VERSION}-windows-amd64 && \
+          mkdir loadster-${VERSION}-darwin-amd64 && cp -rf build/darwin/amd64/server build/.env strain-ui/dist loadster-${VERSION}-darwin-amd64/ && tar cvfz loadster-${VERSION}-darwin-amd64.tar.gz loadster-${VERSION}-darwin-amd64 && \
+          mkdir loadster-${VERSION}-linux-amd64 && cp -rf build/linux/amd64/server build/.env strain-ui/dist loadster-${VERSION}-linux-amd64/ && tar cvfz loadster-${VERSION}-linux-amd64.tar.gz loadster-${VERSION}-linux-amd64 && \
+          mkdir loadster-${VERSION}-linux-arm64 && cp -rf build/linux/arm64/server build/.env strain-ui/dist loadster-${VERSION}-linux-arm64/ && tar cvfz loadster-${VERSION}-linux-arm64.tar.gz loadster-${VERSION}-linux-arm64 && \
+          mkdir loadster-${VERSION}-windows-amd64 && cp -rf build/windows/amd64/server.exe build/.env strain-ui/dist loadster-${VERSION}-windows-amd64/ && tar cvfz loadster-${VERSION}-windows-amd64.tar.gz loadster-${VERSION}-windows-amd64 && \
           ls
       # - name: Upload assets
       #   run: |
