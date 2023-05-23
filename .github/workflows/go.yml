@@ -40,7 +40,7 @@ jobs:
       - name: Install gox
         run: go install github.com/mitchellh/gox@latest
       - name: Set VERSION env
-        run: echo VERSION=$(basename ${GITHUB_REF}) >> ${GITHUB_ENV
+        run: echo VERSION=$(basename ${GITHUB_REF}) >> ${GITHUB_ENV}
       - name: Build package
         run: |
           make clean && \
