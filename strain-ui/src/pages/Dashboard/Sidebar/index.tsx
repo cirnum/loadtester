@@ -7,14 +7,18 @@ export default function Sidebar() {
     <Box w="20%" color="grey" h="full" borderRight="2px solid #e2e8f0">
       <Tabs isFitted>
         <TabList mb="1em">
-          <Tab fontWeight="bold">History</Tab>
-          <Tab fontWeight="bold">Collection</Tab>
+          <Tab fontWeight="bold" fontSize="12px">
+            History
+          </Tab>
+          <Tab fontWeight="bold" fontSize="12px">
+            Collection
+          </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel>
+          <TabPanel p={0} m={0}>
             <History />
           </TabPanel>
-          <TabPanel>
+          <TabPanel p={0}>
             <History />
           </TabPanel>
         </TabPanels>

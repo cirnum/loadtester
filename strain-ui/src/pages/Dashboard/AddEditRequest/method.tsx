@@ -11,7 +11,9 @@ export default function Method(props: IMethod) {
   const { method, setMethod } = props;
   return (
     <Menu>
-      <MenuButton fontWeight={600}>{method}</MenuButton>
+      <MenuButton fontWeight={600} blockSize="36px">
+        {method}
+      </MenuButton>
       <MenuList w="200px">
         {METHODS_OPTION.map((item: ItemType) => {
           return (

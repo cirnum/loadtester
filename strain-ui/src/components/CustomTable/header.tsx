@@ -6,14 +6,10 @@ interface IItem {
 }
 export default function Item({ isChecked = true }: IItem) {
   return (
-    <Flex
-      color="black"
-      sx={{
-        height: "2rem",
-      }}
-    >
+    <Flex color="black">
       {isChecked && (
         <Box
+          boxSize="24px"
           sx={{
             border: "1px solid #e2e8f0",
             display: "flex",
@@ -33,6 +29,7 @@ export default function Item({ isChecked = true }: IItem) {
         return (
           <Box
             key={value}
+            boxSize="24px"
             sx={{
               border: "1px solid #e2e8f0",
               display: "flex",

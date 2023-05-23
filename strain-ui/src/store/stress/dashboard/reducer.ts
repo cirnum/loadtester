@@ -117,9 +117,10 @@ export default (state = initialState, action: DashboardAction) => {
       const requestHeader = mapPrams(action.payload?.headers);
       const requestparams = mapPrams(parsed);
       const requestBody = action.payload?.postData;
+      const lastIndex = url.lastIndexOf("?");
       const payload = {
         ...action.payload,
-        url: url.slice(0, url.lastIndexOf("/")),
+        url: url.slice(0, lastIndex > -1 ? lastIndex : url.length),
       };
 
       if (Object.keys(requestHeader).length)

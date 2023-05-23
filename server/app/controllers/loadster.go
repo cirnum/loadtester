@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	_ "github.com/cirnum/strain-hub/server/app/models"
@@ -57,7 +56,6 @@ func AddLoadRequest(c *fiber.Ctx) error {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
 
-	fmt.Printf("loadsterRequest %+v \n", loadsterRequest)
 	if loadsterRequest.Finish == true {
 		worker := &models.Worker{
 			Status:    true,

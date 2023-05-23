@@ -9,6 +9,7 @@ import {
   Input,
   InputGroup,
   InputLeftAddon,
+  Stack,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
@@ -55,20 +56,29 @@ export default function SelectedAddEditRequest() {
 
   return (
     <Box w="full" borderRight="2px solid #e2e8f0">
-      <HStack m={4}>
-        <Text fontSize="sm" color="tomato" as="b">
-          {selectedRequest?.method}
-        </Text>
-        <Tag m={4}>{url}</Tag>
+      <HStack m={2} justifyContent="space-between">
+        <Stack alignItems="Center" direction="row">
+          <Text fontSize="sm" color="tomato" as="b">
+            {selectedRequest?.method}
+          </Text>
+          <Tag m={4}>{url}</Tag>
+        </Stack>
+
+        {selectedRequest?.method && (
+          <Button colorScheme="orange" size="xs">
+            New Request
+          </Button>
+        )}
       </HStack>
       <Divider />
-      <HStack m={4}>
-        <InputGroup zIndex="1">
+      <HStack m={2}>
+        <InputGroup>
           <InputLeftAddon>
             <Method method={method} setMethod={setMethod} />
           </InputLeftAddon>
           <Input
             htmlSize={80}
+            height="36px"
             width="auto"
             placeholder="Enter request url"
             value={url}
@@ -84,18 +94,18 @@ export default function SelectedAddEditRequest() {
             placeholder="Seconds"
             onChange={(e) => setSeconds(parse(e.target.value))}
           />
+          <Button
+            colorScheme="blue"
+            w="150px"
+            size="sm"
+            mr={16}
+            rightIcon={<ArrowForwardIcon />}
+            value={url}
+            onClick={() => sendRequest()}
+          >
+            Send
+          </Button>
         </InputGroup>
-
-        <Button
-          colorScheme="blue"
-          ml="20px"
-          w="200px"
-          rightIcon={<ArrowForwardIcon />}
-          value={url}
-          onClick={() => sendRequest()}
-        >
-          Send
-        </Button>
       </HStack>
       <RequestOptions />
     </Box>

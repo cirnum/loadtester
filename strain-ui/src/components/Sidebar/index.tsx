@@ -53,7 +53,6 @@ const LinkItems: Array<LinkItemProps> = [
 const Links: Array<LinkItemProps> = [
   { name: "Requests", path: "/dashboard" },
   // { name: "Performance", path: "performace" },
-  { name: "Reports", path: "report" },
   { name: "Server", path: "server" },
   { name: "Download Client", path: "client" },
 ];
@@ -73,12 +72,13 @@ function NavItem({ icon, children, path, ...rest }: NavItemProps) {
           color: "white",
         }}
         fontWeight="bold"
+        fontSize="12px"
         {...rest}
       >
         {icon && (
           <Icon
             mr="4"
-            fontSize="16"
+            fontSize="12"
             _groupHover={{
               color: "white",
             }}
@@ -113,7 +113,7 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
     <Flex
       ml={{ base: 0 }}
       px={{ base: 3, md: 3 }}
-      height="16"
+      height="12"
       alignItems="center"
       bg={useColorModeValue("white", "gray.900")}
       borderBottomWidth="1px"
@@ -122,7 +122,7 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
       {...rest}
     >
       <Flex alignItems="center" width="260px" justifyContent="center">
-        <Image width="260px" height="50px" src={LogoImg} alt="loadster" />
+        <Image width="260px" height="40px" src={LogoImg} alt="loadster" />
         {/* <Text
           fontSize="2xl"
           fontFamily="monospace"
@@ -142,7 +142,7 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
 
       <Text
         display={{ base: "flex", md: "none" }}
-        fontSize="2xl"
+        fontSize="1xl"
         fontFamily="monospace"
         fontWeight="bold"
       >
@@ -184,7 +184,7 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
                   spacing="1px"
                   ml="2"
                 >
-                  <Text fontSize="sm">Manoj Choudhary</Text>
+                  <Text fontSize="xs">Manoj Choudhary</Text>
                   <Text fontSize="xs" color="gray.600">
                     Admin
                   </Text>
@@ -259,6 +259,7 @@ export default function SidebarWithHeader({
         size="full"
       >
         <DrawerContent>
+          asd
           <SidebarContent onClose={onClose} />
         </DrawerContent>
       </Drawer>

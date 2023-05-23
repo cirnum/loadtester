@@ -148,12 +148,14 @@ export default function ServerBoard() {
           alignItems="Center"
           padding={3}
         >
-          <Text fontSize="1xl" fontWeight="bold">
+          <Text fontSize="sm" fontWeight="bold">
             Server Details
           </Text>
-          <Button onClick={() => onOpen("ADD")}>Add New Server</Button>
+          <Button size="sm" onClick={() => onOpen("ADD")}>
+            Add New Server
+          </Button>
         </Stack>
-        <Table variant="simple">
+        <Table variant="simple" size="md">
           <Thead>
             <Tr>
               {TableHeader.map((item) => (
