@@ -1,5 +1,5 @@
 # workflow name
-name: Release
+name: Generate release-artifacts
 
 # on events
 on:
@@ -10,13 +10,15 @@ on:
 # workflow tasks
 jobs:
   generate:
-    name: Building release
+    name: Generate cross-platform builds
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
+        # Add support for more platforms with QEMU (optional)
+        # https://github.com/docker/setup-qemu-action
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -28,7 +30,7 @@ jobs:
           go-version: '^1.19.1'
       - name: Install dependencies
         run: |
-          sudo apt-get install build-essential wget zip libc6-dev-arm64-cross && \
+          sudo apt-get install build-essential wget zip  libc6-dev-arm64-cross && \
           echo "/usr/bin/x86_64-w64-mingw32-gcc" >> GITHUB_PATH
       - name: Install gox
         run: go install github.com/mitchellh/gox@latest
