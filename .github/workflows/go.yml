@@ -50,7 +50,7 @@ jobs:
           tar -czvf loadster-${VERSION}-darwin.tar.gz build
       - name: Upload assets
         run: |
-          github-assets-uploader -f loadster-${VERSION}-darwin.tar.gz -mediatype application/gzip -repo cirnum/strain-hub -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
+          github-assets-uploader -f loadster-${VERSION}-darwin.tar.gz -mediatype application/gzip -repo cirnum/strain-hub -token ${{secrets.GITHUB_TOKEN}} -tag ${VERSION}
 
       # step 3: Copy build-artifacts in the GitHub release
       - name: Copy build-artifacts
