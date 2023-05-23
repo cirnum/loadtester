@@ -5,9 +5,14 @@ clean:
 	@echo "Cleaning..."
 	rm -rf ./strain-ui/dist
 	rm -rf ./build
-build: ui/build build/server
+build: build/server
 build/server:
-	cd server && go build -ldflags "-w -X main.VERSION=$(VERSION)" -o '../build/server'
+	# cd server && go build -ldflags "-w -X main.VERSION=$(VERSION)" -o '../build/server'
+	cd server && gox \
+		-osarch="linux/amd64 linux/arm64 darwin/amd64 windows/amd64" \
+		-ldflags "-w -X main.VERSION=$(VERSION)" \
+		-output="../build/{{.OS}}/{{.Arch}}/server" \
+		./...
 ui/build:
 	@echo "Building UI..."
 	cd strain-ui && npm run build && mkdir dist &&cp -r dist ../build/

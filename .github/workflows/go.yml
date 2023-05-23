@@ -15,6 +15,7 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
+<<<<<<< Updated upstream
       - name: Checkout the repository
         run: |
           pwd
@@ -26,3 +27,24 @@ jobs:
             name: 'program'
             compress: 'true'
             dest: 'dist'
+=======
+
+      - name: Install gox
+        run: go install github.com/mitchellh/gox@latest
+      - name: Set VERSION env
+        run: echo VERSION=$(basename ${GITHUB_REF}) >> ${GITHUB_ENV}
+      - name: Build package
+        run: |
+          make clean && \
+          make build && \
+          mkdir -p loadster-${VERSION}-darwin-amd64/build && cp build/darwin/amd64/server loadster-${VERSION}-darwin-amd64/build/ && cp .env loadster-${VERSION}-darwin-amd64/.env && tar cvfz loadster-${VERSION}-darwin-amd64.tar.gz loadster-${VERSION}-darwin-amd64 && \
+          ls && pwd
+
+      # step 3: Copy build-artifacts in the GitHub release
+      - name: Copy build-artifacts
+        uses: skx/github-action-publish-binaries@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: "./dist/*.tar.gz"
+>>>>>>> Stashed changes
