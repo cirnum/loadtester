@@ -15,11 +15,14 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
+      - name: Checkout the repository
+        run: |
+          pwd
       - name: Generate build files
         uses: thatisuday/go-cross-build@v1
         with:
             platforms: 'linux/amd64, darwin/amd64, windows/amd64'
-            package: 'server'
+            package: 'server/'
             name: 'program'
             compress: 'true'
             dest: 'dist'
