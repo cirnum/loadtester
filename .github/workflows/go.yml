@@ -49,9 +49,10 @@ jobs:
           make build && \
           pwd && \
           mkdir -p loadster-${VERSION}-darwin-amd64/build && cp build/darwin/amd64/server loadster-${VERSION}-darwin-amd64/build/ && tar cvfz loadster-${VERSION}-darwin-amd64.tar.gz loadster-${VERSION}-darwin-amd64 && \
-          tar -czvf loadster-${VERSION}-darwin.tar.gz build && \
-          pwd && \
-          ls
+          tar -czvf loadster-${VERSION}-darwin.tar.gz build
+      - name: Upload assets
+        run: |
+          github-assets-uploader -f loadster-${VERSION}-darwin.tar.gz -mediatype application/gzip -repo cirnum/strain-hub -token ${{secrets.RELEASE_TOKEN}} -tag ${VERSION}
 
       # step 3: Copy build-artifacts in the GitHub release
       - name: Copy build-artifacts
