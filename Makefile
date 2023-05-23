@@ -8,7 +8,7 @@ clean:
 build: build/server
 build/server:
 	# cd server && go build -ldflags "-w -X main.VERSION=$(VERSION)" -o '../build/server'
-	cd server && gox \
+	cd server && cp .env.example ../build/.env && ../../../../bin/gox \
 		-osarch="linux/amd64 linux/arm64 darwin/amd64 windows/amd64" \
 		-ldflags "-w -X main.VERSION=$(VERSION)" \
 		-output="../build/{{.OS}}/{{.Arch}}/server" \
