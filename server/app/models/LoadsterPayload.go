@@ -1,6 +1,6 @@
 package models
 
-import "github.com/cirnum/strain-hub/server/db/models"
+import "github.com/cirnum/loadtester/server/db/models"
 
 type CalculatedLoad struct {
 	Workers               []models.Worker       `json:"workers"`

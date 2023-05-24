@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cirnum/strain-hub/server/db/models"
-	"github.com/cirnum/strain-hub/server/pkg/executor"
-	metrics "github.com/cirnum/strain-hub/server/pkg/executor/metrics"
+	"github.com/cirnum/loadtester/server/db/models"
+	"github.com/cirnum/loadtester/server/pkg/executor"
+	metrics "github.com/cirnum/loadtester/server/pkg/executor/metrics"
 )
 
 type HttpClient struct {

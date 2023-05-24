@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/cirnum/strain-hub/server/db/models"
+	"github.com/cirnum/loadtester/server/db/models"
 	"github.com/google/uuid"
 )
 

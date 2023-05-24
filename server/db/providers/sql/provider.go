@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/cirnum/strain-hub/server/db/models"
-	"github.com/cirnum/strain-hub/server/pkg/constants"
+	"github.com/cirnum/loadtester/server/db/models"
+	"github.com/cirnum/loadtester/server/pkg/constants"
 	"github.com/glebarez/sqlite"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"

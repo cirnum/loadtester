@@ -42,10 +42,10 @@ jobs:
           make build && \
           mv server/.env.example build/.env
           pwd && \
-          mkdir strain-${VERSION}-darwin-amd64 && cp -rf build/darwin/amd64/server build/.env strain-ui/dist strain-${VERSION}-darwin-amd64/ && tar cvfz strain-${VERSION}-darwin-amd64.tar.gz strain-${VERSION}-darwin-amd64 && \
-          mkdir strain-${VERSION}-linux-amd64 && cp -rf build/linux/amd64/server build/.env strain-ui/dist strain-${VERSION}-linux-amd64/ && tar cvfz strain-${VERSION}-linux-amd64.tar.gz strain-${VERSION}-linux-amd64 && \
-          mkdir strain-${VERSION}-linux-arm64 && cp -rf build/linux/arm64/server build/.env strain-ui/dist strain-${VERSION}-linux-arm64/ && tar cvfz strain-${VERSION}-linux-arm64.tar.gz strain-${VERSION}-linux-arm64 && \
-          mkdir strain-${VERSION}-windows-amd64 && cp -rf build/windows/amd64/server.exe build/.env strain-ui/dist strain-${VERSION}-windows-amd64/ && tar cvfz strain-${VERSION}-windows-amd64.tar.gz strain-${VERSION}-windows-amd64
+          mkdir loadtester-${VERSION}-darwin-amd64 && cp -rf build/darwin/amd64/server build/.env ui/dist loadtester-${VERSION}-darwin-amd64/ && tar cvfz loadtester-${VERSION}-darwin-amd64.tar.gz loadtester-${VERSION}-darwin-amd64 && \
+          mkdir loadtester-${VERSION}-linux-amd64 && cp -rf build/linux/amd64/server build/.env ui/dist loadtester-${VERSION}-linux-amd64/ && tar cvfz loadtester-${VERSION}-linux-amd64.tar.gz loadtester-${VERSION}-linux-amd64 && \
+          mkdir loadtester-${VERSION}-linux-arm64 && cp -rf build/linux/arm64/server build/.env ui/dist loadtester-${VERSION}-linux-arm64/ && tar cvfz loadtester-${VERSION}-linux-arm64.tar.gz loadtester-${VERSION}-linux-arm64 && \
+          mkdir loadtester-${VERSION}-windows-amd64 && cp -rf build/windows/amd64/server.exe build/.env ui/dist loadtester-${VERSION}-windows-amd64/ && tar cvfz loadtester-${VERSION}-windows-amd64.tar.gz loadtester-${VERSION}-windows-amd64
       # step 3: Copy build-artifacts in the GitHub release
       - name: Copy build-artifacts
         uses: skx/github-action-publish-binaries@master

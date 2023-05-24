@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cirnum/strain-hub/server/db"
-	"github.com/cirnum/strain-hub/server/db/models"
+	"github.com/cirnum/loadtester/server/db"
+	"github.com/cirnum/loadtester/server/db/models"
 )
 
 var statusOK int = 200

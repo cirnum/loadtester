@@ -3,7 +3,7 @@ package utils
 import (
 	"time"
 
-	"github.com/cirnum/strain-hub/server/db/models"
+	"github.com/cirnum/loadtester/server/db/models"
 )
 
 func GetWorkerLoa(request models.Request) *models.Worker {

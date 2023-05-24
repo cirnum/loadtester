@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/cirnum/strain-hub/server/db/models"
+	"github.com/cirnum/loadtester/server/db/models"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )

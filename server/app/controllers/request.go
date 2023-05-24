@@ -5,15 +5,15 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/cirnum/strain-hub/server/app/models"
-	"github.com/cirnum/strain-hub/server/app/utils"
-	httpRequest "github.com/cirnum/strain-hub/server/pkg/clients"
-	commonUtils "github.com/cirnum/strain-hub/server/pkg/utils"
+	_ "github.com/cirnum/loadtester/server/app/models"
+	"github.com/cirnum/loadtester/server/app/utils"
+	httpRequest "github.com/cirnum/loadtester/server/pkg/clients"
+	commonUtils "github.com/cirnum/loadtester/server/pkg/utils"
 
-	"github.com/cirnum/strain-hub/server/db"
-	"github.com/cirnum/strain-hub/server/db/models"
-	"github.com/cirnum/strain-hub/server/pkg/constants"
-	"github.com/cirnum/strain-hub/server/pkg/executor"
+	"github.com/cirnum/loadtester/server/db"
+	"github.com/cirnum/loadtester/server/db/models"
+	"github.com/cirnum/loadtester/server/pkg/constants"
+	"github.com/cirnum/loadtester/server/pkg/executor"
 	"github.com/gofiber/fiber/v2"
 )
 

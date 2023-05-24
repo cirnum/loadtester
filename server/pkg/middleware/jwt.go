@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/cirnum/strain-hub/server/app/utils"
+	"github.com/cirnum/loadtester/server/app/utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 

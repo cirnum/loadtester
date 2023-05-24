@@ -4,13 +4,13 @@ import (
 	"context"
 	"time"
 
-	_ "github.com/cirnum/strain-hub/server/app/models"
-	"github.com/cirnum/strain-hub/server/app/utils"
-	"github.com/cirnum/strain-hub/server/db/models"
-	"github.com/cirnum/strain-hub/server/pkg/constants"
-	pkgUtils "github.com/cirnum/strain-hub/server/pkg/utils"
+	_ "github.com/cirnum/loadtester/server/app/models"
+	"github.com/cirnum/loadtester/server/app/utils"
+	"github.com/cirnum/loadtester/server/db/models"
+	"github.com/cirnum/loadtester/server/pkg/constants"
+	pkgUtils "github.com/cirnum/loadtester/server/pkg/utils"
 
-	"github.com/cirnum/strain-hub/server/db"
+	"github.com/cirnum/loadtester/server/db"
 	"github.com/gofiber/fiber/v2"
 )
 

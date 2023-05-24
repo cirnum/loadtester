@@ -3,7 +3,7 @@ VERSION := $(or $(VERSION),$(DEFAULT_VERSION))
 
 clean:
 	@echo "Cleaning..."
-	rm -rf ./strain-ui/dist
+	rm -rf ./ui/dist
 	rm -rf ./build
 build: ui/build build/server
 build/server:
@@ -15,10 +15,10 @@ build/server:
 		./...
 ui/build:
 	@echo "Building UI..."
-	cd strain-ui && npm i --force && npm run build
+	cd ui && npm i --force && npm run build
 ui/node_module:
 	@echo "Installing node modules..."
-	cd strain-ui && npm install
+	cd ui && npm install
 build-go:
 	cd server && go build main.go
 run: _ui/build

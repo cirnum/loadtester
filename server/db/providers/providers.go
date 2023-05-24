@@ -3,7 +3,7 @@ package providers
 import (
 	"context"
 
-	"github.com/cirnum/strain-hub/server/db/models"
+	"github.com/cirnum/loadtester/server/db/models"
 )
 
 type Provider interface {

@@ -3,7 +3,7 @@ package utils
 import (
 	"strconv"
 
-	"github.com/cirnum/strain-hub/server/db/models"
+	"github.com/cirnum/loadtester/server/db/models"
 	"github.com/gofiber/fiber/v2"
 )
 

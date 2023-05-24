@@ -1,8 +1,8 @@
 package utils
 
 import (
-	customModels "github.com/cirnum/strain-hub/server/app/models"
-	"github.com/cirnum/strain-hub/server/db/models"
+	customModels "github.com/cirnum/loadtester/server/app/models"
+	"github.com/cirnum/loadtester/server/db/models"
 )
 
 func CalculateRPS(loads []models.Loadster, worker []models.Worker) customModels.CalculatedLoad {

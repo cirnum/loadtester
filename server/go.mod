@@ -1,4 +1,4 @@
-module github.com/cirnum/strain-hub/server
+module github.com/cirnum/loadtester/server
 
 go 1.15
 

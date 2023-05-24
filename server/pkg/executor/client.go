@@ -1,7 +1,7 @@
 package executor
 
 import (
-	metrics "github.com/cirnum/strain-hub/server/pkg/executor/metrics"
+	metrics "github.com/cirnum/loadtester/server/pkg/executor/metrics"
 )
 
 type ClientConnector interface {

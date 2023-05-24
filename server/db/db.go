@@ -1,8 +1,8 @@
 package db
 
 import (
-	"github.com/cirnum/strain-hub/server/db/providers"
-	"github.com/cirnum/strain-hub/server/db/providers/sql"
+	"github.com/cirnum/loadtester/server/db/providers"
+	"github.com/cirnum/loadtester/server/db/providers/sql"
 	log "github.com/sirupsen/logrus"
 )
 

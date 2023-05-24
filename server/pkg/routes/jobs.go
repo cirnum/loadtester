@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"github.com/cirnum/strain-hub/server/app/controllers"
-	"github.com/cirnum/strain-hub/server/pkg/middleware"
+	"github.com/cirnum/loadtester/server/app/controllers"
+	"github.com/cirnum/loadtester/server/pkg/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 

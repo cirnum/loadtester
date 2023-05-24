@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cirnum/strain-hub/server/pkg/configs"
+	"github.com/cirnum/loadtester/server/pkg/configs"
 )
 
 // ConnectionURLBuilder func for building URL connection.

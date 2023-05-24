@@ -8,12 +8,12 @@ import (
 	"os"
 	"time"
 
-	"github.com/cirnum/strain-hub/server/db"
-	"github.com/cirnum/strain-hub/server/pkg/configs"
+	"github.com/cirnum/loadtester/server/db"
+	"github.com/cirnum/loadtester/server/pkg/configs"
 
-	"github.com/cirnum/strain-hub/server/pkg/middleware"
-	"github.com/cirnum/strain-hub/server/pkg/routes"
-	"github.com/cirnum/strain-hub/server/pkg/utils"
+	"github.com/cirnum/loadtester/server/pkg/middleware"
+	"github.com/cirnum/loadtester/server/pkg/routes"
+	"github.com/cirnum/loadtester/server/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/joho/godotenv/autoload" // load .env file automatically
 )
