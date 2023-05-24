@@ -1,0 +1,10 @@
+server/.env
+server/server
+.git
+.gitignore
+README.md
+build
+.env
+ui/node_modules
+ui/dist
+certs/
