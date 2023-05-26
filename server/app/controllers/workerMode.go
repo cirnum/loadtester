@@ -38,7 +38,7 @@ func RunRequest(c *fiber.Ctx) error {
 
 	go executor.Run(ctx, *request)
 
-	client, _ := httpRequest.Initializer(request.ID)
+	client, _ := httpRequest.Initializer(*request)
 	go client.RunScen(ctx, *request)
 
 	return utils.ResponseSuccess(c, request, "Worker Started.", fiber.StatusOK)

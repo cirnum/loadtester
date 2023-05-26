@@ -26,6 +26,7 @@ type Request struct {
 	Time      int            `json:"time"`
 	Clients   int            `json:"clients"`
 	Headers   datatypes.JSON `json:"headers"`
+	Cookies   datatypes.JSON `json:"cookies"`
 	Params    datatypes.JSON `json:"params"`
 	KeepAlive bool           `json:"keepAlive"`
 	Method    string         `json:"method"`

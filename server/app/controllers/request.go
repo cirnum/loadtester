@@ -53,7 +53,7 @@ func NewRequest(c *fiber.Ctx) error {
 		log.Println("Error while sending request to Worker", err)
 	}
 	go executor.Run(ctx, request)
-	client, _ := httpRequest.Initializer(request.ID)
+	client, _ := httpRequest.Initializer(request)
 	go client.RunScen(ctx, request)
 
 	if err != nil {

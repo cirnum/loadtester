@@ -15,12 +15,21 @@ import (
 	"github.com/cirnum/loadtester/server/db/models"
 	"github.com/cirnum/loadtester/server/pkg/executor"
 	metrics "github.com/cirnum/loadtester/server/pkg/executor/metrics"
+	"github.com/cirnum/loadtester/server/pkg/utils"
 )
 
+type RequestSend struct {
+	cookies map[string]string
+	headers map[string]string
+	body    []byte
+	url     string
+	method  string
+}
 type HttpClient struct {
 	reqId     string
 	client    *http.Client
 	startTime int64
+	requested *RequestSend
 	title     struct {
 		success   string
 		fail      string
@@ -29,14 +38,17 @@ type HttpClient struct {
 	}
 }
 
-func Initializer(reqId string) (HttpClient, error) {
+func Initializer(request models.Request) (HttpClient, error) {
+	var err error
+
 	httpClient := HttpClient{}
 	httpClient.title.success = ".http_ok"
 	httpClient.title.otherFail = ".http_other_fail"
 	httpClient.title.fail = ".http_fail"
 	httpClient.title.latency = ".latency"
+
 	group := metrics.Group{
-		Name: "HTTP (" + reqId + ")",
+		Name: "HTTP (" + request.ID + ")",
 		Graphs: []metrics.Graph{
 			{
 				Title: "HTTP Response",
@@ -71,18 +83,39 @@ func Initializer(reqId string) (HttpClient, error) {
 	groups := []metrics.Group{
 		group,
 	}
-	tr := &http.Transport{
-		MaxIdleConnsPerHost: 300,
-	}
-	httpClient.client = &http.Client{
-		Transport: tr,
-		Timeout:   time.Second * 10,
-	}
 
-	if err := executor.Setup(groups, reqId); err != nil {
+	// Create http client with cookies
+	httpClient.client, err = utils.GetFormedHttpClient(request)
+
+	if err != nil {
 		return httpClient, err
 	}
 
+	requestedData := new(RequestSend)
+	// Add Url
+	requestedData.url = request.URL
+	// verify Method
+	requestedData.method = utils.GetSelectedMethods(request.Method)
+
+	// Map headers with Http context
+	requestedData.headers, err = utils.GetFormedHeader(request.Headers)
+
+	if err != nil {
+		return httpClient, err
+	}
+
+	if request.PostData != nil && request.Method != http.MethodGet {
+		requestedData.body, err = json.Marshal(request.PostData)
+		if err != nil {
+			return httpClient, err
+		}
+	}
+
+	if err := executor.Setup(groups, request.ID); err != nil {
+		return httpClient, err
+	}
+
+	httpClient.requested = requestedData
 	return httpClient, nil
 }
 
@@ -106,11 +139,9 @@ func (h *HttpClient) RunScen(ctx context.Context, conf models.Request) {
 }
 
 func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan<- error) {
-	headers := h.GetRequestHeades(conf.Headers)
 	numOfClient := conf.Clients
 	var wg sync.WaitGroup
 	wg.Add(numOfClient)
-	body, _ := json.Marshal(conf.PostData)
 	h.startTime = time.Now().Unix()
 	go func() {
 		for j := 0; j < numOfClient; j++ {
@@ -120,11 +151,7 @@ func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan
 					case <-ctx.Done():
 						return
 					default:
-						if conf.Method == "GET" {
-							h.Get(ctx, conf.URL, headers)
-						} else {
-							h.Request(conf.Method, conf.URL, body, headers)
-						}
+						h.Request()
 					}
 				}
 			}()
@@ -136,8 +163,8 @@ func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan
 	done <- nil
 }
 
-func (h *HttpClient) Request(verb string, url string, body []byte, headers map[string]string) ([]byte, error) {
-	res, err := h.do(verb, url, body, headers)
+func (h *HttpClient) Request() ([]byte, error) {
+	res, err := h.do(h.requested.method, h.requested.url, h.requested.body, h.requested.headers)
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +194,6 @@ func (h *HttpClient) do(method, url string, body []byte, headers map[string]stri
 
 	defer func() {
 		diff := time.Since(begin)
-
 		executor.Notify(h.title.latency, diff.Microseconds())
 		if err != nil {
 			executor.Notify(h.title.otherFail, 1)
@@ -185,50 +211,28 @@ func (h *HttpClient) do(method, url string, body []byte, headers map[string]stri
 	if err != nil {
 		return
 	}
-
-	// add headers
 	for k, v := range headers {
 		req.Header.Add(k, v)
 	}
-
 	res, err = h.client.Do(req)
 
 	return
 }
 
 // Get makes http get request and record the metrics
-func (h *HttpClient) Get(ctx context.Context, url string, headers map[string]string) ([]byte, error) {
-	return h.Request(http.MethodGet, url, nil, headers)
+func (h *HttpClient) Get(ctx context.Context) ([]byte, error) {
+	return h.Request()
 }
 
 // GetIgnoreRes makes http get request, records the metrics, but ignore the
 // responding body. Use this when you need high speed traffic generation
-func (h *HttpClient) GetIgnoreRes(ctx context.Context, url string, headers map[string]string) error {
-	return h.ignoreRes(http.MethodGet, url, nil, headers)
+func (h *HttpClient) GetIgnoreRes() error {
+	return h.ignoreRes(h.requested.method, h.requested.url, nil, h.requested.headers)
 }
 
-// Post makes http post request and record the metrics
-func (h *HttpClient) Post(ctx context.Context, url string, body []byte, headers map[string]string) ([]byte, error) {
-	return h.Request(http.MethodPost, url, body, headers)
-}
-
-// PostIgnoreRes makes http get request, records the metrics, but ignore the
-// responding body. Use this when you need high speed traffic generation
-func (h *HttpClient) PostIgnoreRes(ctx context.Context, url string, body []byte, headers map[string]string) error {
-	return h.ignoreRes(http.MethodPost, url, body, headers)
-}
-
-// Put makes http put request and record the metrics
-func (h *HttpClient) Put(ctx context.Context, url string, body []byte, headers map[string]string) ([]byte, error) {
-	return h.Request(http.MethodPut, url, body, headers)
-}
-
-// Patch makes http patch request and record the metrics
-func (h *HttpClient) Patch(ctx context.Context, url string, body []byte, headers map[string]string) ([]byte, error) {
-	return h.Request(http.MethodPatch, url, body, headers)
-}
-
-func (h *HttpClient) GetRequestHeades(data interface{}) map[string]string {
+func (h *HttpClient) GetRequestHeades(value []byte) map[string]string {
+	var data interface{}
+	json.Unmarshal(value, &data)
 	headers := make(map[string]string)
 	v := reflect.ValueOf(data)
 	if v.Kind() == reflect.Map {
