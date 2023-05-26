@@ -21,6 +21,9 @@ ui/node_module:
 	cd ui && npm install
 build-go:
 	cd server && go build main.go
-run: _ui/build
-	@echo "Running..."
-	go run ./server/main.go
+rg: 
+	@echo "Running... backend server"
+	cd server && go run main.go
+rf: 
+	@echo "Running.. frontend client"
+	cd ui && npm run dev
