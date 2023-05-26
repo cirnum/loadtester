@@ -80,7 +80,7 @@ export default function RequestTabs() {
     <Tabs onChange={(index) => setTabIndex(index)} w="full">
       <TabList color="grey">
         {TABS.map((value) => (
-          <Tab key={value} fontWeight="bold" fontSize="12px">
+          <Tab key={value} fontWeight="bold" fontSize="14px">
             {value}
           </Tab>
         ))}

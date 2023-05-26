@@ -72,7 +72,7 @@ function NavItem({ icon, children, path, ...rest }: NavItemProps) {
           color: "white",
         }}
         fontWeight="bold"
-        fontSize="12px"
+        fontSize="14px"
         {...rest}
       >
         {icon && (
@@ -126,12 +126,15 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
     <Flex
       ml={{ base: 0 }}
       px={{ base: 3, md: 3 }}
-      height="12"
+      height="14"
       alignItems="center"
       bg={useColorModeValue("white", "gray.900")}
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue("gray.200", "gray.700")}
       justifyContent={{ base: "space-between", md: "flex-start" }}
+      as="header"
+      backdropFilter="saturate(180%) blur(5px)"
+      w="100%"
       {...rest}
     >
       <Flex alignItems="center" width="260px" justifyContent="center">

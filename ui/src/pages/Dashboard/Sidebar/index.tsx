@@ -6,23 +6,25 @@ export default function Sidebar() {
   return (
     <Box
       width="20%"
+      minWidth="200px"
+      maxWidth="300px"
       color="grey"
-      h="full"
       borderRight="2px solid #e2e8f0"
-      flex={1}
     >
-      <Tabs isFitted>
+      <Tabs isFitted display="flex" flexDirection="column">
         <TabList mb="1em">
-          <Tab fontWeight="bold" fontSize="12px">
+          <Tab fontWeight="bold" fontSize="14px">
             History
           </Tab>
-          <Tab fontWeight="bold" fontSize="12px">
+          <Tab fontWeight="bold" fontSize="14px">
             Collection
           </Tab>
         </TabList>
         <TabPanels>
           <TabPanel p={0} m={0}>
-            <History />
+            <Box height="90vh" overflow="auto">
+              <History />
+            </Box>
           </TabPanel>
           <TabPanel p={0}>
             <History />

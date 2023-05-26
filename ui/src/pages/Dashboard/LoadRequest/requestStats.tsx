@@ -29,11 +29,13 @@ function ResponseTab({ children }: { children: ReactElement }) {
   return (
     <Tabs onChange={(index) => setTabIndex(index)} w="100%">
       <TabList color="grey">
-        {["Request Status", "Worker Status", "Worker Stats"].map((value) => (
-          <Tab key={value} fontWeight="bold" fontSize="12px">
-            {value}
-          </Tab>
-        ))}
+        {["Response", "Request Status", "Worker Status", "Worker Stats"].map(
+          (value) => (
+            <Tab key={value} fontWeight="bold" fontSize="14px">
+              {value}
+            </Tab>
+          )
+        )}
       </TabList>
       {children}
     </Tabs>
@@ -75,6 +77,7 @@ export function RequestStats({
     <Box w="full" borderRight="2px solid #e2e8f0">
       <ResponseTab>
         <TabPanels>
+          <TabPanel>asdsad</TabPanel>
           <TabPanel>
             {selectedRequestId && selectedRequest && (
               <Box w="full" p={10} borderRight="2px solid #e2e8f0">

@@ -16,7 +16,14 @@ type INumberInputs = {
 export default function NumberInputComp(props: INumberInputs) {
   const { placeholder, onChange, value = 10 } = props;
   return (
-    <NumberInput value={value} clampValueOnBlur={false} ml={2} mr={2} flex={2}>
+    <NumberInput
+      step={1}
+      value={value && value}
+      clampValueOnBlur={false}
+      ml={2}
+      mr={2}
+      flex={2}
+    >
       <NumberInputField
         placeholder={placeholder}
         onChange={onChange}

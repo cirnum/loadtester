@@ -1,16 +1,17 @@
-import { Flex, useColorModeValue } from "@chakra-ui/react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
 import Sidebar from "./Sidebar";
 import AddEditRequest from "./LoadRequest";
 
 export default function Dashboard() {
   return (
-    <Flex
+    <Box
       bg={useColorModeValue("white", "gray.900")}
-      direction="row"
-      minHeight="calc(100vh - 56px)"
+      height="calc(100vh - 56px)"
+      display="flex"
+      flexDirection="row"
     >
       <Sidebar />
       <AddEditRequest />
-    </Flex>
+    </Box>
   );
 }

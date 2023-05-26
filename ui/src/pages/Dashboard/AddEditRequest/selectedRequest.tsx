@@ -12,10 +12,9 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
-import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, AddIcon } from "@chakra-ui/icons";
 import { getSelectedRequest } from "../../../store/stress/dashboard/selectors";
 import { RestMethods } from "../../../store/stress/dashboard/types";
-import NumberInput from "../../../components/NumberInput";
 import Method from "./method";
 import RequestOptions from "./requestOptions";
 import { sendPayloadToSaga } from "../../../store/stress/dashboard/actions";
@@ -55,49 +54,54 @@ export default function SelectedAddEditRequest() {
   }, [selectedRequest]);
 
   return (
-    <Box w="full" borderRight="2px solid #e2e8f0">
+    <Box w="full" borderRight="2px solid #e2e8f0" overflow="scroll">
       <HStack m={2} justifyContent="space-between">
         <Stack alignItems="Center" direction="row">
-          <Text fontSize="sm" color="tomato" as="b">
+          <Text fontSize="sm" color="tomato.700" as="b">
             {selectedRequest?.method}
           </Text>
           <Tag m={4}>{url}</Tag>
         </Stack>
 
         {selectedRequest?.method && (
-          <Button colorScheme="orange" size="xs">
-            New Request
+          <Button colorScheme="tomato" size="md">
+            <AddIcon marginRight={2} /> New
           </Button>
         )}
       </HStack>
       <Divider />
       <HStack m={2}>
-        <InputGroup>
+        <InputGroup display="flex" flexWrap="wrap">
           <InputLeftAddon>
             <Method method={method} setMethod={setMethod} />
           </InputLeftAddon>
           <Input
-            htmlSize={80}
-            height="36px"
-            width="auto"
+            flex={6}
             placeholder="Enter request url"
             value={url}
             onChange={(e) => setURL(e.target.value)}
           />
-          <NumberInput
-            placeholder="Clients"
-            value={clients}
+          <Input
+            borderRadius="5px"
+            mx={3}
+            flex={2}
+            type="number"
+            placeholder="Total Users"
+            value={clients || ""}
             onChange={(e) => setClients(parse(e.target.value))}
           />
-          <NumberInput
-            value={seconds}
-            placeholder="Seconds"
+          <Input
+            mx={3}
+            flex={2}
+            type="number"
+            placeholder="Time in seconds"
+            value={seconds || ""}
             onChange={(e) => setSeconds(parse(e.target.value))}
           />
           <Button
-            colorScheme="blue"
+            colorScheme="tomato"
             w="150px"
-            size="sm"
+            size="md"
             mr={16}
             rightIcon={<ArrowForwardIcon />}
             value={url}

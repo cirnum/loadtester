@@ -22,7 +22,7 @@ function ItemList({ item }: { item: RequestHistoryPayload }) {
   return (
     <HStack
       spacing={2}
-      p={2}
+      p={3}
       role="button"
       _hover={{
         background: "#e2e8f1",
@@ -32,9 +32,10 @@ function ItemList({ item }: { item: RequestHistoryPayload }) {
       background={selectedRequestId === item.id ? "#e2e8f1" : ""}
       color={selectedRequestId === item.id ? "black" : ""}
       onClick={() => clickOnRequest(item)}
-      // borderBottom={selectedRequestId === item.id ? "2px solid tomato" : ""}
+      borderBottom={selectedRequestId === item.id ? "2px" : ""}
+      borderColor={selectedRequestId === item.id ? "tomato.500" : ""}
     >
-      <Text fontSize="sm" color="tomato" as="b">
+      <Text fontSize="sm" color="tomato.400" as="b" width={12}>
         {item.method}
       </Text>
       <Text fontSize="sm" isTruncated fontWeight="medium">
