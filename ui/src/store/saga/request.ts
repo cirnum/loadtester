@@ -62,6 +62,7 @@ const parseRequest = (
 ) => {
   const url = constructUrl(action.payload.url, request.requestParams);
   const headers = constructHeader(request.requestHeader);
+  const cookies = constructHeader(request.requestCookies);
   const postData = request.requestBody;
   const method = action.payload.method as RestMethods;
   return {
@@ -70,6 +71,7 @@ const parseRequest = (
     time: parseInt(action.payload.time.toString(), 10),
     url,
     headers,
+    cookies,
     postData,
     method,
   };

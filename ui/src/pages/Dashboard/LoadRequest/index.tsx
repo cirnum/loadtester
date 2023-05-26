@@ -4,7 +4,13 @@ import { RequestLoadsterData } from "./requestStats";
 
 export default function AddEditRequest() {
   return (
-    <Box w="full" h="full" borderRight="2px solid #e2e8f0">
+    <Box
+      h="full"
+      w="calc(100vw-20%)"
+      minWidth="600px"
+      borderRight="2px solid #e2e8f0"
+      flex={7}
+    >
       <SelectedAddEditRequest />
       <Divider />
       <RequestLoadsterData />

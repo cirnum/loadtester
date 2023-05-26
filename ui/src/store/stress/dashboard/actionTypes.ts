@@ -6,6 +6,7 @@ export const FETCH_STRESS_HISTORY_FAILURE =
   "@app/dashboard/FETCH_STRESS_HISTORY_FAILURE";
 export const SELECT_REQUEST = "@app/dashboard/SELECT_REQUEST";
 export const ADD_REQUEST_HEADER = "@app/dashboard/ADD_REQUEST_HEADER";
+export const ADD_REQUEST_COOKIES = "@app/dashboard/ADD_REQUEST_COOKIES";
 export const ADD_REQUEST_PARAMS = "@app/dashboard/ADD_REQUEST_PARAMS";
 export const USER_CLICK_CHECKBOX = "@app/dashboard/USER_CLICK_CHECKBOX";
 export const SEND_REQUEST_REQUEST = "@app/dashboard/SEND_REQUEST_REQUEST";

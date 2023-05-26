@@ -16,6 +16,10 @@ export const getSelectedRequestHeaders = (state: ApplicationState) => {
   return state.dashboard?.selectedRequest?.requestHeader;
 };
 
+export const getSelectedRequestCookies = (state: ApplicationState) => {
+  return state.dashboard?.selectedRequest?.requestCookies;
+};
+
 export const getSelectedRequestParams = (state: ApplicationState) => {
   return state.dashboard?.selectedRequest?.requestParams;
 };

@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import {
+  getSelectedRequestCookies,
   getSelectedRequestHeaders,
   getSelectedRequestParams,
 } from "../../store/stress/dashboard/selectors";
 import {
+  addRequestCookiesAction,
   addRequestHeaderAction,
   addRequestParamsAction,
   userClickCheckBoxAction,
@@ -22,6 +24,25 @@ function RequestHeaders() {
   };
   const isCheckClicked = (position: number, isChecked: boolean) => {
     const payload = { position, isChecked, type: "requestHeader" };
+    dispatch(userClickCheckBoxAction(payload));
+  };
+  return (
+    <CustomTable
+      params={params}
+      addKeyValue={addParams}
+      onCheckClick={isCheckClicked}
+    />
+  );
+}
+
+function RequestCookies() {
+  const params = useSelector(getSelectedRequestCookies);
+  const dispatch = useDispatch();
+  const addParams = (payload: RequestHeadersAndParamsPayload) => {
+    dispatch(addRequestCookiesAction(payload));
+  };
+  const isCheckClicked = (position: number, isChecked: boolean) => {
+    const payload = { position, isChecked, type: "requestCookies" };
     dispatch(userClickCheckBoxAction(payload));
   };
   return (
@@ -53,10 +74,10 @@ function RequestParams() {
 }
 
 export default function RequestTabs() {
-  const TABS = ["Params", "Headers", "Body"];
+  const TABS = ["Params", "Headers", "Body", "Cookies"];
   const [, setTabIndex] = useState(0);
   return (
-    <Tabs onChange={(index) => setTabIndex(index)} w="100%">
+    <Tabs onChange={(index) => setTabIndex(index)} w="full">
       <TabList color="grey">
         {TABS.map((value) => (
           <Tab key={value} fontWeight="bold" fontSize="12px">
@@ -73,6 +94,9 @@ export default function RequestTabs() {
         </TabPanel>
         <TabPanel>
           <RequestBody />
+        </TabPanel>
+        <TabPanel>
+          <RequestCookies />
         </TabPanel>
       </TabPanels>
     </Tabs>

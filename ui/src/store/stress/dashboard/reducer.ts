@@ -15,6 +15,7 @@ import {
   SEND_LOADSTER_REQUEST,
   SEND_LOADSTER_SUCCESS,
   SEND_LOADSTER_FAILURE,
+  ADD_REQUEST_COOKIES,
 } from "./actionTypes";
 import {
   IDashboard,
@@ -41,6 +42,11 @@ const initialState: IDashboard = {
       },
     ],
     requestParams: [
+      {
+        ...commonRequestHeader,
+      },
+    ],
+    requestCookies: [
       {
         ...commonRequestHeader,
       },
@@ -76,6 +82,22 @@ export default (state = initialState, action: DashboardAction) => {
         selectedRequest: {
           ...state.selectedRequest,
           requestHeader: [...requestHeader],
+        },
+      };
+    }
+    case ADD_REQUEST_COOKIES: {
+      const { requestCookies } = state.selectedRequest;
+      const requestToUpdate = requestCookies[action.payload?.position || 0];
+      requestToUpdate[action.payload.key] = action.payload.value;
+      requestToUpdate.isChecked = true;
+      if (requestCookies.length - 1 === action.payload?.position) {
+        requestCookies.push({ ...commonRequestHeader });
+      }
+      return {
+        ...state,
+        selectedRequest: {
+          ...state.selectedRequest,
+          requestCookies: [...requestCookies],
         },
       };
     }
@@ -115,6 +137,8 @@ export default (state = initialState, action: DashboardAction) => {
       const parsed = queryString.parse(queryParams) as Record<string, any>;
       const common: SelectedRequest = { ...selectedRequestConst };
       const requestHeader = mapPrams(action.payload?.headers);
+      const requestCookies = mapPrams(action.payload?.cookies);
+
       const requestparams = mapPrams(parsed);
       const requestBody = action.payload?.postData;
       const lastIndex = url.lastIndexOf("?");
@@ -123,6 +147,8 @@ export default (state = initialState, action: DashboardAction) => {
         url: url.slice(0, lastIndex > -1 ? lastIndex : url.length),
       };
 
+      if (Object.keys(requestCookies).length)
+        common.requestCookies = requestCookies;
       if (Object.keys(requestHeader).length)
         common.requestHeader = requestHeader;
       if (Object.keys(requestparams).length)

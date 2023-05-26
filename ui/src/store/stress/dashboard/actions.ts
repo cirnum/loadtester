@@ -14,6 +14,7 @@ import {
   SEND_LOADSTER_REQUEST,
   SEND_LOADSTER_SUCCESS,
   SEND_LOADSTER_FAILURE,
+  ADD_REQUEST_COOKIES,
 } from "./actionTypes";
 import {
   FetchHistoryRequest,
@@ -43,6 +44,7 @@ import {
   GetLoadsterSuccess,
   GetLoadsterFailure,
   LoadsterAction,
+  AddRequestCookiesAction,
 } from "./types";
 
 export const fetchHistoryRequest = (
@@ -91,6 +93,14 @@ export const addRequestHeaderAction = (
   payload: RequestHeadersAndParamsPayload
 ): AddRequestHeaderAction => ({
   type: ADD_REQUEST_HEADER,
+  payload,
+});
+
+// Add Request Cookies
+export const addRequestCookiesAction = (
+  payload: RequestHeadersAndParamsPayload
+): AddRequestCookiesAction => ({
+  type: ADD_REQUEST_COOKIES,
   payload,
 });
 

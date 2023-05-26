@@ -6,5 +6,6 @@ export const commonRequestHeader = {
 export const selectedRequestConst = {
   requestHeader: [{ ...commonRequestHeader }],
   requestParams: [{ ...commonRequestHeader }],
+  requestCookies: [{ ...commonRequestHeader }],
   requestBody: {},
 };

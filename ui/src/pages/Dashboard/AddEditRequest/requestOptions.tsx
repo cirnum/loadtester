@@ -3,7 +3,7 @@ import TabComp from "../../../components/RequestTabs";
 
 export default function RequestOptions() {
   return (
-    <Box h="300px" overflow="scroll">
+    <Box h="300px" minWidth="800px" overflowX="scroll">
       <TabComp />
     </Box>
   );

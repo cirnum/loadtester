@@ -15,6 +15,7 @@ import {
   SEND_LOADSTER_REQUEST,
   SEND_LOADSTER_SUCCESS,
   SEND_LOADSTER_FAILURE,
+  ADD_REQUEST_COOKIES,
 } from "./actionTypes";
 import { ApiCallAction } from "../../types";
 import { Server } from "../server/types";
@@ -29,6 +30,7 @@ export interface FetchHistoryRequestPayload {
 export interface SelectedRequest {
   request?: RequestHistoryPayload;
   requestHeader: RequestHeadersAndParamsPayload[];
+  requestCookies: RequestHeadersAndParamsPayload[];
   requestParams: RequestHeadersAndParamsPayload[];
   requestBody: Record<string, any>[] | Object;
 }
@@ -139,6 +141,7 @@ export interface RequestHistoryPayload {
   created: number;
   created_at: number;
   headers: Record<string, string>;
+  cookies: Record<string, string>;
   id: string;
   ips: string[];
   keepAlive: boolean;
@@ -216,6 +219,12 @@ export interface AddRequestHeaderAction extends Action {
 // Add request Params
 export interface AddRequestParamsAction extends Action {
   type: typeof ADD_REQUEST_PARAMS;
+  payload: RequestHeadersAndParamsPayload;
+}
+
+// Add request Params
+export interface AddRequestCookiesAction extends Action {
+  type: typeof ADD_REQUEST_COOKIES;
   payload: RequestHeadersAndParamsPayload;
 }
 
@@ -313,4 +322,5 @@ export type DashboardAction =
   | LoadsterAction
   | GetLoadsterRequest
   | GetLoadsterSuccess
-  | GetLoadsterFailure;
+  | GetLoadsterFailure
+  | AddRequestCookiesAction;
