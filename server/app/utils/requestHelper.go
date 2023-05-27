@@ -69,6 +69,7 @@ func TestRequest(request *models.Request) (helperModels.RequestResponse, error) 
 	requestResponse.Proto = response.Proto
 	requestResponse.ContentLength = response.ContentLength
 	requestResponse.Uncompressed = response.Uncompressed
+	requestResponse.StatusCode = response.StatusCode
 
 	for key, value := range response.Header {
 		responseHeaders[key] = value

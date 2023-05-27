@@ -60,7 +60,7 @@ type PerformanceCriteria struct {
 }
 
 type RequestResponse struct {
-	StatusCode    int                 `json:"request"`
+	StatusCode    int                 `json:"statusCode"`
 	Proto         string              `json:"proto"`
 	Headers       map[string][]string `json:"headers"`
 	Cookies       map[string]string   `json:"cookies"`
