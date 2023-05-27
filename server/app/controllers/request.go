@@ -2,18 +2,14 @@ package controllers
 
 import (
 	"context"
-	"log"
-	"time"
+	"fmt"
 
-	_ "github.com/cirnum/loadtester/server/app/models"
+	helperModels "github.com/cirnum/loadtester/server/app/models"
 	"github.com/cirnum/loadtester/server/app/utils"
-	httpRequest "github.com/cirnum/loadtester/server/pkg/clients"
-	commonUtils "github.com/cirnum/loadtester/server/pkg/utils"
 
 	"github.com/cirnum/loadtester/server/db"
 	"github.com/cirnum/loadtester/server/db/models"
 	"github.com/cirnum/loadtester/server/pkg/constants"
-	"github.com/cirnum/loadtester/server/pkg/executor"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -30,36 +26,32 @@ func GetAllRequest(c *fiber.Ctx) error {
 
 }
 func NewRequest(c *fiber.Ctx) error {
-
+	var responsePayload helperModels.ResponsePayload
+	var err error
 	ctx := context.Background()
 	requestpayload := &models.Request{}
-	// worker := &models.Worker{}
 
 	if err := c.BodyParser(requestpayload); err != nil {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
+
 	requestpayload.UserID = c.Locals("userId").(string)
-	request, err := db.Provider.AddRequest(ctx, *requestpayload)
-	executor := executor.NewExecutor(request.ID, "")
-	ctx, cancelCtx := context.WithCancel(ctx)
-	go func() {
-		<-time.After(time.Duration(requestpayload.Time) * time.Second)
-		cancelCtx()
-	}()
 
-	err = commonUtils.RunWorker(request)
-
+	// To check whether requested endpoint is reachable or not.
+	responsePayload.Response, err = utils.TestRequest(requestpayload)
 	if err != nil {
-		log.Println("Error while sending request to Worker", err)
+		return utils.ResponseError(c, err, constants.InvalidRequest, fiber.StatusInternalServerError)
 	}
-	go executor.Run(ctx, request)
-	client, _ := httpRequest.Initializer(request)
-	go client.RunScen(ctx, request)
 
+	request, err := db.Provider.AddRequest(ctx, *requestpayload)
+	err = utils.RunExecutor(ctx, request)
+	responsePayload.Request = request
+
+	fmt.Printf("data t : %+v \n ", responsePayload.Response)
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
-	return utils.ResponseSuccess(c, request, "Request sent for stress testing.", fiber.StatusOK)
+	return utils.ResponseSuccess(c, responsePayload, "Request sent for stress testing.", fiber.StatusOK)
 }
 
 func GetRequest(c *fiber.Ctx) error {
@@ -67,6 +59,7 @@ func GetRequest(c *fiber.Ctx) error {
 	id := c.Params("id")
 
 	request, err := db.Provider.GetRequestById(ctx, id)
+
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}

@@ -1,5 +1,9 @@
 package models
 
+import (
+	"github.com/cirnum/loadtester/server/db/models"
+)
+
 type Request struct {
 	ID        string      `gorm:"primaryKey;type:char(36)" json:"id,omitempty"`
 	UserID    string      `json:"userID,omitempty"`
@@ -53,4 +57,20 @@ type MemStatus struct {
 
 type PerformanceCriteria struct {
 	Url string `json:"url"`
+}
+
+type RequestResponse struct {
+	StatusCode    int                 `json:"request"`
+	Proto         string              `json:"proto"`
+	Headers       map[string][]string `json:"headers"`
+	Cookies       map[string]string   `json:"cookies"`
+	Body          string              `json:"body"`
+	ContentLength int64               `json:"contentLength"`
+	Uncompressed  bool                `json:"uncompress"`
+	TimeTaken     int64               `json:"timeTaken"`
+}
+
+type ResponsePayload struct {
+	Request  models.Request  `json:"request"`
+	Response RequestResponse `json:"response"`
 }

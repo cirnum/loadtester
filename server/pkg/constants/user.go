@@ -17,4 +17,5 @@ const (
 	UserLoggedIn        string = "User loggedIn successfully."
 	SomethingWrong      string = "Something Went Wrong."
 	InvalidBody         string = "Invalid request body."
+	InvalidRequest      string = "Request is not a valid, please check and try again."
 )
