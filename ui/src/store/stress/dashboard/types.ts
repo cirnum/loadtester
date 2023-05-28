@@ -16,6 +16,7 @@ import {
   SEND_LOADSTER_SUCCESS,
   SEND_LOADSTER_FAILURE,
   ADD_REQUEST_COOKIES,
+  SAVE_REQUEST_RESPONSE,
 } from "./actionTypes";
 import { ApiCallAction } from "../../types";
 import { Server } from "../server/types";
@@ -33,6 +34,7 @@ export interface SelectedRequest {
   requestCookies: RequestHeadersAndParamsPayload[];
   requestParams: RequestHeadersAndParamsPayload[];
   requestBody: Record<string, any>[] | Object;
+  response?: RequestResponse;
 }
 export interface IDashboard {
   history: {
@@ -199,6 +201,36 @@ export interface SelectRequestActionOnGet extends Action {
   type: typeof SELECT_REQUEST;
   payload: SelectedRequestResponse;
 }
+
+export interface SelectRequestAndResponseOnGet extends Action {
+  type: typeof SELECT_REQUEST;
+  payload: RequestedResponsePayload;
+}
+// When intial request hit and verify the response: start //
+export interface SaveRequestResponseAction extends Action {
+  type: typeof SAVE_REQUEST_RESPONSE;
+  payload?: RequestResponse;
+}
+export interface RequestResponse {
+  body: string;
+  headers: Record<string, string[]>;
+  contentLength: number;
+  cookies: Record<string, string>;
+  proto: string;
+  timeTaken: number;
+  uncompress: boolean;
+  statusCode: number;
+}
+export interface RequestedResponsePayload {
+  error: string;
+  msg: string;
+  data: {
+    request: RequestHistoryPayload;
+    response?: RequestResponse;
+  };
+}
+// When intial request hit and verify the response: end //
+
 export interface SelectedRequestResponse {
   data: RequestHistoryPayload;
   error: string;
@@ -323,4 +355,5 @@ export type DashboardAction =
   | GetLoadsterRequest
   | GetLoadsterSuccess
   | GetLoadsterFailure
-  | AddRequestCookiesAction;
+  | AddRequestCookiesAction
+  | SaveRequestResponseAction;

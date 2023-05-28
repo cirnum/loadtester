@@ -1,5 +1,6 @@
 import { all, takeLatest, select, put } from "redux-saga/effects";
 import {
+  saveRequestResponseAction,
   selectRequestAction,
   sendRequestAction,
 } from "../stress/dashboard/actions";
@@ -15,21 +16,8 @@ import {
   RestMethods,
   RequestHistoryPayload,
   SendRequestSuccess,
-  SelectRequestActionOnGet,
+  SelectRequestAndResponseOnGet,
 } from "../stress/dashboard/types";
-
-// function validURL(str: string) {
-//   const pattern = new RegExp(
-//     "^(https?:\\/\\/)?" + // protocol
-//       "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-//       "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-//       "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-//       "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-//       "(\\#[-a-z\\d_]*)?$",
-//     "i"
-//   ); // fragment locator
-//   return !!pattern.test(str);
-// }
 
 const constructUrl = (
   url: string,
@@ -86,8 +74,9 @@ function* requestSaga(action: SendPayloadToSagaAction) {
   yield put(sendRequestAction(payloadToSend as RequestHistoryPayload));
 }
 
-function* requestSuccessSaga(action: SelectRequestActionOnGet) {
-  yield put(selectRequestAction(action.payload?.data));
+function* requestSuccessSaga(action: SelectRequestAndResponseOnGet) {
+  yield put(selectRequestAction(action.payload?.data?.request));
+  yield put(saveRequestResponseAction(action.payload?.data?.response));
 }
 
 /*

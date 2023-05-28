@@ -38,3 +38,7 @@ export const getLoadsterData = (state: ApplicationState) => {
 export const getLoadsterList = (state: ApplicationState) => {
   return state.dashboard?.analysis?.data?.data;
 };
+
+export const getRequestResponseData = (state: ApplicationState) => {
+  return state.dashboard?.selectedRequest.response;
+};

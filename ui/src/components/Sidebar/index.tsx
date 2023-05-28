@@ -126,7 +126,7 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
     <Flex
       ml={{ base: 0 }}
       px={{ base: 3, md: 3 }}
-      height="14"
+      height="60px"
       alignItems="center"
       bg={useColorModeValue("white", "gray.900")}
       borderBottomWidth="1px"

@@ -15,6 +15,7 @@ import {
   SEND_LOADSTER_SUCCESS,
   SEND_LOADSTER_FAILURE,
   ADD_REQUEST_COOKIES,
+  SAVE_REQUEST_RESPONSE,
 } from "./actionTypes";
 import {
   FetchHistoryRequest,
@@ -45,6 +46,8 @@ import {
   GetLoadsterFailure,
   LoadsterAction,
   AddRequestCookiesAction,
+  RequestResponse,
+  SaveRequestResponseAction,
 } from "./types";
 
 export const fetchHistoryRequest = (
@@ -200,5 +203,13 @@ export const sendPayloadToSaga = (
   payload: SendRequestSagaPayload
 ): SendPayloadToSagaAction => ({
   type: SEND_PAYLOAD_TO_SAGA,
+  payload,
+});
+
+// Save request response
+export const saveRequestResponseAction = (
+  payload?: RequestResponse
+): SaveRequestResponseAction => ({
+  type: SAVE_REQUEST_RESPONSE,
   payload,
 });

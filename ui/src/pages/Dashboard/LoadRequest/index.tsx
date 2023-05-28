@@ -6,7 +6,7 @@ export default function AddEditRequest() {
   return (
     <Card
       h="full"
-      minWidth="800px"
+      minWidth="calc(100vw-200px)"
       borderRight="2px solid #e2e8f0"
       overflowX="scroll"
       flex={7}

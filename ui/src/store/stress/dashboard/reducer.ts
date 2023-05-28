@@ -16,6 +16,7 @@ import {
   SEND_LOADSTER_SUCCESS,
   SEND_LOADSTER_FAILURE,
   ADD_REQUEST_COOKIES,
+  SAVE_REQUEST_RESPONSE,
 } from "./actionTypes";
 import {
   IDashboard,
@@ -52,6 +53,7 @@ const initialState: IDashboard = {
       },
     ],
     requestBody: {},
+    response: undefined,
   },
 };
 
@@ -69,6 +71,15 @@ const mapPrams = (headers: Record<string, string>) => {
 
 export default (state = initialState, action: DashboardAction) => {
   switch (action.type) {
+    case SAVE_REQUEST_RESPONSE: {
+      return {
+        ...state,
+        selectedRequest: {
+          ...state.selectedRequest,
+          response: action.payload,
+        },
+      };
+    }
     case ADD_REQUEST_HEADER: {
       const { requestHeader } = state.selectedRequest;
       const requestToUpdate = requestHeader[action.payload?.position || 0];
@@ -160,6 +171,7 @@ export default (state = initialState, action: DashboardAction) => {
           ...state.selectedRequest,
           request: payload,
           ...common,
+          response: undefined,
         },
       };
     }

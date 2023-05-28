@@ -16,9 +16,9 @@ export default function Sidebar() {
           <Tab fontWeight="bold" fontSize="14px">
             History
           </Tab>
-          <Tab fontWeight="bold" fontSize="14px">
+          {/* <Tab fontWeight="bold" fontSize="14px">
             Collection
-          </Tab>
+          </Tab> */}
         </TabList>
         <TabPanels>
           <TabPanel p={0} m={0}>
@@ -26,9 +26,9 @@ export default function Sidebar() {
               <History />
             </Box>
           </TabPanel>
-          <TabPanel p={0}>
+          {/* <TabPanel p={0}>
             <History />
-          </TabPanel>
+          </TabPanel> */}
         </TabPanels>
       </Tabs>
     </Box>

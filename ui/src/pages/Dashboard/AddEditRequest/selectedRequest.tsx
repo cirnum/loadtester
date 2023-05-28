@@ -54,7 +54,7 @@ export default function SelectedAddEditRequest() {
   }, [selectedRequest]);
 
   return (
-    <Box w="full" borderRight="2px solid #e2e8f0" overflow="scroll">
+    <Box w="full" borderRight="2px solid #e2e8f0">
       <HStack m={2} justifyContent="space-between">
         <Stack alignItems="Center" direction="row">
           <Text fontSize="sm" color="tomato.700" as="b">

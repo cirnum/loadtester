@@ -30,7 +30,7 @@ export function Stats({
           if (!data[section.key] && data[section.key] !== false) return null;
           if (section.isStatus) {
             return (
-              <CustomStats title={section.title}>
+              <CustomStats title={section.title} key={section.key}>
                 <Badge color={data?.[section.key] ? "tomato" : "green"}>
                   {data?.[section.key] ? "Completed" : "Active"}
                 </Badge>
@@ -39,13 +39,17 @@ export function Stats({
           }
           if (section?.type === "string") {
             return (
-              <CustomStats title={section.title}>
+              <CustomStats title={section.title} key={section.key}>
                 <Text fontSize="18px">{data[section.key]}</Text>
               </CustomStats>
             );
           }
           return (
-            <CustomStats title={section.title} color={section?.color}>
+            <CustomStats
+              title={section.title}
+              color={section?.color}
+              key={section.key}
+            >
               {formate ? (
                 <Tooltip label={data[section.key]} aria-label="A tooltip">
                   {NumberFormat(data[section.key])}

@@ -6,8 +6,9 @@ export default function Dashboard() {
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
-      height="calc(100vh - 56px)"
+      height="calc(100vh - 65px)"
       display="flex"
+      overflow="none"
       flexDirection="row"
     >
       <Sidebar />
