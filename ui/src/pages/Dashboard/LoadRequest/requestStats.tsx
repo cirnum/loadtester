@@ -76,5 +76,7 @@ export function RequestLoadsterData() {
       dispatch(getLoadsterAction({ reqId: selectedRequestId }));
     }
   }, [selectedRequestId]);
+
+  if (!selectedRequestId) return null;
   return <RequestStats />;
 }

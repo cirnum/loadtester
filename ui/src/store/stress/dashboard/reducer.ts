@@ -1,6 +1,7 @@
 import queryString from "query-string";
 import {
   commonRequestHeader,
+  newRequestStruct,
   selectedRequestConst,
 } from "../../../constants/dashboard.const";
 import {
@@ -17,6 +18,8 @@ import {
   SEND_LOADSTER_FAILURE,
   ADD_REQUEST_COOKIES,
   SAVE_REQUEST_RESPONSE,
+  PUSH_TO_HISTORY,
+  ADD_NEW_REQUEST,
 } from "./actionTypes";
 import {
   IDashboard,
@@ -36,24 +39,7 @@ const initialState: IDashboard = {
     data: undefined,
   },
   selectedRequest: {
-    request: undefined,
-    requestHeader: [
-      {
-        ...commonRequestHeader,
-      },
-    ],
-    requestParams: [
-      {
-        ...commonRequestHeader,
-      },
-    ],
-    requestCookies: [
-      {
-        ...commonRequestHeader,
-      },
-    ],
-    requestBody: {},
-    response: undefined,
+    ...newRequestStruct,
   },
 };
 
@@ -71,6 +57,30 @@ const mapPrams = (headers: Record<string, string>) => {
 
 export default (state = initialState, action: DashboardAction) => {
   switch (action.type) {
+    case ADD_NEW_REQUEST: {
+      return {
+        ...state,
+        selectedRequest: { ...newRequestStruct },
+      };
+    }
+    case PUSH_TO_HISTORY: {
+      const reqHistory = [
+        action.payload,
+        ...(state.history.requests?.data.data || []),
+      ];
+      return {
+        ...state,
+        history: {
+          ...state.history,
+          requests: {
+            data: {
+              ...state.history.requests?.data,
+              data: reqHistory,
+            },
+          },
+        },
+      };
+    }
     case SAVE_REQUEST_RESPONSE: {
       return {
         ...state,

@@ -17,7 +17,10 @@ import { getSelectedRequest } from "../../../store/stress/dashboard/selectors";
 import { RestMethods } from "../../../store/stress/dashboard/types";
 import Method from "./method";
 import RequestOptions from "./requestOptions";
-import { sendPayloadToSaga } from "../../../store/stress/dashboard/actions";
+import {
+  addNewRequestAction,
+  sendPayloadToSaga,
+} from "../../../store/stress/dashboard/actions";
 
 export default function SelectedAddEditRequest() {
   const dispatch = useDispatch();
@@ -53,6 +56,12 @@ export default function SelectedAddEditRequest() {
     }
   }, [selectedRequest]);
 
+  const addNewRequest = () => {
+    dispatch(addNewRequestAction());
+    setClients(0);
+    setSeconds(0);
+    setURL("");
+  };
   return (
     <Box w="full" borderRight="2px solid #e2e8f0">
       <HStack m={2} justifyContent="space-between">
@@ -64,7 +73,7 @@ export default function SelectedAddEditRequest() {
         </Stack>
 
         {selectedRequest?.method && (
-          <Button colorScheme="tomato" size="md">
+          <Button colorScheme="tomato" size="md" onClick={addNewRequest}>
             <AddIcon marginRight={2} /> New
           </Button>
         )}

@@ -1,5 +1,6 @@
 import { all, takeLatest, select, put } from "redux-saga/effects";
 import {
+  pushToHistoryAction,
   saveRequestResponseAction,
   selectRequestAction,
   sendRequestAction,
@@ -75,6 +76,7 @@ function* requestSaga(action: SendPayloadToSagaAction) {
 }
 
 function* requestSuccessSaga(action: SelectRequestAndResponseOnGet) {
+  yield put(pushToHistoryAction(action.payload?.data?.request));
   yield put(selectRequestAction(action.payload?.data?.request));
   yield put(saveRequestResponseAction(action.payload?.data?.response));
 }

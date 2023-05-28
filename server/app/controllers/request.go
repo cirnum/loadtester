@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 
 	helperModels "github.com/cirnum/loadtester/server/app/models"
 	"github.com/cirnum/loadtester/server/app/utils"
@@ -47,7 +46,6 @@ func NewRequest(c *fiber.Ctx) error {
 	err = utils.RunExecutor(ctx, request)
 	responsePayload.Request = request
 
-	fmt.Printf("data t : %+v \n ", responsePayload.Response)
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}

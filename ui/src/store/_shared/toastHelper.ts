@@ -12,6 +12,14 @@ import {
 } from "../auth/types";
 import { ToastConfig } from "../middleware/toast";
 import {
+  SEND_REQUEST_FAILURE,
+  SEND_REQUEST_SUCCESS,
+} from "../stress/dashboard/actionTypes";
+import {
+  SendRequestFailure,
+  SendRequestSuccess,
+} from "../stress/dashboard/types";
+import {
   ADD_SERVER_FAILURE,
   ADD_SERVER_SUCCESS,
   DELETE_SERVER_FAILURE,
@@ -60,6 +68,14 @@ export const toastActions: {
   }),
   [DELETE_SERVER_FAILURE]: (action: DeleteServerFailure) => ({
     type: "error",
+    message: action.payload.message,
+  }),
+  [SEND_REQUEST_FAILURE]: (action: SendRequestFailure) => ({
+    type: "error",
+    message: action.payload.message,
+  }),
+  [SEND_REQUEST_SUCCESS]: (action: SendRequestSuccess) => ({
+    type: "success",
     message: action.payload.message,
   }),
 };

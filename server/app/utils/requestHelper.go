@@ -65,6 +65,10 @@ func TestRequest(request *models.Request) (helperModels.RequestResponse, error) 
 	response, err = utils.Do(method, request.URL, body, headers)
 	endTime := time.Now().UnixNano() / int64(time.Millisecond)
 
+	log.Println("Error", err)
+	if err != nil && response == nil {
+		return requestResponse, err
+	}
 	requestResponse.TimeTaken = endTime - startTime
 	requestResponse.Proto = response.Proto
 	requestResponse.ContentLength = response.ContentLength

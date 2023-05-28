@@ -5,6 +5,8 @@ export const FETCH_STRESS_HISTORY_SUCCESS =
 export const FETCH_STRESS_HISTORY_FAILURE =
   "@app/dashboard/FETCH_STRESS_HISTORY_FAILURE";
 export const SELECT_REQUEST = "@app/dashboard/SELECT_REQUEST";
+export const PUSH_TO_HISTORY = "@app/dashboard/PUSH_TO_HISTORY";
+export const ADD_NEW_REQUEST = "@app/dashboard/ADD_NEW_REQUEST";
 export const SAVE_REQUEST_RESPONSE = "@app/dashboard/SAVE_REQUEST_RESPONSE";
 export const ADD_REQUEST_HEADER = "@app/dashboard/ADD_REQUEST_HEADER";
 export const ADD_REQUEST_COOKIES = "@app/dashboard/ADD_REQUEST_COOKIES";

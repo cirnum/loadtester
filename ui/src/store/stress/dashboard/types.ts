@@ -17,6 +17,8 @@ import {
   SEND_LOADSTER_FAILURE,
   ADD_REQUEST_COOKIES,
   SAVE_REQUEST_RESPONSE,
+  PUSH_TO_HISTORY,
+  ADD_NEW_REQUEST,
 } from "./actionTypes";
 import { ApiCallAction } from "../../types";
 import { Server } from "../server/types";
@@ -196,10 +198,18 @@ export interface SelectRequestAction extends Action {
   type: typeof SELECT_REQUEST;
   payload: RequestHistoryPayload;
 }
+export interface PushToHistoryAction extends Action {
+  type: typeof PUSH_TO_HISTORY;
+  payload: RequestHistoryPayload;
+}
 
 export interface SelectRequestActionOnGet extends Action {
   type: typeof SELECT_REQUEST;
   payload: SelectedRequestResponse;
+}
+
+export interface AddNewRequestAction extends Action {
+  type: typeof ADD_NEW_REQUEST;
 }
 
 export interface SelectRequestAndResponseOnGet extends Action {
@@ -356,4 +366,6 @@ export type DashboardAction =
   | GetLoadsterSuccess
   | GetLoadsterFailure
   | AddRequestCookiesAction
-  | SaveRequestResponseAction;
+  | SaveRequestResponseAction
+  | PushToHistoryAction
+  | AddNewRequestAction;

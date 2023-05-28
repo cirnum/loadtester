@@ -11,7 +11,6 @@ import { toastMiddleware } from "./middleware/toast";
 const sagaMiddleware = createSagaMiddleware();
 const allMiddleware = [apiMiddleware, toastMiddleware, sagaMiddleware];
 
-console.log("import.meta.env.NODE_ENV", import.meta.env.VITE_ENV);
 if (import.meta.env.VITE_ENV === "dev") {
   allMiddleware.push(logger);
 }

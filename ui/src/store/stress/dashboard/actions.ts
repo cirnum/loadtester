@@ -16,6 +16,8 @@ import {
   SEND_LOADSTER_FAILURE,
   ADD_REQUEST_COOKIES,
   SAVE_REQUEST_RESPONSE,
+  PUSH_TO_HISTORY,
+  ADD_NEW_REQUEST,
 } from "./actionTypes";
 import {
   FetchHistoryRequest,
@@ -48,6 +50,8 @@ import {
   AddRequestCookiesAction,
   RequestResponse,
   SaveRequestResponseAction,
+  PushToHistoryAction,
+  AddNewRequestAction,
 } from "./types";
 
 export const fetchHistoryRequest = (
@@ -81,6 +85,18 @@ export const fetchHistoryAction = (
   onRequest: fetchHistoryRequest,
   onSuccess: fetchHistorySuccess,
   onFailure: fetchHistoryFailure,
+});
+
+// Add new request action
+export const addNewRequestAction = (): AddNewRequestAction => ({
+  type: ADD_NEW_REQUEST,
+});
+// Push to History
+export const pushToHistoryAction = (
+  payload: RequestHistoryPayload
+): PushToHistoryAction => ({
+  type: PUSH_TO_HISTORY,
+  payload,
 });
 
 // Select requesy
