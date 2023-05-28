@@ -61,6 +61,15 @@ export default function History() {
   if (error) {
     return <ErrorComp />;
   }
+  if (!requests?.data?.data?.length) {
+    return (
+      <ErrorComp
+        title="History not found"
+        message="Not made any request so fat"
+        type="info"
+      />
+    );
+  }
   return (
     <div>
       {requests?.data?.data?.map((item) => {

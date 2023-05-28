@@ -54,7 +54,7 @@ const Links: Array<LinkItemProps> = [
   { name: "Requests", path: "/dashboard" },
   // { name: "Performance", path: "performace" },
   { name: "Server", path: "server" },
-  { name: "Download Client", path: "client" },
+  // { name: "Download Client", path: "client" },
 ];
 
 function NavItem({ icon, children, path, ...rest }: NavItemProps) {
@@ -124,6 +124,7 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
 
   return (
     <Flex
+      position="relative"
       ml={{ base: 0 }}
       px={{ base: 3, md: 3 }}
       height="60px"
@@ -135,6 +136,7 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
       as="header"
       backdropFilter="saturate(180%) blur(5px)"
       w="100%"
+      zIndex={999}
       {...rest}
     >
       <Flex alignItems="center" width="260px" justifyContent="center">
@@ -182,7 +184,7 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
           aria-label="open menu"
           icon={<FiBell />}
         />
-        <Flex alignItems="center">
+        <Flex alignItems="center" zIndex="dropdown">
           <Menu>
             <MenuButton
               py={2}
@@ -281,9 +283,7 @@ export default function SidebarWithHeader({
       </Drawer>
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0 }} p="">
-        {children}
-      </Box>
+      <Box ml={{ base: 0 }}>{children}</Box>
     </Box>
   );
 }
