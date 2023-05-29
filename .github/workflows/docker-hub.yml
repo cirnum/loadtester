@@ -36,3 +36,4 @@ jobs:
           context: .
           push: true
           tags: manojown1/loadtester:latest
+
