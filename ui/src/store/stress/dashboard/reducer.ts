@@ -157,8 +157,8 @@ export default (state = initialState, action: DashboardAction) => {
       const [url, queryParams] = action.payload.url.split("?");
       const parsed = queryString.parse(queryParams) as Record<string, any>;
       const common: SelectedRequest = { ...selectedRequestConst };
-      const requestHeader = mapPrams(action.payload?.headers);
-      const requestCookies = mapPrams(action.payload?.cookies);
+      const requestHeader = mapPrams(action.payload?.headers || {});
+      const requestCookies = mapPrams(action.payload?.cookies || {});
 
       const requestparams = mapPrams(parsed);
       const requestBody = action.payload?.postData;

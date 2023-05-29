@@ -14,10 +14,11 @@ RUN npm run build
 
 # copy the build assets to a minimal
 # alpine image
-FROM alpine:latest
+FROM alpine:latest 
 RUN apk --no-cache add ca-certificates
 COPY --from=builder /main .
 COPY --from=node_builder /dist ./dist
+COPY --from=builder /app/server/.env.example .env
 RUN chmod +x ./main
 EXPOSE 3005
 CMD ./main
