@@ -25,7 +25,7 @@ export function Dialog(props: DialogProps) {
       onClose={onClose}
     >
       <AlertDialogOverlay>
-        <AlertDialogContent>
+        <AlertDialogContent bg="white">
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
             Add New Server
           </AlertDialogHeader>

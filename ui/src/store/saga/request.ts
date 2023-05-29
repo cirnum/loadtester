@@ -20,11 +20,24 @@ import {
   SelectRequestAndResponseOnGet,
 } from "../stress/dashboard/types";
 
+function getValidProtoUrl(url: string): string {
+  const defaultOption = "http://";
+  if (url.indexOf(defaultOption) !== 0 || url.indexOf("https://") !== 0) {
+    return defaultOption + url;
+  }
+  return url;
+}
+
 const constructUrl = (
   url: string,
   params: RequestHeadersAndParamsPayload[]
 ) => {
-  const updatedUrl = new URL(url);
+  let updatedUrl;
+  try {
+    updatedUrl = new URL(url.trim());
+  } catch {
+    updatedUrl = new URL(getValidProtoUrl(url.trim()));
+  }
   for (const val in params) {
     if (params[val].isChecked && params[val].key && params[val].value) {
       updatedUrl.searchParams.set(
@@ -49,6 +62,8 @@ const parseRequest = (
   request: ReturnType<typeof getChangedSelectedRequest>,
   action: SendPayloadToSagaAction
 ) => {
+  const DEFAULT_CLIENT = 10;
+  const DEFAULT_TIME = 10;
   const url = constructUrl(action.payload.url, request.requestParams);
   const headers = constructHeader(request.requestHeader);
   const cookies = constructHeader(request.requestCookies);
@@ -56,8 +71,8 @@ const parseRequest = (
   const method = action.payload.method as RestMethods;
   return {
     ...action.payload,
-    clients: parseInt(action.payload.clients.toString(), 10),
-    time: parseInt(action.payload.time.toString(), 10),
+    clients: parseInt(action.payload.clients.toString(), 10) || DEFAULT_CLIENT,
+    time: parseInt(action.payload.time.toString(), 10) || DEFAULT_TIME,
     url,
     headers,
     cookies,

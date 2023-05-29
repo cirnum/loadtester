@@ -55,10 +55,10 @@ export default function AddOrEdit({ server }: { server?: Server }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl>
-        <FormLabel htmlFor="alias">Add server Alias</FormLabel>
+        <FormLabel htmlFor="alias">Add server name</FormLabel>
         <Input
           id="alias"
-          placeholder="Alias"
+          placeholder="Name"
           {...register("alias", {
             required: "Alias Field required.",
           })}
@@ -66,7 +66,7 @@ export default function AddOrEdit({ server }: { server?: Server }) {
         <FormErrorMessage>
           {errors.name && errors.name.message?.toString()}
         </FormErrorMessage>
-        <FormLabel htmlFor="description">Add server Description</FormLabel>
+        <FormLabel htmlFor="description">Add server description</FormLabel>
         <Input
           id="description"
           placeholder="Description"
@@ -77,17 +77,15 @@ export default function AddOrEdit({ server }: { server?: Server }) {
         <FormErrorMessage>
           {errors.name && errors.name.message?.toString()}
         </FormErrorMessage>
-        <FormLabel htmlFor="description">Add Your Remote IP</FormLabel>
-        <Input id="ip" placeholder="Add remote server IP" {...register("ip")} />
+        <FormLabel htmlFor="description">Add remote server address</FormLabel>
+        <Input
+          id="ip"
+          placeholder="Add remote server address"
+          {...register("ip")}
+        />
         <FormErrorMessage>
           {errors.name && errors.name.message?.toString()}
         </FormErrorMessage>
-        <FormLabel htmlFor="description">Add Your Remote Port</FormLabel>
-        <Input
-          id="port"
-          placeholder="Add remote server Port"
-          {...register("port")}
-        />
         <FormErrorMessage>
           {errors.name && errors.name.message?.toString()}
         </FormErrorMessage>
