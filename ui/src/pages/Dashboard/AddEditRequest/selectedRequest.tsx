@@ -21,6 +21,7 @@ import {
   addNewRequestAction,
   sendPayloadToSaga,
 } from "../../../store/stress/dashboard/actions";
+import MethodInfo from "../../../components/Info/MethodInfo";
 
 export default function SelectedAddEditRequest() {
   const dispatch = useDispatch();
@@ -66,9 +67,11 @@ export default function SelectedAddEditRequest() {
     <Box w="full" borderRight="2px solid #e2e8f0">
       <HStack m={2} justifyContent="space-between">
         <Stack alignItems="Center" direction="row">
-          <Text fontSize="sm" color="tomato.700" as="b">
-            {selectedRequest?.method}
-          </Text>
+          <MethodInfo>
+            <Text fontSize="sm" color="tomato.700" as="b">
+              {selectedRequest?.method}
+            </Text>
+          </MethodInfo>
           <Tag m={4}>{url}</Tag>
         </Stack>
 

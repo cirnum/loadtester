@@ -1,36 +1,49 @@
-import React from "react";
-import { Box, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, HStack, Text } from "@chakra-ui/react";
 import History from "./history";
+import OutlineButton from "../../../components/Button/outline";
 
+const Tabs = ["History", "Collection"];
 export default function Sidebar() {
+  const [tab, setTab] = useState(0);
   return (
     <Box
       width="20%"
       minWidth="200px"
       maxWidth="300px"
       color="grey"
-      borderRight="2px solid #e2e8f0"
+      border="1px solid #EBEBEB"
     >
-      <Tabs isFitted display="flex" flexDirection="column">
-        <TabList mb="1em">
-          <Tab fontWeight="bold" fontSize="14px">
-            History
-          </Tab>
-          {/* <Tab fontWeight="bold" fontSize="14px">
-            Collection
-          </Tab> */}
-        </TabList>
-        <TabPanels>
-          <TabPanel p={0} m={0}>
-            <Box height="90vh" overflow="auto">
-              <History />
-            </Box>
-          </TabPanel>
-          {/* <TabPanel p={0}>
-            <History />
-          </TabPanel> */}
-        </TabPanels>
-      </Tabs>
+      <Box
+        display="flex"
+        flexDirection="column"
+        sx={{ height: "120px" }}
+        padding="12px 24px"
+        justifyContent="space-around"
+      >
+        <Text fontWeight="500" fontSize="14px" lineHeight="20px" color="837F9D">
+          All Section
+        </Text>
+        <HStack>
+          {Tabs.map((item, index) => {
+            return (
+              <OutlineButton
+                color={index === tab ? "#0066FF" : ""}
+                background={index === tab ? "#EDF4FF" : ""}
+                borderColor={index === tab ? "#0066FF" : ""}
+                onClick={() => setTab(index)}
+              >
+                <Text fontWeight="600" fontSize="14px">
+                  {item}
+                </Text>
+              </OutlineButton>
+            );
+          })}
+        </HStack>
+      </Box>
+      <Box height="90vh" overflow="auto">
+        <History />
+      </Box>
     </Box>
   );
 }

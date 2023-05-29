@@ -12,6 +12,7 @@ import {
   fetchHistoryAction,
   selectRequestAction,
 } from "../../../store/stress/dashboard/actions";
+import MethodInfo from "../../../components/Info/MethodInfo";
 
 function ItemList({ item }: { item: RequestHistoryPayload }) {
   const dispatch = useDispatch();
@@ -21,24 +22,41 @@ function ItemList({ item }: { item: RequestHistoryPayload }) {
   };
   return (
     <HStack
-      spacing={2}
+      spacing={6}
       p={3}
       role="button"
+      borderY={selectedRequestId === item.id ? "#EDF4FF" : "1px solid #EBEBEB"}
       _hover={{
         background: "#e2e8f1",
         color: "black",
         pointerEvents: "",
       }}
-      background={selectedRequestId === item.id ? "#e2e8f1" : ""}
+      boxSizing="border-box"
+      height="60px"
+      alignItems="center"
+      padding="16px 24px"
+      background={selectedRequestId === item.id ? "#EDF4FF" : ""}
       color={selectedRequestId === item.id ? "black" : ""}
       onClick={() => clickOnRequest(item)}
-      borderBottom={selectedRequestId === item.id ? "2px" : ""}
-      borderColor={selectedRequestId === item.id ? "tomato.500" : ""}
+      borderBottom={selectedRequestId === item.id ? "1px" : ""}
+      borderColor={selectedRequestId === item.id ? "#0066FF" : ""}
     >
-      <Text fontSize="sm" color="tomato.400" as="b" width={12}>
-        {item.method}
-      </Text>
-      <Text fontSize="sm" isTruncated fontWeight="medium">
+      <MethodInfo>
+        <Text fontSize="sm" color="tomato.400" as="b">
+          {item.method}
+        </Text>
+      </MethodInfo>
+      <Text
+        sx={{
+          fontWeight: "500",
+          fontSize: "14px",
+          lineHeight: "20px",
+          color: "#171239",
+        }}
+        fontSize="sm"
+        isTruncated
+        fontWeight="medium"
+      >
         {item.url}
       </Text>
     </HStack>

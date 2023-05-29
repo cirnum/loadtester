@@ -35,7 +35,7 @@ import {
   FiChevronDown,
 } from "react-icons/fi";
 import { IconType } from "react-icons";
-import LogoImg from "../../assets/logo.png";
+import LogoImg from "../../assets/brand.svg";
 
 interface LinkItemProps {
   name: string;
