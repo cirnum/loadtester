@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import {
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+} from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getSelectedRequestCookies,
@@ -78,10 +85,22 @@ export default function RequestTabs() {
   const [, setTabIndex] = useState(0);
   return (
     <Tabs onChange={(index) => setTabIndex(index)} w="full">
-      <TabList color="grey">
+      <TabList color="grey" paddingTop="12px">
         {TABS.map((value) => (
           <Tab key={value} fontWeight="bold" fontSize="14px">
-            {value}
+            <Text
+              sx={{
+                fontWeight: "500",
+                fontSize: "14px",
+                lineHeight: "20px",
+                color: "#171239",
+              }}
+              fontSize="sm"
+              isTruncated
+              fontWeight="medium"
+            >
+              {value}
+            </Text>
           </Tab>
         ))}
       </TabList>

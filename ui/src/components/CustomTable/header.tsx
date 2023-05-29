@@ -19,7 +19,17 @@ export default function Item({ isChecked = true }: IItem) {
           }}
           width="10%"
         >
-          <Text as="b" fontSize="sm" color="gray.500">
+          <Text
+            sx={{
+              fontWeight: "500",
+              fontSize: "14px",
+              lineHeight: "20px",
+              color: "#171239",
+            }}
+            fontSize="sm"
+            isTruncated
+            fontWeight="medium"
+          >
             #
           </Text>
         </Box>
@@ -38,7 +48,17 @@ export default function Item({ isChecked = true }: IItem) {
             }}
             width="50%"
           >
-            <Text as="b" fontSize="sm" color="gray.500">
+            <Text
+              sx={{
+                fontWeight: "500",
+                fontSize: "14px",
+                lineHeight: "20px",
+                color: "#171239",
+              }}
+              fontSize="sm"
+              isTruncated
+              fontWeight="medium"
+            >
               {value}
             </Text>
           </Box>

@@ -1,4 +1,12 @@
-import { Tab, TabList, TabPanel, TabPanels, Tabs, Box } from "@chakra-ui/react";
+import {
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Box,
+  Text,
+} from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoadsterAction } from "../../../store/stress/dashboard/actions";
@@ -7,9 +15,9 @@ import {
   getSelectedRequestId,
 } from "../../../store/stress/dashboard/selectors";
 import RequestResponse from "./RequestRespons";
-import { RequestState } from "./RequestStatus/requestState";
 import { WorkerState } from "./RequestStatus/workerState";
 import ServerMap from "./RequestStatus/serverMap";
+import RequestedStats from "./RequestedStats";
 
 function ResponseTab({ children }: { children: ReactElement }) {
   const [, setTabIndex] = useState(0);
@@ -31,7 +39,19 @@ function ResponseTab({ children }: { children: ReactElement }) {
       <TabList color="grey">
         {list.map((value) => (
           <Tab key={value} fontWeight="bold" fontSize="14px">
-            {value}
+            <Text
+              sx={{
+                fontWeight: "500",
+                fontSize: "14px",
+                lineHeight: "20px",
+              }}
+              fontSize="sm"
+              isTruncated
+              fontWeight="medium"
+              color="#171239"
+            >
+              {value}
+            </Text>
           </Tab>
         ))}
       </TabList>
@@ -53,7 +73,7 @@ export function RequestStats() {
               </TabPanel>
             )}
             <TabPanel>
-              <RequestState />
+              <RequestedStats />
             </TabPanel>
             <TabPanel>
               <WorkerState />

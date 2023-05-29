@@ -68,11 +68,13 @@ function NavItem({ icon, children, path, ...rest }: NavItemProps) {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "tomato",
+          bg: "primary.400",
           color: "white",
         }}
-        fontWeight="bold"
+        fontWeight="600"
         fontSize="14px"
+        lineHeight="20px"
+        color="#171239"
         {...rest}
       >
         {icon && (
@@ -137,18 +139,11 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
       backdropFilter="saturate(180%) blur(5px)"
       w="100%"
       zIndex={999}
+      shadow="s1"
       {...rest}
     >
       <Flex alignItems="center" width="260px" justifyContent="center">
         <Image width="260px" height="40px" src={LogoImg} alt="loadster" />
-        {/* <Text
-          fontSize="2xl"
-          fontFamily="monospace"
-          fontWeight="bold"
-          color="tomato"
-        >
-          Strain-Hub
-        </Text> */}
       </Flex>
       <IconButton
         display={{ base: "flex", md: "none" }}

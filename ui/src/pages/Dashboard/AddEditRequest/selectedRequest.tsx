@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -7,21 +7,20 @@ import {
   HStack,
   Button,
   Input,
-  InputGroup,
-  InputLeftAddon,
   Stack,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
-import { ArrowForwardIcon, AddIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, AddIcon, ArrowDownIcon } from "@chakra-ui/icons";
 import { getSelectedRequest } from "../../../store/stress/dashboard/selectors";
 import { RestMethods } from "../../../store/stress/dashboard/types";
-import Method from "./method";
 import RequestOptions from "./requestOptions";
 import {
   addNewRequestAction,
   sendPayloadToSaga,
 } from "../../../store/stress/dashboard/actions";
 import MethodInfo from "../../../components/Info/MethodInfo";
+import { InputWrap } from "./InputArea/inputWrap";
+import Method from "./method";
 
 export default function SelectedAddEditRequest() {
   const dispatch = useDispatch();
@@ -65,63 +64,81 @@ export default function SelectedAddEditRequest() {
   };
   return (
     <Box w="full" borderRight="2px solid #e2e8f0">
-      <HStack m={2} justifyContent="space-between">
-        <Stack alignItems="Center" direction="row">
-          <MethodInfo>
-            <Text fontSize="sm" color="tomato.700" as="b">
-              {selectedRequest?.method}
-            </Text>
-          </MethodInfo>
-          <Tag m={4}>{url}</Tag>
-        </Stack>
-
-        {selectedRequest?.method && (
-          <Button colorScheme="tomato" size="md" onClick={addNewRequest}>
-            <AddIcon marginRight={2} /> New
+      {selectedRequest && (
+        <HStack m={2} justifyContent="space-between">
+          <Stack alignItems="Center" direction="row">
+            <MethodInfo>
+              <Text fontSize="sm" color="tomato.700" as="b">
+                {selectedRequest?.method}
+              </Text>
+            </MethodInfo>
+            <Tag m={4}>{url}</Tag>
+          </Stack>
+          <Button colorScheme="gray" size="md" onClick={addNewRequest}>
+            <AddIcon marginRight={3} /> New
           </Button>
-        )}
-      </HStack>
+        </HStack>
+      )}
       <Divider />
-      <HStack m={2}>
-        <InputGroup display="flex" flexWrap="wrap">
-          <InputLeftAddon>
-            <Method method={method} setMethod={setMethod} />
-          </InputLeftAddon>
+      <HStack height="60px" borderBottom="1px solid #EBEBEB" paddingX="32px">
+        <InputWrap flex={1} width="full">
+          <Method method={method} setMethod={setMethod} />
+          <ArrowDownIcon />
+        </InputWrap>
+        {/* <Box height="24px" borderLeft="2px solid #171239" /> */}
+        <InputWrap flex={7}>
           <Input
-            flex={6}
+            _focusVisible={{
+              outline: "none",
+              caretColor: "secondary.500",
+            }}
+            border="0"
+            type="text"
             placeholder="Enter request url"
-            value={url}
             onChange={(e) => setURL(e.target.value)}
+            value={url}
           />
+        </InputWrap>
+        <InputWrap flex={2}>
           <Input
-            borderRadius="5px"
-            mx={3}
+            _focusVisible={{
+              outline: "none",
+              caretColor: "secondary.500",
+            }}
             flex={2}
             type="number"
             placeholder="Total Users"
-            value={clients || ""}
+            border="0"
             onChange={(e) => setClients(parse(e.target.value))}
+            value={clients || ""}
           />
+        </InputWrap>
+        <InputWrap flex={2}>
           <Input
-            mx={3}
+            _focusVisible={{
+              outline: "none",
+              caretColor: "secondary.500",
+            }}
             flex={2}
             type="number"
             placeholder="Time in seconds"
-            value={seconds || ""}
             onChange={(e) => setSeconds(parse(e.target.value))}
+            value={seconds || ""}
+            border="0"
           />
+        </InputWrap>
+        <InputWrap flex={0.5} borderRight="0" padding="12px">
           <Button
-            colorScheme="tomato"
-            w="150px"
+            borderRadius="4px"
+            colorScheme="primary"
+            w="fit-content"
             size="md"
-            mr={16}
             rightIcon={<ArrowForwardIcon />}
-            value={url}
             onClick={() => sendRequest()}
           >
             Send
           </Button>
-        </InputGroup>
+        </InputWrap>
       </HStack>
       <RequestOptions />
     </Box>

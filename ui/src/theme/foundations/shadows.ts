@@ -12,6 +12,7 @@ const shadows = {
   "dark-lg":
     "rgba(0, 0, 0, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.2) 0px 5px 10px, rgba(0, 0, 0, 0.4) 0px 15px 40px",
   largeSoft: "rgba(60, 64, 67, 0.15) 0px 2px 10px 6px;",
+  s1: "4px 4px 12px rgba(0, 0, 0, 0.08);",
 };
 
 export default shadows;
