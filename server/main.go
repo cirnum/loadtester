@@ -76,9 +76,9 @@ func main() {
 }
 
 func isWorkerMode() bool {
-	portPtr := flag.String("port", "5001", "Take the dafault port if port is empty (Required)")
-	token := flag.String("token", "", "Please pass the token (Required)")
-	masterIp := flag.String("masterIp", "", "Please pass the master node ip.")
+	portPtr := flag.String("PORT", "3005", "Take the dafault port if port is empty (Required)")
+	token := flag.String("TOKEN", "", "Please pass the token (Required)")
+	masterIp := flag.String("MASTER_IP", "", "Please pass the master node ip.")
 	flag.Parse()
 
 	localIp := utils.GetPublicIp()
