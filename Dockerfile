@@ -16,9 +16,12 @@ RUN npm run build
 # alpine image
 FROM alpine:latest 
 RUN apk --no-cache add ca-certificates
-COPY --from=builder /main .
+COPY --from=builder /main . 
 COPY --from=node_builder /dist ./dist
 COPY --from=builder /app/server/.env.example .env
 RUN chmod +x ./main
 EXPOSE 3005
-CMD ./main
+ENV MASTER_IP ""
+ENV TOKEN ""
+ENV PORT ""
+CMD ./main -MASTER_IP $MASTER_IP -TOKEN $TOKEN -PORT $PORT

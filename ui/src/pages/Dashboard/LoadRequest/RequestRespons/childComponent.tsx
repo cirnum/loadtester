@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 import { useSelector } from "react-redux";
 import JSONInput from "react-json-ide";
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -7,6 +8,13 @@ import { ReactNode } from "react";
 import { getRequestResponseData } from "../../../../store/stress/dashboard/selectors";
 import Warning from "../../../../components/Error";
 import CustomTable from "../../../../components/Table";
+
+function PreviewHtml(props: { html: string }) {
+  const { html } = props;
+  return (
+    <iframe title="Response" srcDoc={DOMPurify.sanitize(html)} height={300} />
+  );
+}
 
 function RequestBody({
   body = "",
@@ -57,11 +65,8 @@ function RequestBody({
     );
   }
   return (
-    <Card p={5}>
-      <div
-        style={{ padding: "10px", fontSize: "17px", textAlign: "center" }}
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(body) }}
-      />
+    <Card p={2}>
+      <PreviewHtml html={body} />
     </Card>
   );
 }

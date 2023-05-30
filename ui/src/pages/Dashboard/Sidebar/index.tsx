@@ -41,7 +41,22 @@ export default function Sidebar() {
           })}
         </HStack>
       </Box>
-      <Box height="90vh" overflow="auto">
+      <Box
+        height="90vh"
+        overflow="auto"
+        css={{
+          "&::-webkit-scrollbar": {
+            width: "4px",
+          },
+          "&::-webkit-scrollbar-track": {
+            width: "6px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            // eslint-disable-next-line quotes
+            borderRadius: "24px",
+          },
+        }}
+      >
         <History />
       </Box>
     </Box>

@@ -50,7 +50,7 @@ export default function RequestResponse() {
           )}
         </Box>
       </Tablist>
-      <Card p={5} bg="gray.200" height="380px" overflowY="scroll">
+      <Card p={5} bg="gray.200" height="380px">
         <GetComp index={tab} />
       </Card>
     </>
