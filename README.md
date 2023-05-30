@@ -18,7 +18,7 @@ as many server as you can to run test script across all the server at same time.
 
 ## To configure Server with docker
 
-1. `docker run -it -p 3005:3005 manojown1/loadtester:latest` (outer port can be change according to the need.)
+1. `docker run -it -p 3005:3005 --platform linux/amd64 manojown1/loadtester:latest` (outer port can be change according to the need.)
 
   
 
@@ -26,9 +26,10 @@ as many server as you can to run test script across all the server at same time.
 
 1. Download binary from releases - https://github.com/cirnum/loadtester/releases/
 	1. `darwin amd64` - For mac user
-	2. `linux amd64` - Linux arch `amd64` users (64 bit system)
-	3. `linux arm64` - Linux arch `arm` users (32 bit system)
-	4. `windows amd64` - Windows Users
+	2. `darwin arm64` - For mac user (new mac)
+	3. `linux amd64` - Linux arch `amd64` users (64 bit system)
+	4. `linux arm64` - Linux arch `arm` users (32 bit system)
+	5. `windows amd64` - Windows Users
 
 ## Creating first request
 
