@@ -13,7 +13,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import LogoImg from "../../assets/logo.png";
+import LogoImg from "../../assets/brand.svg";
 
 interface NavItem {
   label: string;

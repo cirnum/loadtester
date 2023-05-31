@@ -849,26 +849,19 @@ export default function CallToActionWithIllustration() {
             fontSize={{ base: "3xl", sm: "4xl", md: "6xl" }}
             lineHeight="110%"
           >
-            Open source tool for
-            <Text as="span" color="tomato">
-              {" "}
+            Open source tool for{" "}
+            <Text as="span" color="primary.500">
               Stress Testing
             </Text>
           </Heading>
           <Text color="gray.500" maxW="3xl">
-            Loadster allows for the distribution of load tests across numerous
+            Loadtester allows for the distribution of load tests across numerous
             computers, making it possible to simulate millions of concurrent
             users.
           </Text>
           <Stack spacing={6} direction="row">
             <RouterLink to="signin">
-              <Button
-                rounded="full"
-                px={6}
-                colorScheme="orange"
-                bg="orange.400"
-                _hover={{ bg: "tomato" }}
-              >
+              <Button rounded="full" px={6} colorScheme="primary">
                 Login
               </Button>
             </RouterLink>
