@@ -1,6 +1,8 @@
 DEFAULT_VERSION=1.0.0-local
 VERSION := $(or $(VERSION),$(DEFAULT_VERSION))
 
+fly_deploy:
+	flyctl deploy ./server
 clean:
 	@echo "Cleaning..."
 	rm -rf ./ui/dist
