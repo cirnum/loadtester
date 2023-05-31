@@ -10,6 +10,7 @@ import (
 
 	"github.com/cirnum/loadtester/server/db"
 	"github.com/cirnum/loadtester/server/pkg/configs"
+	"github.com/clerkinc/clerk-sdk-go/clerk"
 
 	"github.com/cirnum/loadtester/server/pkg/middleware"
 	"github.com/cirnum/loadtester/server/pkg/routes"
@@ -37,7 +38,7 @@ func main() {
 
 	// Middlewares.
 	middleware.FiberMiddleware(app)
-
+	InitializeAuthClient()
 	if isWorker {
 		routes.WorkerModeRoutes(app)
 	} else {
@@ -97,4 +98,15 @@ func isWorkerMode() bool {
 	configs.ConfigProvider.HostIp = localIp
 	fmt.Printf("Worker %+v \n", configs.ConfigProvider)
 	return true
+}
+
+func InitializeAuthClient() {
+	secretKey := os.Getenv("CLERK_AUTH")
+	if secretKey != "" {
+		var err error
+		configs.ConfigProvider.AuthClient, err = clerk.NewClient(secretKey)
+		if err != nil {
+			log.Println("Failed to initilize auth client")
+		}
+	}
 }

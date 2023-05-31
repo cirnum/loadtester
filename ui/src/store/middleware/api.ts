@@ -19,6 +19,7 @@ export const apiMiddleware: Middleware =
       method: action.method,
       body: action.payload,
       param: action.params,
+      token: store.getState().auth.token,
     })
       .then((response) => {
         if (action.onSuccess) {

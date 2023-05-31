@@ -14,4 +14,5 @@ export type TAxiosWrapper = {
   method: string;
   param?: object;
   body?: object;
+  token?: string;
 };

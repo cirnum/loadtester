@@ -7,6 +7,7 @@ import {
   SIGNUP_SUCCESS,
   SIGNUP_FAILURE,
   SIGNUP_CLEAR,
+  SAVE_TOKEN,
 } from "./actionTypes";
 import { ApiCallAction } from "../types";
 
@@ -19,6 +20,7 @@ export interface AUTH {
   loading: boolean;
   error?: LoginFailurePayload;
   user?: LoginSuccessPayload;
+  token?: string;
   signup: {
     loading: boolean;
     data?: SignUpSuccessPayload;
@@ -40,6 +42,10 @@ export interface LoginFailurePayload {
 export interface LoginRequest extends Action {
   type: typeof LOGIN_REQUEST;
   payload: LoginRequestPayload;
+}
+export interface SaveToken extends Action {
+  type: typeof SAVE_TOKEN;
+  payload: string;
 }
 
 export interface LoginSuccess extends Action {
@@ -115,4 +121,5 @@ export type AuthAction =
   | SignUpSuccess
   | SignUpFailure
   | SignUpAction
-  | ClearSingupState;
+  | ClearSingupState
+  | SaveToken;

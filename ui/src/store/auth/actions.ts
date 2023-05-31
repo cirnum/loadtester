@@ -2,6 +2,7 @@ import {
   LOGIN_FAILURE,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
+  SAVE_TOKEN,
   SIGNUP_CLEAR,
   SIGNUP_FAILURE,
   SIGNUP_REQUEST,
@@ -16,6 +17,7 @@ import {
   LoginRequestPayload,
   LoginSuccess,
   LoginSuccessPayload,
+  SaveToken,
   SignUpAction,
   SignUpFailure,
   SignUpFailurePayload,
@@ -27,6 +29,11 @@ import {
 
 export const loginRequest = (payload: LoginRequestPayload): LoginRequest => ({
   type: LOGIN_REQUEST,
+  payload,
+});
+
+export const saveToken = (payload: string): SaveToken => ({
+  type: SAVE_TOKEN,
   payload,
 });
 

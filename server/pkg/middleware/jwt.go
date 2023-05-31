@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/cirnum/loadtester/server/app/utils"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/cirnum/loadtester/server/pkg/configs"
 	"github.com/gofiber/fiber/v2"
 
 	jwtMiddleware "github.com/gofiber/jwt/v2"
@@ -24,7 +24,34 @@ import (
 
 //		return jwtMiddleware.New(config)
 //	}
+
+type UserInfo struct {
+	userId string
+	email  *string
+}
+
+func JWTProtectedForOAUTH(c *fiber.Ctx, tokenString string) (UserInfo, error) {
+	userInfo := UserInfo{}
+	var err error
+
+	if configs.ConfigProvider.AuthClient != nil {
+		sessClaims, err := configs.ConfigProvider.AuthClient.VerifyToken(tokenString)
+
+		if err != nil {
+			return userInfo, err
+		}
+		user, err := configs.ConfigProvider.AuthClient.Users().Read(sessClaims.Claims.Subject)
+		if err != nil {
+			return userInfo, err
+		}
+		userInfo.userId = user.ID
+		userInfo.email = user.PrimaryEmailAddressID
+	}
+	return userInfo, err
+}
+
 func JWTProtected(c *fiber.Ctx) error {
+
 	var tokenString string
 	authorization := c.Get("Authorization")
 
@@ -38,24 +65,19 @@ func JWTProtected(c *fiber.Ctx) error {
 		return utils.ResponseError(c, nil, "You are not logged in", fiber.StatusUnauthorized)
 	}
 
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			message := fmt.Sprintf("Unexpected signing method: %v", token.Header["alg"])
-			return nil, fmt.Errorf(message)
-		}
-		return []byte(os.Getenv("JWT_SECRET_KEY")), nil
-	})
+	userInfo, err := JWTProtectedForOAUTH(c, tokenString)
 
 	if err != nil {
-		return utils.ResponseError(c, nil, fmt.Sprintf("invalidate token: %v", err), fiber.StatusUnauthorized)
+		return utils.ResponseError(c, nil, fmt.Sprintf("Invalidate token: %v", err), fiber.StatusUnauthorized)
 	}
 
-	if claim, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		c.Locals("userId", claim["id"].(string))
-		c.Locals("email", claim["email"].(string))
+	if userInfo.userId != "" {
+		c.Locals("userId", userInfo.userId)
+		c.Locals("email", userInfo.email)
 		return c.Next()
 	}
-	return utils.ResponseError(c, nil, "", fiber.StatusInternalServerError)
+
+	return utils.ResponseError(c, err, "", fiber.StatusInternalServerError)
 }
 
 func JWTProtectedClient() func(*fiber.Ctx) error {

@@ -1,15 +1,15 @@
 import { Toaster } from "react-hot-toast";
-import { RouterProvider } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
-import { router } from "./routes";
+import { BrowserRouter } from "react-router-dom";
+import Route from "./routes/routes";
 
 function App() {
   return (
-    <div className="">
+    <BrowserRouter>
       <Toaster />
-      <RouterProvider router={router} />
+      <Route />
       <Analytics />
-    </div>
+    </BrowserRouter>
   );
 }
 

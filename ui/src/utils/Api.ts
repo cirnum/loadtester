@@ -1,25 +1,13 @@
 import axios from "axios";
 import { TAxiosWrapper } from "../types";
 
-const TOKEN = "token";
+const TOKEN = "clerk-db-jwt";
 const PATH_PREFIX = "/api/v1/";
-
-const getToken = (token: string) => {
-  const xo = window.localStorage.getItem(token);
-  if (xo) {
-    return JSON.parse(xo).xo;
-  }
-  return "";
-};
 const Instance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL
     ? import.meta.env.VITE_BASE_URL
     : window.location.origin + PATH_PREFIX,
   timeout: 8000,
-  headers: {
-    Authorization: `Bearer ${getToken(TOKEN)}`,
-    "Content-Type": "application/json",
-  },
 });
 
 export default function ApiCall<T>({
@@ -27,6 +15,7 @@ export default function ApiCall<T>({
   method,
   param = {},
   body = {},
+  token = "",
 }: TAxiosWrapper): Promise<T> {
   return Instance({
     url: path,
@@ -42,8 +31,7 @@ export default function ApiCall<T>({
       },
     ],
     headers: {
-      Authorization: `Bearer ${getToken(TOKEN)}`,
-      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
 }

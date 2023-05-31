@@ -6,6 +6,7 @@ import {
   SIGNUP_SUCCESS,
   SIGNUP_FAILURE,
   SIGNUP_CLEAR,
+  SAVE_TOKEN,
 } from "./actionTypes";
 import { AUTH, AuthAction } from "./types";
 
@@ -13,6 +14,7 @@ const initialState: AUTH = {
   loading: false,
   user: undefined,
   error: undefined,
+  token: undefined,
   signup: {
     loading: false,
     data: undefined,
@@ -21,6 +23,11 @@ const initialState: AUTH = {
 
 export default (state = initialState, action: AuthAction) => {
   switch (action.type) {
+    case SAVE_TOKEN:
+      return {
+        ...state,
+        token: action.payload,
+      };
     case LOGIN_REQUEST:
       return {
         ...state,

@@ -1,12 +1,15 @@
 package configs
 
+import "github.com/clerkinc/clerk-sdk-go/clerk"
+
 type Config struct {
-	Token    string
-	Port     string
-	MasterIp string
-	IP       string
-	HostIp   string
-	IsSlave  bool
+	Token      string
+	Port       string
+	MasterIp   string
+	IP         string
+	HostIp     string
+	AuthClient clerk.Client
+	IsSlave    bool
 }
 
 var ConfigProvider *Config
