@@ -46,7 +46,7 @@ export default function Login() {
           <Heading fontSize="4xl">Sign in to your account</Heading>
           <Text fontSize="lg" color="gray.600">
             to enjoy all of our cool{" "}
-            <Link color="blue.400" href="/signin">
+            <Link color="primary.400" href="/signin">
               features
             </Link>
             ✌️
@@ -82,21 +82,14 @@ export default function Login() {
                 </Link> */}
               </Stack>
 
-              <Button
-                onClick={handleSubmit}
-                bg="tomato"
-                color="white"
-                _hover={{
-                  bg: "orange.400",
-                }}
-              >
+              <Button onClick={handleSubmit} colorScheme="primary">
                 Sign in
               </Button>
               <Text align="center">
                 Don&apos;t have an account?
                 <RouterLink to="/signup">
                   {" "}
-                  <Button as="a" variant="link" color="tomato">
+                  <Button as="a" variant="link" color="primary.400">
                     Signup
                   </Button>
                 </RouterLink>

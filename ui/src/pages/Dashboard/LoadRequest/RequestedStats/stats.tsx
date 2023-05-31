@@ -1,4 +1,4 @@
-import { HStack, Text } from "@chakra-ui/react";
+import { Text, VStack } from "@chakra-ui/react";
 import { Animate } from "../../../../components/Stats/Animation";
 
 export enum STATE {
@@ -40,22 +40,26 @@ export default function Stats({
   state,
 }: {
   text: string;
-  value: number;
+  value: number | string;
   state: STATE;
 }) {
   const color = getColorCode(state);
   return (
-    <HStack
-      gap={3}
-      minWidth="150px"
+    <VStack
+      gap={1}
+      minWidth="200px"
+      maxWidth="200px"
       borderLeft={`2px solid ${color}`}
-      paddingLeft="12px"
+      padding="12px 0"
+      margin="12px"
+      justifyContent="start"
+      bg="#F8F8F8"
       flex={1}
     >
-      <Text color={getColorCodeForNumber(state)} fontWeight="600">
-        <Animate value={value} />
-      </Text>
       <Text>{text}</Text>
-    </HStack>
+      <Text color={getColorCodeForNumber(state)} fontWeight="600">
+        {typeof value === "number" ? <Animate value={value} /> : value}
+      </Text>
+    </VStack>
   );
 }

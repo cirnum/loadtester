@@ -15,7 +15,7 @@ import {
   getSelectedRequestId,
 } from "../../../store/stress/dashboard/selectors";
 import RequestResponse from "./RequestRespons";
-import { WorkerState } from "./RequestStatus/workerState";
+// import { WorkerState } from "./RequestStatus/workerState";
 import ServerMap from "./RequestStatus/serverMap";
 import RequestedStats from "./RequestedStats";
 
@@ -23,12 +23,7 @@ function ResponseTab({ children }: { children: ReactElement }) {
   const [, setTabIndex] = useState(0);
   const response = useSelector(getRequestResponseData);
 
-  const list = [
-    "Response",
-    "Request Status",
-    "Worker Status",
-    "Worker Stats",
-  ].filter((item) => {
+  const list = ["Response", "Request Status", "Worker Stats"].filter((item) => {
     if (!response && item === "Response") {
       return false;
     }
@@ -75,9 +70,9 @@ export function RequestStats() {
             <TabPanel>
               <RequestedStats />
             </TabPanel>
-            <TabPanel>
+            {/* <TabPanel>
               <WorkerState />
-            </TabPanel>
+            </TabPanel> */}
             <TabPanel>
               <ServerMap />
             </TabPanel>
