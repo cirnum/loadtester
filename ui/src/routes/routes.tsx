@@ -1,7 +1,12 @@
 import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { ClerkProvider, SignedIn, useAuth } from "@clerk/clerk-react";
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  useAuth,
+} from "@clerk/clerk-react";
 import { Suspense, useEffect } from "react";
 import { ALL_ROUTES } from "./map";
 import SidebarWithHeader from "../components/Sidebar/oauthSidebar";
@@ -53,6 +58,9 @@ function AllRoutes() {
                       <Component />
                     </SidebarWithHeader>
                   </SignedIn>
+                  <SignedOut>
+                    <Navigate to="/" />
+                  </SignedOut>
                 </Suspense>
               }
             />
