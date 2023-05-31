@@ -13,8 +13,7 @@ import SidebarWithHeader from "../components/Sidebar/oauthSidebar";
 import Login from "../pages/Login/login";
 import { saveToken } from "../store/auth/actions";
 import Spinner from "../components/Spinner";
-
-const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+import { CLERK_PUBLISHABLE_KEY } from "../utils/config";
 
 function AllRoutes() {
   const dispatch = useDispatch();
@@ -37,7 +36,7 @@ function AllRoutes() {
               key={path}
               path={path}
               element={
-                <Suspense fallback={<Spinner />}>
+                <Suspense fallback={<Spinner height="100vh" />}>
                   <Login>
                     <Component routing="path" path={childPath} />
                   </Login>
@@ -52,7 +51,7 @@ function AllRoutes() {
               key={path}
               path={path}
               element={
-                <Suspense fallback={<Spinner />}>
+                <Suspense fallback={<Spinner height="100vh" />}>
                   <SignedIn>
                     <SidebarWithHeader>
                       <Component />
@@ -71,7 +70,7 @@ function AllRoutes() {
             key={path}
             path={path}
             element={
-              <Suspense fallback={<Spinner />}>
+              <Suspense fallback={<Spinner height="100vh" />}>
                 <Component />
                 <SignedIn>
                   <Navigate to="/dashboard" />
@@ -87,7 +86,10 @@ function AllRoutes() {
 export default function ClerkProviderWithRoutes() {
   const navigate = useNavigate();
   return (
-    <ClerkProvider publishableKey={clerkPubKey} navigate={(to) => navigate(to)}>
+    <ClerkProvider
+      publishableKey={CLERK_PUBLISHABLE_KEY}
+      navigate={(to) => navigate(to)}
+    >
       <AllRoutes />
     </ClerkProvider>
   );
