@@ -142,9 +142,16 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
       shadow="s1"
       {...rest}
     >
-      <Flex alignItems="center" width="260px" justifyContent="center">
-        <Image width="260px" height="40px" src={LogoImg} alt="loadster" />
-      </Flex>
+      <Link to="/">
+        <Flex
+          alignItems="center"
+          width="260px"
+          justifyContent="center"
+          cursor="pointer"
+        >
+          <Image width="260px" height="40px" src={LogoImg} alt="loadster" />
+        </Flex>
+      </Link>
       <IconButton
         display={{ base: "flex", md: "none" }}
         onClick={onOpen}
