@@ -1,6 +1,6 @@
-import { Stack, Spinner as SP } from "@chakra-ui/react";
+import { Stack, Spinner as SP, BoxProps } from "@chakra-ui/react";
 
-export default function Spinner() {
+export default function Spinner(props: BoxProps) {
   return (
     <Stack
       direction="row"
@@ -9,6 +9,7 @@ export default function Spinner() {
       justifyContent="center"
       alignItems="center"
       spacing={4}
+      {...props}
     >
       <SP size="xl" />
     </Stack>
