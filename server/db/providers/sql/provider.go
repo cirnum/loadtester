@@ -10,6 +10,7 @@ import (
 	"github.com/glebarez/sqlite"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
@@ -55,6 +56,8 @@ func NewProvider() (*provider, error) {
 	switch dbType {
 	case constants.DbTypeSQL:
 		sqlDB, err = gorm.Open(mysql.Open(dbDNS), ormConfig)
+	case constants.DbTypePG:
+		sqlDB, err = gorm.Open(postgres.Open(dbDNS), ormConfig)
 	case constants.DbTypeSQLITE:
 		sqlDB, err = gorm.Open(sqlite.Open(dbDNS+"?_pragma=busy_timeout(5000)&_pragma=journal_mode(WAL)"), ormConfig)
 	}
