@@ -140,6 +140,10 @@ func (h *HttpClient) RunScen(ctx context.Context, conf models.Request) {
 
 func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan<- error) {
 	numOfClient := conf.Clients
+	var throttle <-chan time.Time
+	if conf.QPS > 0 {
+		throttle = time.Tick(time.Duration(1e6/(conf.QPS)) * time.Microsecond)
+	}
 	var wg sync.WaitGroup
 	wg.Add(numOfClient)
 	h.startTime = time.Now().Unix()
@@ -151,6 +155,9 @@ func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan
 					case <-ctx.Done():
 						return
 					default:
+						if conf.QPS > 0 {
+							<-throttle
+						}
 						h.Request()
 					}
 				}

@@ -64,6 +64,8 @@ const parseRequest = (
 ) => {
   const DEFAULT_CLIENT = 10;
   const DEFAULT_TIME = 10;
+  const DEFAULT_QPS = 0;
+
   const url = constructUrl(action.payload.url, request.requestParams);
   const headers = constructHeader(request.requestHeader);
   const cookies = constructHeader(request.requestCookies);
@@ -73,6 +75,7 @@ const parseRequest = (
     ...action.payload,
     clients: parseInt(action.payload.clients.toString(), 10) || DEFAULT_CLIENT,
     time: parseInt(action.payload.time.toString(), 10) || DEFAULT_TIME,
+    qps: parseInt(action.payload.qps.toString(), 10) || DEFAULT_QPS,
     url,
     headers,
     cookies,

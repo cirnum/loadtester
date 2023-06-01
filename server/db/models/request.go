@@ -27,6 +27,7 @@ type Request struct {
 	Clients   int            `json:"clients"`
 	Headers   datatypes.JSON `json:"headers"`
 	Cookies   datatypes.JSON `json:"cookies"`
+	QPS       int64          `json:"qps"`
 	Params    datatypes.JSON `json:"params"`
 	KeepAlive bool           `json:"keepAlive"`
 	Method    string         `json:"method"`

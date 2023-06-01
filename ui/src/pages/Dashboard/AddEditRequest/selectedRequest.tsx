@@ -8,9 +8,15 @@ import {
   Button,
   Input,
   Stack,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
-import { ArrowForwardIcon, AddIcon, ArrowDownIcon } from "@chakra-ui/icons";
+import {
+  ArrowForwardIcon,
+  AddIcon,
+  ArrowDownIcon,
+  InfoOutlineIcon,
+} from "@chakra-ui/icons";
 import { getSelectedRequest } from "../../../store/stress/dashboard/selectors";
 import { RestMethods } from "../../../store/stress/dashboard/types";
 import RequestOptions from "./requestOptions";
@@ -22,6 +28,21 @@ import MethodInfo from "../../../components/Info/MethodInfo";
 import { InputWrap } from "./InputArea/inputWrap";
 import Method from "./method";
 
+function CustomizeToolTipInfo({ text }: { text: string }) {
+  return (
+    <Tooltip
+      hasArrow
+      label={text}
+      bg="white"
+      color="#837F9D"
+      padding="10px"
+      fontWeight="500"
+    >
+      <InfoOutlineIcon boxSize={3} cursor="pointer" margin={2} />
+    </Tooltip>
+  );
+}
+
 export default function SelectedAddEditRequest() {
   const dispatch = useDispatch();
   const selectedRequest = useSelector(getSelectedRequest);
@@ -31,6 +52,7 @@ export default function SelectedAddEditRequest() {
   );
   const [url, setURL] = useState<string>("");
   const [clients, setClients] = useState<number>(0);
+  const [qps, setQPS] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
 
   const parse = (val) => val.replace(/^\$/, "");
@@ -45,11 +67,14 @@ export default function SelectedAddEditRequest() {
         method,
         clients,
         time: seconds,
+        qps,
       })
     );
   };
   useEffect(() => {
     if (selectedRequest) {
+      setQPS(selectedRequest.qps);
+      setClients(selectedRequest?.clients);
       setClients(selectedRequest?.clients);
       setSeconds(selectedRequest?.time);
       setURL(selectedRequest?.url);
@@ -85,7 +110,6 @@ export default function SelectedAddEditRequest() {
           <Method method={method} setMethod={setMethod} />
           <ArrowDownIcon />
         </InputWrap>
-        {/* <Box height="24px" borderLeft="2px solid #171239" /> */}
         <InputWrap flex={7}>
           <Input
             _focusVisible={{
@@ -112,20 +136,35 @@ export default function SelectedAddEditRequest() {
             onChange={(e) => setClients(parse(e.target.value))}
             value={clients || ""}
           />
+          <CustomizeToolTipInfo text="Number of concurrent users (default 10)" />
         </InputWrap>
         <InputWrap flex={2}>
           <Input
             _focusVisible={{
               outline: "none",
-              caretColor: "secondary.500",
             }}
             flex={2}
             type="number"
-            placeholder="Time in seconds"
+            placeholder="Seconds"
             onChange={(e) => setSeconds(parse(e.target.value))}
             value={seconds || ""}
             border="0"
           />
+          <CustomizeToolTipInfo text="Seconds to run (default 10s)" />
+        </InputWrap>
+        <InputWrap flex={2}>
+          <Input
+            _focusVisible={{
+              outline: "none",
+            }}
+            flex={2}
+            type="number"
+            placeholder="QPS"
+            onChange={(e) => setQPS(parse(e.target.value))}
+            value={qps || ""}
+            border="0"
+          />
+          <CustomizeToolTipInfo text="Query per seconds (optional)" />
         </InputWrap>
         <InputWrap flex={0.5} borderRight="0" padding="12px">
           <Button
