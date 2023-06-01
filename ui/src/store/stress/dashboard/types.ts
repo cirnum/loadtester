@@ -144,6 +144,7 @@ export interface RequestHistoryPayload {
   clients: number;
   created: number;
   created_at: number;
+  qps: number;
   headers: Record<string, string>;
   cookies: Record<string, string>;
   id: string;
@@ -340,6 +341,7 @@ export interface SendRequestSagaPayload {
   clients: number;
   method: string;
   time: number;
+  qps: number;
 }
 export interface SendPayloadToSagaAction extends Action {
   type: typeof SEND_PAYLOAD_TO_SAGA;

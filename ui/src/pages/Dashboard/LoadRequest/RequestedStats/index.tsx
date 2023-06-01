@@ -53,6 +53,11 @@ export default function RequestStats() {
       <Box display="flex" flexWrap="wrap" justifyContent="space-between">
         <Stats
           state={STATE.NORMAL}
+          value={loadsterRespons?.timeTaken || 0}
+          text="Time"
+        />
+        <Stats
+          state={STATE.NORMAL}
           value={(loadsterRespons?.minLatency || 0) / 1000}
           text="Fastest (MS)"
         />
@@ -60,11 +65,6 @@ export default function RequestStats() {
           state={STATE.NORMAL}
           value={(loadsterRespons?.maxLatency || 0) / 1000}
           text="Slowest (MS)"
-        />
-        <Stats
-          state={STATE.NORMAL}
-          value={loadsterRespons?.timeTaken || 0}
-          text="Time"
         />
         <Stats
           state={STATE.NORMAL}
