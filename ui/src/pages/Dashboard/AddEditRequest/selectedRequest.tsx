@@ -9,6 +9,8 @@ import {
   Input,
   Stack,
   Tooltip,
+  Spacer,
+  Textarea,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -18,15 +20,21 @@ import {
   InfoOutlineIcon,
 } from "@chakra-ui/icons";
 import { getSelectedRequest } from "../../../store/stress/dashboard/selectors";
-import { RestMethods } from "../../../store/stress/dashboard/types";
+import {
+  CurlToJSONPayload,
+  RestMethods,
+} from "../../../store/stress/dashboard/types";
 import RequestOptions from "./requestOptions";
 import {
   addNewRequestAction,
+  curlToRequest,
   sendPayloadToSaga,
 } from "../../../store/stress/dashboard/actions";
 import MethodInfo from "../../../components/Info/MethodInfo";
 import { InputWrap } from "./InputArea/inputWrap";
 import Method from "./method";
+import { Dialog } from "../../../components/Modal";
+import { convertToCurl } from "../../../utils/curlToRequest";
 
 function CustomizeToolTipInfo({ text }: { text: string }) {
   return (
@@ -40,6 +48,55 @@ function CustomizeToolTipInfo({ text }: { text: string }) {
     >
       <InfoOutlineIcon boxSize={3} cursor="pointer" margin={2} />
     </Tooltip>
+  );
+}
+
+function ImportCurl() {
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
+  const [errorText, setError] = useState<any>("");
+
+  const importCurlCmd = async () => {
+    try {
+      const payload = convertToCurl(text);
+      dispatch(curlToRequest(payload as CurlToJSONPayload));
+      setOpen(false);
+    } catch (e: any) {
+      setError(e);
+    }
+  };
+  return (
+    <Box>
+      <Button colorScheme="primary" size="md" onClick={() => setOpen(true)}>
+        Curl
+      </Button>
+      <Dialog
+        onClose={() => setOpen(false)}
+        isOpen={open}
+        title="Add your curl"
+      >
+        <Box>
+          <Textarea
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Add your curl here"
+            variant="filled"
+            fontSize="14px"
+            height="400px"
+          />
+          <Text color="Red">{errorText}</Text>
+          <Button
+            width="100%"
+            my={5}
+            colorScheme="primary"
+            disabled={!text}
+            onClick={importCurlCmd}
+          >
+            Import
+          </Button>
+        </Box>
+      </Dialog>
+    </Box>
   );
 }
 
@@ -78,6 +135,7 @@ export default function SelectedAddEditRequest() {
       setClients(selectedRequest?.clients);
       setSeconds(selectedRequest?.time);
       setURL(selectedRequest?.url);
+      setMethod(selectedRequest?.method);
     }
   }, [selectedRequest]);
 
@@ -89,8 +147,8 @@ export default function SelectedAddEditRequest() {
   };
   return (
     <Box w="full" borderRight="2px solid #e2e8f0">
-      {selectedRequest && (
-        <HStack m={2} justifyContent="space-between">
+      <HStack m={2} justifyContent="space-between">
+        {selectedRequest && (
           <Stack alignItems="Center" direction="row">
             <MethodInfo>
               <Text fontSize="sm" color="tomato.700" as="b">
@@ -99,11 +157,13 @@ export default function SelectedAddEditRequest() {
             </MethodInfo>
             <Tag m={4}>{url}</Tag>
           </Stack>
-          <Button colorScheme="gray" size="md" onClick={addNewRequest}>
-            <AddIcon marginRight={3} /> New
-          </Button>
-        </HStack>
-      )}
+        )}
+        <Spacer />
+        <Button colorScheme="gray" size="md" onClick={addNewRequest}>
+          <AddIcon marginRight={3} /> New
+        </Button>
+        <ImportCurl />
+      </HStack>
       <Divider />
       <HStack height="60px" borderBottom="1px solid #EBEBEB" paddingX="32px">
         <InputWrap flex={1} width="full">
@@ -175,7 +235,7 @@ export default function SelectedAddEditRequest() {
             rightIcon={<ArrowForwardIcon />}
             onClick={() => sendRequest()}
           >
-            Send
+            Run
           </Button>
         </InputWrap>
       </HStack>

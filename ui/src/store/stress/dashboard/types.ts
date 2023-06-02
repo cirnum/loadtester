@@ -19,6 +19,7 @@ import {
   SAVE_REQUEST_RESPONSE,
   PUSH_TO_HISTORY,
   ADD_NEW_REQUEST,
+  CURL_TO_REQUEST,
 } from "./actionTypes";
 import { ApiCallAction } from "../../types";
 import { Server } from "../server/types";
@@ -156,6 +157,15 @@ export interface RequestHistoryPayload {
   time: number;
   url: string;
   params: Record<string, string>[] | Record<string, string>;
+}
+
+export interface CurlToJSONPayload {
+  data?: Object;
+  url: string;
+  method: string;
+  header?: Record<string, string>;
+  params?: Record<string, string>;
+  cookies?: string;
 }
 
 export interface LoadsterRequestPayload {
@@ -348,6 +358,10 @@ export interface SendPayloadToSagaAction extends Action {
   payload: SendRequestSagaPayload;
 }
 
+export interface CurlToRequest extends Action {
+  type: typeof CURL_TO_REQUEST;
+  payload: CurlToJSONPayload;
+}
 export type DashboardAction =
   | FetchHistoryRequest
   | FetchHistorySuccess
@@ -370,4 +384,5 @@ export type DashboardAction =
   | AddRequestCookiesAction
   | SaveRequestResponseAction
   | PushToHistoryAction
-  | AddNewRequestAction;
+  | AddNewRequestAction
+  | CurlToRequest;

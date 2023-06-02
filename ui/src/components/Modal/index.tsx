@@ -12,10 +12,11 @@ import React, { ReactElement } from "react";
 interface DialogProps {
   isOpen: boolean;
   onClose: () => void;
+  title: string;
   children?: ReactElement;
 }
 export function Dialog(props: DialogProps) {
-  const { isOpen, onClose, children } = props;
+  const { isOpen, onClose, children, title } = props;
   const cancelRef = React.useRef<any>();
 
   return (
@@ -27,7 +28,7 @@ export function Dialog(props: DialogProps) {
       <AlertDialogOverlay>
         <AlertDialogContent bg="white">
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Add New Server
+            {title}
           </AlertDialogHeader>
 
           <AlertDialogBody>{children}</AlertDialogBody>

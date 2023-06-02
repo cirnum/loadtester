@@ -11,6 +11,7 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
+    "@bany/curl-to-json": "^1.2.7",
     "@chakra-ui/icons": "^2.0.17",
     "@chakra-ui/react": "^2.4.9",
     "@emotion/react": "^11.10.5",

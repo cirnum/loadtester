@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	helperModels "github.com/cirnum/loadtester/server/app/models"
 	"github.com/cirnum/loadtester/server/db/models"
@@ -27,13 +28,14 @@ func RunExecutor(ctx context.Context, request models.Request) error {
 
 	err := utils.RunWorker(request)
 	if err != nil {
-		log.Println("Error while sending request to Worker", err)
+		log.Errorf("Error while sending request to Worker", err.Error())
 		return err
 	}
 
 	go executor.Run(ctx, request)
 	client, err = httpRequest.Initializer(request)
 	if err != nil {
+		log.Error("Error while initiate http client", err.Error())
 		return err
 	}
 
@@ -63,9 +65,12 @@ func TestRequest(request *models.Request) (helperModels.RequestResponse, error) 
 	}
 	startTime := time.Now().UnixNano() / int64(time.Millisecond)
 	response, err = utils.Do(method, request.URL, body, headers)
+
+	if err != nil {
+		log.Error("Error while checking service is reachable or not", err.Error())
+	}
 	endTime := time.Now().UnixNano() / int64(time.Millisecond)
 
-	log.Println("Error", err)
 	if err != nil && response == nil {
 		return requestResponse, err
 	}

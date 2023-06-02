@@ -8,6 +8,7 @@
 # testing
 /strain-ui/coverage
 
+temp
 # production
 /strain-ui/build
 /strain-ui/dist

@@ -1,7 +1,6 @@
 package sql
 
 import (
-	"log"
 	"os"
 	"time"
 
@@ -9,6 +8,7 @@ import (
 	"github.com/cirnum/loadtester/server/pkg/constants"
 	"github.com/glebarez/sqlite"
 	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -51,7 +51,7 @@ func NewProvider() (*provider, error) {
 
 	dbType := os.Getenv(constants.DbType)
 	dbDNS := os.Getenv(constants.DbDns)
-	log.Println("dbDNS:", dbType, dbDNS)
+	log.Infof("dbType: %s, dbDNS: %s \n", dbType, dbDNS)
 	switch dbType {
 	case constants.DbTypeSQL:
 		sqlDB, err = gorm.Open(mysql.Open(dbDNS), ormConfig)

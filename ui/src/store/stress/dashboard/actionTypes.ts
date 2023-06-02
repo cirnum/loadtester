@@ -20,3 +20,4 @@ export const SEND_LOADSTER_SUCCESS = "@app/dashboard/SEND_LOADSTER_SUCCESS";
 export const SEND_LOADSTER_FAILURE = "@app/dashboard/SEND_LOADSTER_FAILURE";
 export const SET_JSON_BODY = "@app/dashboard/SET_JSON_BODY";
 export const SEND_PAYLOAD_TO_SAGA = "@app/dashboard/SEND_PAYLOAD_TO_SAGA";
+export const CURL_TO_REQUEST = "@app/dashboard/CURL_TO_REQUEST";

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
+	"net/http"
 	"os"
 	"sync"
 	"time"
@@ -16,6 +16,7 @@ import (
 	metrics "github.com/cirnum/loadtester/server/pkg/executor/metrics"
 	"github.com/cirnum/loadtester/server/pkg/utils"
 	gometrics "github.com/rcrowley/go-metrics"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -238,7 +239,13 @@ func (e *Executor) logScaledOnCue(ctx context.Context, ch chan interface{}) erro
 						headers := map[string]string{
 							"Content-Type": "application/json",
 						}
-						utils.Do("POST", url, body, headers)
+						res, err := utils.Do(http.MethodPost, url, body, headers)
+						if err != nil {
+							log.Error("Failed to connect to master host", err.Error())
+						}
+						if res != nil {
+							log.Warnf("For url: %s, statusCode: %s", url, res.StatusCode)
+						}
 					} else {
 						db.Provider.AddLoadByRequestId(ctx, value)
 					}
