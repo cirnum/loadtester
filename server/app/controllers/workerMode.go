@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"context"
-	"log"
+
+	log "github.com/sirupsen/logrus"
+
 	"time"
 
 	_ "github.com/cirnum/loadtester/server/app/models"
@@ -19,14 +21,11 @@ import (
 func RunRequest(c *fiber.Ctx) error {
 	ctx := context.Background()
 	request := &models.Request{}
-	log.Println("Run request hit")
 
 	if err := c.BodyParser(request); err != nil {
-		log.Println("Run request Body", err)
-
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
-	log.Printf("Run request Body %+v \n", request)
+	log.Info("Run request Body %+v \n", request)
 
 	executor := executor.NewExecutor(request.ID, request.ServerId)
 	ctx, cancelCtx := context.WithCancel(ctx)

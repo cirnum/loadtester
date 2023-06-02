@@ -9,6 +9,7 @@
 /strain-ui/coverage
 
 .env.pg
+temp
 # production
 /strain-ui/build
 /strain-ui/dist

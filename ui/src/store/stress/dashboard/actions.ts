@@ -18,6 +18,7 @@ import {
   SAVE_REQUEST_RESPONSE,
   PUSH_TO_HISTORY,
   ADD_NEW_REQUEST,
+  CURL_TO_REQUEST,
 } from "./actionTypes";
 import {
   FetchHistoryRequest,
@@ -52,6 +53,8 @@ import {
   SaveRequestResponseAction,
   PushToHistoryAction,
   AddNewRequestAction,
+  CurlToRequest,
+  CurlToJSONPayload,
 } from "./types";
 
 export const fetchHistoryRequest = (
@@ -202,6 +205,10 @@ export const getLoadsterFailure = (payload: string): GetLoadsterFailure => ({
   payload,
 });
 
+export const curlToRequest = (payload: CurlToJSONPayload): CurlToRequest => ({
+  type: CURL_TO_REQUEST,
+  payload,
+});
 export const getLoadsterAction = (
   payload: LoadsterRequestPayload
 ): LoadsterAction => ({

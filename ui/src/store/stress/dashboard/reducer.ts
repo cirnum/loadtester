@@ -20,12 +20,14 @@ import {
   SAVE_REQUEST_RESPONSE,
   PUSH_TO_HISTORY,
   ADD_NEW_REQUEST,
+  CURL_TO_REQUEST,
 } from "./actionTypes";
 import {
   IDashboard,
   DashboardAction,
   SelectedRequest,
   RequestHeadersAndParamsPayload,
+  CurlToJSONPayload,
 } from "./types";
 
 const initialState: IDashboard = {
@@ -55,6 +57,23 @@ const mapPrams = (headers: Record<string, string>) => {
   }, [] as RequestHeadersAndParamsPayload[]);
 };
 
+const mapRequest = (curlPayload: CurlToJSONPayload) => {
+  const common: SelectedRequest = { ...selectedRequestConst };
+  const requestHeader = mapPrams(curlPayload?.header || {});
+  const requestparams = mapPrams(curlPayload?.params || {});
+
+  // const requestCookies = mapPrams(curlPayload?.cookies || {});
+
+  const requestBody = curlPayload?.data || {};
+
+  // if (Object.keys(requestCookies).length)
+  //   common.requestCookies = requestCookies;
+  if (Object.keys(requestHeader).length) common.requestHeader = requestHeader;
+  if (Object.keys(requestparams).length) common.requestParams = requestparams;
+  if (Object.keys(requestBody).length) common.requestBody = requestBody;
+  return common;
+};
+
 export default (state = initialState, action: DashboardAction) => {
   switch (action.type) {
     case ADD_NEW_REQUEST: {
@@ -78,6 +97,23 @@ export default (state = initialState, action: DashboardAction) => {
               data: reqHistory,
             },
           },
+        },
+      };
+    }
+    case CURL_TO_REQUEST: {
+      const { payload } = action;
+      const common = mapRequest(payload);
+      const request = {
+        url: payload.url,
+        method: payload.method,
+      };
+      return {
+        ...state,
+        selectedRequest: {
+          ...state.selectedRequest,
+          request,
+          ...common,
+          response: undefined,
         },
       };
     }
