@@ -59,6 +59,8 @@ function ImportCurl() {
 
   const importCurlCmd = async () => {
     try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       const payload = convertToCurl(text);
       dispatch(curlToRequest(payload as CurlToJSONPayload));
       setOpen(false);
