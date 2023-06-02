@@ -73,9 +73,9 @@ const parseRequest = (
   const method = action.payload.method as RestMethods;
   return {
     ...action.payload,
-    clients: parseInt(action.payload.clients.toString(), 10) || DEFAULT_CLIENT,
-    time: parseInt(action.payload.time.toString(), 10) || DEFAULT_TIME,
-    qps: parseInt(action.payload.qps.toString(), 10) || DEFAULT_QPS,
+    clients: parseInt(action.payload.clients?.toString(), 10) || DEFAULT_CLIENT,
+    time: parseInt(action.payload.time?.toString(), 10) || DEFAULT_TIME,
+    qps: parseInt(action.payload.qps?.toString(), 10) || DEFAULT_QPS,
     url,
     headers,
     cookies,

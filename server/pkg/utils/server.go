@@ -1,13 +1,13 @@
 package utils
 
 import (
-	"log"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/cirnum/loadtester/server/db/models"
 	"github.com/gofiber/fiber/v2"
+	log "github.com/sirupsen/logrus"
 )
 
 // Check server Status
@@ -43,7 +43,7 @@ func StartServerWithGracefulShutdown(a *fiber.App) {
 		// Received an interrupt signal, shutdown.
 		if err := a.Shutdown(); err != nil {
 			// Error from closing listeners, or context timeout:
-			log.Printf("Oops... Server is not shutting down! Reason: %v", err)
+			log.Errorf("Oops... Server is not shutting down! Reason: %v", err)
 		}
 
 		close(idleConnsClosed)
@@ -54,7 +54,7 @@ func StartServerWithGracefulShutdown(a *fiber.App) {
 
 	// Run server.
 	if err := a.Listen(fiberConnURL); err != nil {
-		log.Printf("Oops... Server is not running! Reason: %v", err)
+		log.Errorf("Oops... Server is not running! Reason: %v", err)
 	}
 
 	<-idleConnsClosed
@@ -66,6 +66,6 @@ func StartServer(a *fiber.App) {
 	fiberConnURL, _ := ConnectionURLBuilder("fiber")
 	// Run server.
 	if err := a.Listen(fiberConnURL); err != nil {
-		log.Printf("Oops... Server is not running! Reason: %v", err)
+		log.Errorf("Oops... Server is not running! Reason: %v", err)
 	}
 }

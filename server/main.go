@@ -3,10 +3,11 @@ package main
 import (
 	"embed"
 	"flag"
-	"fmt"
-	"log"
+
 	"os"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/cirnum/loadtester/server/db"
 	"github.com/cirnum/loadtester/server/pkg/configs"
@@ -76,9 +77,9 @@ func main() {
 }
 
 func isWorkerMode() bool {
-	portPtr := flag.String("PORT", "3005", "Take the dafault port if port is empty (Required)")
+	portPtr := flag.String("PORT", "3005", "Take the dafault port if port is empty")
 	token := flag.String("TOKEN", "", "Please pass the token (Required)")
-	masterIp := flag.String("MASTER_IP", "", "Please pass the master node ip.")
+	masterIp := flag.String("MASTER_IP", "", "Please pass the master node ip. (Required)")
 	flag.Parse()
 
 	localIp := utils.GetPublicIp()
@@ -87,14 +88,16 @@ func isWorkerMode() bool {
 		configs.ConfigProvider.HostIp = localIp
 		configs.ConfigProvider.IsSlave = false
 		configs.ConfigProvider.IP = os.Getenv("SERVER_HOST")
-		fmt.Printf("Master %+v \n", configs.ConfigProvider)
+		log.Info("Master Config: %+v \n", configs.ConfigProvider)
+		log.Info(string("\033[34m"), "Master service initiated.")
 		return false
 	}
-	log.Println("Started node as worker.")
 	configs.ConfigProvider = configs.Initialize(*portPtr, *token, *masterIp)
 	configs.ConfigProvider.IsSlave = true
 	configs.ConfigProvider.IP = "0.0.0.0"
 	configs.ConfigProvider.HostIp = localIp
-	fmt.Printf("Worker %+v \n", configs.ConfigProvider)
+
+	log.Info("Worker Config: %+v \n", configs.ConfigProvider)
+	log.Info(string("\033[34m"), "Worker service initiated.")
 	return true
 }

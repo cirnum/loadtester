@@ -18,7 +18,7 @@ export default function AddOrEditComp() {
     );
   };
   return (
-    <Dialog isOpen={!!actionState} onClose={onClose}>
+    <Dialog isOpen={!!actionState} onClose={onClose} title="Add New Server">
       <AddOrEdit server={server} />
     </Dialog>
   );

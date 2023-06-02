@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"reflect"
 	"strings"
@@ -16,6 +15,7 @@ import (
 	"github.com/cirnum/loadtester/server/pkg/executor"
 	metrics "github.com/cirnum/loadtester/server/pkg/executor/metrics"
 	"github.com/cirnum/loadtester/server/pkg/utils"
+	log "github.com/sirupsen/logrus"
 )
 
 type RequestSend struct {
@@ -130,12 +130,12 @@ func (h *HttpClient) RunScen(ctx context.Context, conf models.Request) {
 		case err = <-finished:
 			ctx.Done()
 		case <-ctx.Done():
-			log.Println("Job Completed")
+			log.Info("Job Completed")
 			return
 		}
 	}()
 	h.Manager(ctx, conf, finished)
-	log.Println("Error", err)
+	log.Error("Error", err)
 }
 
 func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan<- error) {

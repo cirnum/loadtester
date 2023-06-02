@@ -39,7 +39,7 @@ export function DeleteDialog() {
       onClose={onClose}
     >
       <AlertDialogOverlay>
-        <AlertDialogContent>
+        <AlertDialogContent bg="white">
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
             Delete Server
           </AlertDialogHeader>
