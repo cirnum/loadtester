@@ -27,7 +27,7 @@ export default function RequestStats() {
     () => {
       dispatch(getLoadsterAction({ reqId: selectedRequestId }));
     },
-    isFinish ? null : 3000
+    isFinish ? null : 5000
   );
   if (!selectedRequest) return null;
   if (!data?.data && loading) {

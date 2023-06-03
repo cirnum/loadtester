@@ -7,10 +7,8 @@ import {
   HStack,
   Button,
   Input,
-  Stack,
   Tooltip,
   Spacer,
-  Textarea,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -20,21 +18,16 @@ import {
   InfoOutlineIcon,
 } from "@chakra-ui/icons";
 import { getSelectedRequest } from "../../../store/stress/dashboard/selectors";
-import {
-  CurlToJSONPayload,
-  RestMethods,
-} from "../../../store/stress/dashboard/types";
+import { RestMethods } from "../../../store/stress/dashboard/types";
 import RequestOptions from "./requestOptions";
 import {
   addNewRequestAction,
-  curlToRequest,
   sendPayloadToSaga,
 } from "../../../store/stress/dashboard/actions";
 import MethodInfo from "../../../components/Info/MethodInfo";
 import { InputWrap } from "./InputArea/inputWrap";
 import Method from "./method";
-import { Dialog } from "../../../components/Modal";
-import { convertToCurl } from "../../../utils/curlToRequest";
+import { OtherOption } from "./OtherOptions";
 
 function CustomizeToolTipInfo({ text }: { text: string }) {
   return (
@@ -48,57 +41,6 @@ function CustomizeToolTipInfo({ text }: { text: string }) {
     >
       <InfoOutlineIcon boxSize={3} cursor="pointer" margin={2} />
     </Tooltip>
-  );
-}
-
-function ImportCurl() {
-  const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  const [text, setText] = useState("");
-  const [errorText, setError] = useState<any>("");
-
-  const importCurlCmd = async () => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const payload = convertToCurl(text);
-      dispatch(curlToRequest(payload as CurlToJSONPayload));
-      setOpen(false);
-    } catch (e: any) {
-      setError(e);
-    }
-  };
-  return (
-    <Box>
-      <Button colorScheme="primary" size="md" onClick={() => setOpen(true)}>
-        Curl
-      </Button>
-      <Dialog
-        onClose={() => setOpen(false)}
-        isOpen={open}
-        title="Add your curl"
-      >
-        <Box>
-          <Textarea
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Add your curl here"
-            variant="filled"
-            fontSize="14px"
-            height="400px"
-          />
-          <Text color="Red">{errorText}</Text>
-          <Button
-            width="100%"
-            my={5}
-            colorScheme="primary"
-            disabled={!text}
-            onClick={importCurlCmd}
-          >
-            Import
-          </Button>
-        </Box>
-      </Dialog>
-    </Box>
   );
 }
 
@@ -149,23 +91,20 @@ export default function SelectedAddEditRequest() {
   };
   return (
     <Box w="full" borderRight="2px solid #e2e8f0">
-      <HStack m={2} justifyContent="space-between">
-        {selectedRequest && (
-          <Stack alignItems="Center" direction="row">
-            <MethodInfo>
-              <Text fontSize="sm" color="tomato.700" as="b">
-                {selectedRequest?.method}
-              </Text>
-            </MethodInfo>
-            <Tag m={4}>{url}</Tag>
-          </Stack>
-        )}
-        <Spacer />
-        <Button colorScheme="gray" size="md" onClick={addNewRequest}>
-          <AddIcon marginRight={3} /> New
-        </Button>
-        <ImportCurl />
-      </HStack>
+      {selectedRequest && (
+        <HStack m={2} justifyContent="space-between">
+          <MethodInfo>
+            <Text fontSize="sm" color="tomato.700" as="b">
+              {selectedRequest?.method}
+            </Text>
+          </MethodInfo>
+          <Tag m={4}>{url}</Tag>
+          <Spacer />
+          <Button colorScheme="gray" size="md" onClick={addNewRequest}>
+            <AddIcon marginRight={3} /> New
+          </Button>
+        </HStack>
+      )}
       <Divider />
       <HStack height="60px" borderBottom="1px solid #EBEBEB" paddingX="32px">
         <InputWrap flex={1} width="full">
@@ -228,7 +167,14 @@ export default function SelectedAddEditRequest() {
           />
           <CustomizeToolTipInfo text="Query per seconds (optional)" />
         </InputWrap>
-        <InputWrap flex={0.5} borderRight="0" padding="12px">
+        <InputWrap
+          flex={0.5}
+          borderRight="0"
+          padding="12px"
+          display="flex"
+          justifyContent="space-between"
+          gap={2}
+        >
           <Button
             borderRadius="4px"
             colorScheme="primary"
@@ -239,6 +185,7 @@ export default function SelectedAddEditRequest() {
           >
             Run
           </Button>
+          <OtherOption />
         </InputWrap>
       </HStack>
       <RequestOptions />

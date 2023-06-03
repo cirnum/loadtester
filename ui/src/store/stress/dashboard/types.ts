@@ -20,6 +20,7 @@ import {
   PUSH_TO_HISTORY,
   ADD_NEW_REQUEST,
   CURL_TO_REQUEST,
+  PARSE_COOKIE,
 } from "./actionTypes";
 import { ApiCallAction } from "../../types";
 import { Server } from "../server/types";
@@ -362,6 +363,12 @@ export interface CurlToRequest extends Action {
   type: typeof CURL_TO_REQUEST;
   payload: CurlToJSONPayload;
 }
+
+export interface ParseCookie extends Action {
+  type: typeof PARSE_COOKIE;
+  payload: Record<string, string>;
+}
+
 export type DashboardAction =
   | FetchHistoryRequest
   | FetchHistorySuccess
@@ -385,4 +392,5 @@ export type DashboardAction =
   | SaveRequestResponseAction
   | PushToHistoryAction
   | AddNewRequestAction
-  | CurlToRequest;
+  | CurlToRequest
+  | ParseCookie;

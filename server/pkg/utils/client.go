@@ -23,6 +23,9 @@ func Do(method, url string, body []byte, headers map[string]string) (
 	client := &http.Client{
 		Transport: tr,
 		Timeout:   time.Second * 5,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
 	}
 	req, err := http.NewRequest(method, url, strings.NewReader(string(body)))
 
@@ -58,6 +61,7 @@ func GetFormedHttpClient(request models.Request) (*http.Client, error) {
 		}
 		cookieData := GetFormedMap(cookiesValue)
 		for k, v := range cookieData {
+			v = strings.ReplaceAll(v, `"`, `'`)
 			cookie := &http.Cookie{
 				Name:  k,
 				Value: v,

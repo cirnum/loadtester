@@ -128,6 +128,7 @@ func (h *HttpClient) RunScen(ctx context.Context, conf models.Request) {
 	go func() {
 		select {
 		case err = <-finished:
+			log.Error("Error", err)
 			ctx.Done()
 		case <-ctx.Done():
 			log.Info("Job Completed")
@@ -135,7 +136,6 @@ func (h *HttpClient) RunScen(ctx context.Context, conf models.Request) {
 		}
 	}()
 	h.Manager(ctx, conf, finished)
-	log.Error("Error", err)
 }
 
 func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan<- error) {

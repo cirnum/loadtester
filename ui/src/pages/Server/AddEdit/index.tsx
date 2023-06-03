@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Dialog } from "../../../components/Modal";
+import { Dialog } from "../../../components/Dialog";
 import { addOrEditServer } from "../../../store/stress/server/actions";
 import { getAddOrEditState } from "../../../store/stress/server/selectors";
 import AddOrEdit from "./form";
