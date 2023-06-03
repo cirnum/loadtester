@@ -19,6 +19,7 @@ import {
   PUSH_TO_HISTORY,
   ADD_NEW_REQUEST,
   CURL_TO_REQUEST,
+  PARSE_COOKIE,
 } from "./actionTypes";
 import {
   FetchHistoryRequest,
@@ -55,6 +56,7 @@ import {
   AddNewRequestAction,
   CurlToRequest,
   CurlToJSONPayload,
+  ParseCookie,
 } from "./types";
 
 export const fetchHistoryRequest = (
@@ -209,6 +211,14 @@ export const curlToRequest = (payload: CurlToJSONPayload): CurlToRequest => ({
   type: CURL_TO_REQUEST,
   payload,
 });
+
+export const praseCookieToRequest = (
+  payload: Record<string, string>
+): ParseCookie => ({
+  type: PARSE_COOKIE,
+  payload,
+});
+
 export const getLoadsterAction = (
   payload: LoadsterRequestPayload
 ): LoadsterAction => ({

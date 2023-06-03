@@ -21,6 +21,7 @@ import {
   PUSH_TO_HISTORY,
   ADD_NEW_REQUEST,
   CURL_TO_REQUEST,
+  PARSE_COOKIE,
 } from "./actionTypes";
 import {
   IDashboard,
@@ -76,6 +77,17 @@ const mapRequest = (curlPayload: CurlToJSONPayload) => {
 
 export default (state = initialState, action: DashboardAction) => {
   switch (action.type) {
+    case PARSE_COOKIE: {
+      console.log("actionpayloadactionpayload", action.payload);
+      const cookies = mapPrams(action.payload || {});
+      return {
+        ...state,
+        selectedRequest: {
+          ...state.selectedRequest,
+          requestCookies: cookies,
+        },
+      };
+    }
     case ADD_NEW_REQUEST: {
       return {
         ...state,

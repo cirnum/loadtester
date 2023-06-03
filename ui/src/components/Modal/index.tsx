@@ -1,45 +1,53 @@
 import {
-  Button,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogBody,
-  AlertDialogFooter,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalProps,
 } from "@chakra-ui/react";
-import React, { ReactElement } from "react";
+import { ReactNode } from "react";
 
-interface DialogProps {
+interface CustomModalProps extends ModalProps {
+  children: ReactNode;
   isOpen: boolean;
   onClose: () => void;
-  title: string;
-  children?: ReactElement;
 }
-export function Dialog(props: DialogProps) {
-  const { isOpen, onClose, children, title } = props;
-  const cancelRef = React.useRef<any>();
-
+export default function CustomModal({
+  children,
+  isOpen,
+  onClose,
+  ...rest
+}: CustomModalProps) {
   return (
-    <AlertDialog
-      isOpen={isOpen}
-      leastDestructiveRef={cancelRef}
+    <Modal
+      isCentered
       onClose={onClose}
+      motionPreset="slideInBottom"
+      size="3xl"
+      {...rest}
+      isOpen={isOpen}
     >
-      <AlertDialogOverlay>
-        <AlertDialogContent bg="white">
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            {title}
-          </AlertDialogHeader>
-
-          <AlertDialogBody>{children}</AlertDialogBody>
-
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
-              Cancel
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogOverlay>
-    </AlertDialog>
+      <ModalOverlay />
+      <ModalContent minHeight="700px" bg="white">
+        {children}
+      </ModalContent>
+    </Modal>
   );
 }
+
+function Body({ children }: { children: ReactNode }) {
+  return <ModalBody>{children}</ModalBody>;
+}
+function Footer({ children }: { children: ReactNode }) {
+  return <ModalFooter gap={3}>{children}</ModalFooter>;
+}
+
+function Header({ children }: { children: ReactNode }) {
+  return <ModalHeader>{children}</ModalHeader>;
+}
+
+CustomModal.Footer = Footer;
+CustomModal.Header = Header;
+CustomModal.Body = Body;
