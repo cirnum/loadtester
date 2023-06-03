@@ -121,7 +121,7 @@ func (p *provider) DeleteServerById(ctx context.Context, id string) error {
 		return errors.New("Request id missing.")
 	}
 
-	result := p.db.Where("userId = ?", userId).Delete(&models.Server{
+	result := p.db.Where("user_id = ?", userId).Delete(&models.Server{
 		ID: id,
 	})
 	if result.Error != nil {
