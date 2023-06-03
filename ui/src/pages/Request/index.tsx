@@ -15,6 +15,7 @@ import Spinner from "../../components/Spinner";
 import { StatFields } from "../../constants/request.const";
 import { Animate } from "../../components/Stats/Animation";
 import { getLatencyOptions, getRps } from "../../utils/chartOption";
+import { convertToMilliSeconds } from "../../utils/_shared";
 
 function RPSChart({ servers }: { servers: Record<string, ServerMapData> }) {
   const getRPSOption = getRps(servers);
@@ -74,9 +75,9 @@ function Request({ requestId }: { requestId: string }) {
             <Stat borderRight="1px solid #e2e8f0" mr={2}>
               <StatLabel>Min-Max latency</StatLabel>
               <StatNumber>
-                <Animate value={data.minLatency} />
+                <Animate value={convertToMilliSeconds(data.minLatency)} />
                 -
-                <Animate value={data.maxLatency} /> ms
+                <Animate value={convertToMilliSeconds(data.maxLatency)} /> ms
               </StatNumber>
             </Stat>
           </>

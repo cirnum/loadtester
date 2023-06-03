@@ -79,6 +79,9 @@ func GetFormedHttpClient(request models.Request) (*http.Client, error) {
 		Transport: tr,
 		Timeout:   time.Second * 10,
 		Jar:       jar,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
 	}, nil
 }
 

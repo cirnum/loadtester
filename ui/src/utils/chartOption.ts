@@ -3,6 +3,7 @@ import {
   LoadsterResponse,
   ServerMapData,
 } from "../store/stress/dashboard/types";
+import { convertToMilliSeconds } from "./_shared";
 
 const getGridOptions = (options = {}) => {
   return {
@@ -61,7 +62,7 @@ export function getLatencyOptions(latency: LoadsterResponse[]) {
     grid: getGridOptions(),
     series: keyToMap.map((key) => ({
       name: key,
-      data: latency?.map((item) => item[key]?.toFixed()),
+      data: latency?.map((item) => convertToMilliSeconds(item[key])),
       type: "line",
     })),
   };
