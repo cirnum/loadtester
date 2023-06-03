@@ -4,3 +4,10 @@ export const NumberFormat = (value: number) => {
     maximumFractionDigits: 1,
   }).format(value);
 };
+
+export const convertToMilliSeconds = (value) => {
+  if (value > 0) {
+    return Math.ceil(value / 1000);
+  }
+  return value;
+};
