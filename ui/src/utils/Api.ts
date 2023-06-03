@@ -1,7 +1,9 @@
 import axios from "axios";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Cookies from "js-cookie";
 import { TAxiosWrapper } from "../types";
 
-const TOKEN = "clerk-db-jwt";
+const TOKEN = "__session";
 const PATH_PREFIX = "/api/v1/";
 const Instance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL
@@ -9,6 +11,10 @@ const Instance = axios.create({
     : window.location.origin + PATH_PREFIX,
   timeout: 8000,
 });
+
+const getToken = () => {
+  return Cookies.get(TOKEN);
+};
 
 export default function ApiCall<T>({
   path,
@@ -31,7 +37,7 @@ export default function ApiCall<T>({
       },
     ],
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken() || token}`,
     },
   });
 }
