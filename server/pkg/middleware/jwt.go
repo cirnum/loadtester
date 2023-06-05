@@ -54,9 +54,8 @@ func JWTProtected(c *fiber.Ctx) error {
 
 	var tokenString string
 	authorization := c.Get("Authorization")
-
 	if c.Cookies("__session") != "" {
-		tokenString = c.Cookies("token")
+		tokenString = c.Cookies("__session")
 	} else if strings.HasPrefix(authorization, "Bearer ") {
 		tokenString = strings.TrimPrefix(authorization, "Bearer ")
 	}

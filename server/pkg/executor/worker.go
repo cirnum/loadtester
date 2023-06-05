@@ -20,9 +20,10 @@ import (
 )
 
 const (
-	Idle     status = "idle"
-	Running  status = "running"
-	Finished status = "finished"
+	Idle     status        = "idle"
+	Running  status        = "running"
+	Finished status        = "finished"
+	poll     time.Duration = 4
 )
 
 var (
@@ -149,7 +150,7 @@ func (e *Executor) Run(ctx context.Context, conf models.Request) (err error) {
 	finished := make(chan error)
 	// when the runScen finished, we should stop the logScaled and systemloadRun
 	// also; however, not necessary since the executor will be shutdown anyway
-	go e.logScaled(ctx, 3*time.Second)
+	go e.logScaled(ctx, poll*time.Second)
 	select {
 	case err = <-finished:
 	case <-ctx.Done():
