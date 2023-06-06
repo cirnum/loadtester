@@ -22,6 +22,9 @@ import {
   ADD_NEW_REQUEST,
   CURL_TO_REQUEST,
   PARSE_COOKIE,
+  SEND_REQUEST_REQUEST,
+  SEND_REQUEST_SUCCESS,
+  SEND_REQUEST_FAILURE,
 } from "./actionTypes";
 import {
   IDashboard,
@@ -42,6 +45,7 @@ const initialState: IDashboard = {
     data: undefined,
   },
   selectedRequest: {
+    loading: false,
     ...newRequestStruct,
   },
 };
@@ -62,23 +66,26 @@ const mapRequest = (curlPayload: CurlToJSONPayload) => {
   const common: SelectedRequest = { ...selectedRequestConst };
   const requestHeader = mapPrams(curlPayload?.header || {});
   const requestparams = mapPrams(curlPayload?.params || {});
-
-  // const requestCookies = mapPrams(curlPayload?.cookies || {});
-
   const requestBody = curlPayload?.data || {};
-
-  // if (Object.keys(requestCookies).length)
-  //   common.requestCookies = requestCookies;
   if (Object.keys(requestHeader).length) common.requestHeader = requestHeader;
   if (Object.keys(requestparams).length) common.requestParams = requestparams;
   if (Object.keys(requestBody).length) common.requestBody = requestBody;
   return common;
 };
 
+const setRequestSuccessLodingState = (state: typeof initialState) => {
+  return {
+    ...state,
+    selectedRequest: {
+      ...state.selectedRequest,
+      loading: false,
+    },
+  };
+};
+
 export default (state = initialState, action: DashboardAction) => {
   switch (action.type) {
     case PARSE_COOKIE: {
-      console.log("actionpayloadactionpayload", action.payload);
       const cookies = mapPrams(action.payload || {});
       return {
         ...state,
@@ -187,7 +194,7 @@ export default (state = initialState, action: DashboardAction) => {
     }
     case ADD_REQUEST_PARAMS: {
       let { requestParams } = state.selectedRequest;
-      const requestToUpdate = requestParams[action.payload?.position || 0];
+      const requestToUpdate = requestParams[action.payload?.position ?? 0];
       requestToUpdate[action.payload.key] = action.payload.value;
       requestToUpdate.isChecked = true;
       if (requestParams.length - 1 === action.payload?.position) {
@@ -198,6 +205,19 @@ export default (state = initialState, action: DashboardAction) => {
         selectedRequest: {
           ...state.selectedRequest,
           requestParams: [...requestParams],
+        },
+      };
+    }
+    case SEND_REQUEST_FAILURE:
+      return setRequestSuccessLodingState(state);
+    case SEND_REQUEST_SUCCESS:
+      return setRequestSuccessLodingState(state);
+    case SEND_REQUEST_REQUEST: {
+      return {
+        ...state,
+        selectedRequest: {
+          ...state.selectedRequest,
+          loading: true,
         },
       };
     }

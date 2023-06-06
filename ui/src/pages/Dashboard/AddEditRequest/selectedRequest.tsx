@@ -9,6 +9,7 @@ import {
   Input,
   Tooltip,
   Spacer,
+  Spinner,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -17,7 +18,10 @@ import {
   ArrowDownIcon,
   InfoOutlineIcon,
 } from "@chakra-ui/icons";
-import { getSelectedRequest } from "../../../store/stress/dashboard/selectors";
+import {
+  getSelectedRequest,
+  getSendRequestLoadingState,
+} from "../../../store/stress/dashboard/selectors";
 import { RestMethods } from "../../../store/stress/dashboard/types";
 import RequestOptions from "./requestOptions";
 import {
@@ -47,6 +51,7 @@ function CustomizeToolTipInfo({ text }: { text: string }) {
 export default function SelectedAddEditRequest() {
   const dispatch = useDispatch();
   const selectedRequest = useSelector(getSelectedRequest);
+  const isLoading = useSelector(getSendRequestLoadingState);
 
   const [method, setMethod] = useState<RestMethods>(
     selectedRequest?.method || "GET"
@@ -183,7 +188,7 @@ export default function SelectedAddEditRequest() {
             rightIcon={<ArrowForwardIcon />}
             onClick={() => sendRequest()}
           >
-            Run
+            {isLoading ? <Spinner /> : "Run"}
           </Button>
           <OtherOption />
         </InputWrap>

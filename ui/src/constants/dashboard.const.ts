@@ -8,6 +8,7 @@ export const selectedRequestConst = {
   requestParams: [{ ...commonRequestHeader }],
   requestCookies: [{ ...commonRequestHeader }],
   requestBody: {},
+  loading: false,
 };
 export const newRequestStruct = {
   request: undefined,

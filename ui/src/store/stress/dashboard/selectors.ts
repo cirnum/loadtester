@@ -11,6 +11,9 @@ export const getSelectedRequestId = (state: ApplicationState) => {
 export const getSelectedRequest = (state: ApplicationState) => {
   return state.dashboard?.selectedRequest?.request;
 };
+export const getSendRequestLoadingState = (state: ApplicationState) => {
+  return state.dashboard?.selectedRequest?.loading;
+};
 
 export const getSelectedRequestHeaders = (state: ApplicationState) => {
   return state.dashboard?.selectedRequest?.requestHeader;
