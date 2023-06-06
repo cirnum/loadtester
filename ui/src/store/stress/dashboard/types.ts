@@ -39,6 +39,7 @@ export interface SelectedRequest {
   requestParams: RequestHeadersAndParamsPayload[];
   requestBody: Record<string, any>[] | Object;
   response?: RequestResponse;
+  loading: boolean;
 }
 export interface IDashboard {
   history: {
