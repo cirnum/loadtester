@@ -23,7 +23,7 @@ const (
 	Idle     status        = "idle"
 	Running  status        = "running"
 	Finished status        = "finished"
-	poll     time.Duration = 4
+	poll     time.Duration = 3
 )
 
 var (
