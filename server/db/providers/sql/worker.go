@@ -100,7 +100,7 @@ func (p *provider) GetWorkerByReqId(ctx context.Context, id string) ([]models.Wo
 		return workers, errors.New("Request id missing.")
 	}
 
-	result := p.db.Joins("Server", p.db.Select("Alias", "Description", "IP", "CreatedAt")).Where("req_id = ?", id).Find(&workers)
+	result := p.db.Where("req_id = ?", id).Find(&workers)
 
 	if result.Error != nil {
 		return workers, result.Error
