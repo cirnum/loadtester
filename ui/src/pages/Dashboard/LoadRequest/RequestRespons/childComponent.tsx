@@ -15,6 +15,14 @@ function PreviewHtml(props: { html: string }) {
     <iframe title="Response" srcDoc={DOMPurify.sanitize(html)} height={300} />
   );
 }
+const parsed = (data: any) => {
+  try {
+    const parsedBody = JSON.parse(data);
+    return parsedBody;
+  } catch {
+    return null;
+  }
+};
 
 function RequestBody({
   body = "",
@@ -32,37 +40,39 @@ function RequestBody({
       />
     );
   if (contentType.includes("application/json")) {
-    const parsedBody = JSON.parse(body);
-    return (
-      <JSONInput
-        id="a_unique_id"
-        placeholder={parsedBody || {}}
-        theme="light_mitsuketa_tribute"
-        onKeyPressUpdate
-        waitAfterKeyPress={1000}
-        height="200px"
-        width="100%"
-        colors={{
-          default: "black",
-          background: "#edf2f7",
-          string: "blue",
-          keys: "#800000",
-          error: "red",
-        }}
-        style={{
-          body: {
-            display: "flex",
-            overflowX: "auto",
-          },
-          outerBox: {
-            border: "1px solid #e2e8f0",
-          },
-          contentBox: {
-            flex: "0 0 auto",
-          },
-        }}
-      />
-    );
+    const parsedBody = parsed(body);
+    if (parsedBody) {
+      return (
+        <JSONInput
+          id="a_unique_id"
+          placeholder={parsedBody || {}}
+          theme="light_mitsuketa_tribute"
+          onKeyPressUpdate
+          waitAfterKeyPress={1000}
+          height="200px"
+          width="100%"
+          colors={{
+            default: "black",
+            background: "#edf2f7",
+            string: "blue",
+            keys: "#800000",
+            error: "red",
+          }}
+          style={{
+            body: {
+              display: "flex",
+              overflowX: "auto",
+            },
+            outerBox: {
+              border: "1px solid #e2e8f0",
+            },
+            contentBox: {
+              flex: "0 0 auto",
+            },
+          }}
+        />
+      );
+    }
   }
   return (
     <Card p={2}>

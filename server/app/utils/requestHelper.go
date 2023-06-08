@@ -21,16 +21,17 @@ func RunExecutor(ctx context.Context, request models.Request) error {
 	var client httpRequest.HttpClient
 	executor := executor.NewExecutor(request.ID, "")
 	ctx, cancelCtx := context.WithCancel(ctx)
-	go func() {
-		<-time.After(time.Duration(request.Time) * time.Second)
-		cancelCtx()
-	}()
 
 	err := utils.RunWorker(request)
 	if err != nil {
 		log.Errorf("Error while sending request to Worker", err.Error())
 		return err
 	}
+
+	go func() {
+		<-time.After(time.Duration(request.Time) * time.Second)
+		cancelCtx()
+	}()
 
 	go executor.Run(ctx, request)
 	client, err = httpRequest.Initializer(request)

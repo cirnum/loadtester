@@ -3,6 +3,7 @@ package utils
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"strings"
 	"time"
 
@@ -30,28 +31,30 @@ func RunWorker(request models.Request) error {
 	}
 
 	for _, element := range listServer {
-		url := element.IP
-		worker := GetWorkerLoad(request)
-		request.ServerId = element.ID
-		body, _ := json.Marshal(request)
+		if element.Enabled {
+			url := element.IP
+			worker := GetWorkerLoad(request)
+			request.ServerId = element.ID
+			body, _ := json.Marshal(request)
 
-		if url != "" {
-			worker.ServerId = element.ID
-			url = strings.TrimSpace(strings.TrimSpace(url) + "/worker/request")
-			headers := map[string]string{
-				"Content-Type": "application/json",
-			}
-			res, err := Do("POST", url, body, headers)
+			if url != "" {
+				worker.ServerId = element.ID
+				url = strings.TrimSpace(strings.TrimSpace(url) + "/worker/request")
+				headers := map[string]string{
+					"Content-Type": "application/json",
+				}
+				res, err := Do(http.MethodPost, url, body, headers)
 
-			if err != nil {
-				worker.Status = true
-				// worker.ServerId = element.ID
-				worker.Error = err.Error()
-				db.Provider.AddWorker(ctx, worker)
-			} else if res.StatusCode == statusOK {
-				worker.Status = false
-				// worker.ServerId = element.ID
-				db.Provider.AddWorker(ctx, worker)
+				if err != nil {
+					worker.Status = true
+					// worker.ServerId = element.ID
+					worker.Error = err.Error()
+					db.Provider.AddWorker(ctx, worker)
+				} else if res.StatusCode == statusOK {
+					worker.Status = false
+					// worker.ServerId = element.ID
+					db.Provider.AddWorker(ctx, worker)
+				}
 			}
 		}
 	}
