@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -33,7 +33,13 @@ import { InputWrap } from "./InputArea/inputWrap";
 import Method from "./method";
 import { OtherOption } from "./OtherOptions";
 
-function CustomizeToolTipInfo({ text }: { text: string }) {
+export function CustomizeToolTipInfo({
+  text,
+  children,
+}: {
+  text: string;
+  children?: ReactNode;
+}) {
   return (
     <Tooltip
       hasArrow
@@ -43,7 +49,7 @@ function CustomizeToolTipInfo({ text }: { text: string }) {
       padding="10px"
       fontWeight="500"
     >
-      <InfoOutlineIcon boxSize={3} cursor="pointer" margin={2} />
+      {children || <InfoOutlineIcon boxSize={3} cursor="pointer" margin={2} />}
     </Tooltip>
   );
 }

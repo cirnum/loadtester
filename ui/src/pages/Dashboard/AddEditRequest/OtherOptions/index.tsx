@@ -19,7 +19,12 @@ export function OtherOption() {
   const [open, setOpen] = useState(false);
   return (
     <Box>
-      <Button colorScheme="tomato" size="md" onClick={() => setOpen(true)}>
+      <Button
+        colorScheme="primary"
+        variant="outline"
+        size="md"
+        onClick={() => setOpen(true)}
+      >
         Options
       </Button>
       <CustomModal onClose={() => setOpen(false)} isOpen={open}>

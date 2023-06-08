@@ -40,6 +40,7 @@ export interface Server {
   description: string;
   ip?: string;
   port?: number;
+  enabled: boolean;
   active?: boolean;
   created_at: number;
   updated_at: number;
@@ -60,6 +61,7 @@ export interface AddServerRequestPayload {
   description: string;
   ip?: string;
   port?: number;
+  enabled?: boolean;
 }
 
 export interface AddServerRequestResponse {
