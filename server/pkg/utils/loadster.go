@@ -45,26 +45,26 @@ func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster) customModel
 		otherFailHTTP, lastOtherFailHTTP := HttpReqByType(load, ".http_other_fail")
 		totalTimeTaken := lastLatency.CreatedAt - lastLatency.StartTime
 
-		if lastFailHTTP.Count > 0 {
+		if lastFailHTTP.Count > 0 && totalTimeTaken > 0 {
 			loadPayload.FailRPS = lastFailHTTP.Count / totalTimeTaken
 			loadPayload.TotalFailRequest = lastFailHTTP.Count
 			calculatedLoads.TotalFailRequest += lastFailHTTP.Count
 			calculatedLoads.FailRPS += loadPayload.FailRPS
 		}
-		if lastOtherFailHTTP.Count > 0 {
+		if lastOtherFailHTTP.Count > 0 && totalTimeTaken > 0 {
 			loadPayload.OtherFailRPS = lastOtherFailHTTP.Count / totalTimeTaken
 			loadPayload.TotalOtherFailRequest = lastOtherFailHTTP.Count
 			calculatedLoads.TotalOtherFailRequest += lastOtherFailHTTP.Count
 			calculatedLoads.OtherFailRPS += loadPayload.OtherFailRPS
 
 		}
-		if lastOkHttp.Count > 0 {
+		if lastOkHttp.Count > 0 && totalTimeTaken > 0 {
 			loadPayload.SuccessRPS = lastOkHttp.Count / totalTimeTaken
 			loadPayload.TotalSuccessRequest = lastOkHttp.Count
 			calculatedLoads.TotalSuccessRequest += lastOkHttp.Count
 			calculatedLoads.SuccessRPS += loadPayload.SuccessRPS
 		}
-		if lastLatency.Count > 0 {
+		if lastLatency.Count > 0 && totalTimeTaken > 0 {
 			loadPayload.TotalRPS = lastLatency.Count / totalTimeTaken
 			loadPayload.TotalRequest = lastLatency.Count
 			calculatedLoads.TotalRequest += lastLatency.Count
