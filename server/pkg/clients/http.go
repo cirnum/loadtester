@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
-	"math/rand"
 	"net/http"
 	"reflect"
 	"strings"
@@ -159,8 +158,6 @@ func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan
 						if conf.QPS > 0 {
 							<-throttle
 						}
-						r := rand.Intn(10)
-						time.Sleep(time.Duration(r) * time.Microsecond)
 						h.Request()
 					}
 				}

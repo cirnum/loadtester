@@ -13,23 +13,33 @@ import {
   Text,
   Badge,
   Spinner as SP,
+  Image,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { CheckIcon, CopyIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import { motion } from "framer-motion";
 import {
   addOrEditServer,
+  editServerAction,
   getAllServerAction,
   selectDeleteRequest,
 } from "../../store/stress/server/actions";
-import { Server } from "../../store/stress/server/types";
+import {
+  AddServerRequestPayload,
+  Server,
+} from "../../store/stress/server/types";
+import Play from "../../assets/play.svg";
+import Pause from "../../assets/pause.svg";
 
-import { getServerList } from "../../store/stress/server/selectors";
+import {
+  getAddServerState,
+  getServerList,
+} from "../../store/stress/server/selectors";
 import Spinner from "../../components/Spinner";
 import { DeleteDialog } from "./DeleteRequest";
 import AddOrEditComp from "./AddEdit";
+import { CustomizeToolTipInfo } from "../Dashboard/AddEditRequest/selectedRequest";
 
 const pagination = {
   limit: 10,
@@ -63,8 +73,11 @@ function TableBody({
     active,
     port,
     token,
+    enabled,
   } = server;
   const dispatch = useDispatch();
+  const [selectedServer, setSelected] = useState<Server | null>(null);
+  const { loading } = useSelector(getAddServerState);
   const onEdit = (action: "ADD" | "EDIT", serverDetails?: Server) => {
     dispatch(
       addOrEditServer({
@@ -74,8 +87,23 @@ function TableBody({
     );
   };
 
+  useEffect(() => {
+    if (!loading && selectedServer) {
+      setSelected(null);
+    }
+  }, [loading]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const changeServerState = (serverState: Server) => {
+    const payload = {
+      ...serverState,
+      enabled: !server.enabled,
+    };
+    setSelected(serverState);
+    dispatch(editServerAction(payload as AddServerRequestPayload));
+  };
+
   return (
-    <motion.tr key={id} layout transition={{ duration: 0.5 }}>
+    <Tr key={id}>
       <Td>{alias}</Td>
       <Td>{description}</Td>
 
@@ -99,14 +127,30 @@ function TableBody({
       </Td>
       <Td>
         <Stack direction="row" display="flex" alignContent="center">
+          {loading && selectedServer?.id === id ? (
+            <SP />
+          ) : (
+            <CustomizeToolTipInfo
+              text={enabled ? "Status: Running" : "Status: Stopped"}
+            >
+              <Image
+                width="18px"
+                height="18px"
+                src={enabled ? Pause : Play}
+                alt="loadster"
+                cursor="pointer"
+                onClick={() => changeServerState(server)}
+              />
+            </CustomizeToolTipInfo>
+          )}
+          <EditIcon cursor="pointer" onClick={() => onEdit("EDIT", server)} />
           <DeleteIcon
             cursor="pointer"
             onClick={() => dispatch(selectDeleteRequest(server))}
           />
-          <EditIcon cursor="pointer" onClick={() => onEdit("EDIT", server)} />
         </Stack>
       </Td>
-    </motion.tr>
+    </Tr>
   );
 }
 
@@ -125,7 +169,9 @@ export default function ServerBoard() {
   };
 
   useEffect(() => {
-    dispatch(getAllServerAction(pagination));
+    if (!data && !loading) {
+      dispatch(getAllServerAction(pagination));
+    }
   }, []);
 
   const onCopy = (text) => {
