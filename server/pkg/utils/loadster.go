@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"fmt"
-
 	customModels "github.com/cirnum/loadtester/server/app/models"
 	"github.com/cirnum/loadtester/server/db/models"
 )
@@ -51,7 +49,6 @@ func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster) customModel
 		outgress, lastOutgress := HttpReqByType(load, "en0 transmit")
 		ingress, lastIngress := HttpReqByType(load, "en0 receive")
 
-		fmt.Println("lastCpuUsage", lastCpuUsage)
 		totalTimeTaken := lastLatency.CreatedAt - lastLatency.StartTime
 
 		if lastFailHTTP.Count > 0 {
