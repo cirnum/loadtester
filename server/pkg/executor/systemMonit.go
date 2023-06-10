@@ -2,6 +2,7 @@ package executor
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	metrics "github.com/cirnum/loadtester/server/pkg/executor/metrics"
@@ -131,13 +132,17 @@ func (e *Executor) systemloadRun(ctx context.Context) (err error) {
 				now := time.Now()
 				for _, ns := range nss {
 					prv, ok := nssPre[ns.Name]
+					fmt.Println("ns.Name", ns.Name)
+					fmt.Println("prv", prv)
+
 					if ok {
 						diffTime := now.Sub(nssPreTime).Seconds()
 
 						tx := float64(ns.TxBytes-prv.txBytes) / diffTime // Bps
 						rx := float64(ns.RxBytes-prv.rxBytes) / diffTime // Bps
-						Notify(ns.Name+" transmit", int64(tx/1000))      // KBps
-						Notify(ns.Name+" receive", int64(rx/1000))       // KBps
+						fmt.Println("int64(tx/1000)", int64(tx/1000))
+						Notify(ns.Name+" transmit", int64(tx/1000)) // KBps
+						Notify(ns.Name+" receive", int64(rx/1000))  // KBps
 					}
 					// update prv values
 					nssPre[ns.Name] = rtxBytes{
