@@ -101,6 +101,12 @@ export interface ServerMapData {
   totalFailRPS: number;
   latency: LoadsterResponse[];
   success: LoadsterResponse[];
+  cpuUsage: LoadsterResponse[];
+  ramUsage: LoadsterResponse[];
+  loadAvg: LoadsterResponse[];
+  ingress: LoadsterResponse[];
+  outgress: LoadsterResponse[];
+
   fail: LoadsterResponse[];
   otherFail: LoadsterResponse[];
   failPercentage: number;

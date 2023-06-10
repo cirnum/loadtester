@@ -88,9 +88,10 @@ func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
 	for _, group := range groups {
 		for _, graph := range group.Graphs {
 			for _, m := range graph.Metrics {
+				indetifier := e.appID + m.Title
 				if m.Type == metrics.Counter {
 					c := gometrics.NewCounter()
-					if err := gometrics.Register(e.appID+m.Title, c); err != nil {
+					if err := gometrics.Register(indetifier, c); err != nil {
 						if _, ok := err.(gometrics.DuplicateMetric); ok {
 							continue
 						}
@@ -106,7 +107,7 @@ func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
 				if m.Type == metrics.Histogram {
 					s := gometrics.NewExpDecaySample(1028, 0.015)
 					h := gometrics.NewHistogram(s)
-					if err := gometrics.Register(e.appID, h); err != nil {
+					if err := gometrics.Register(indetifier, h); err != nil {
 						if _, ok := err.(gometrics.DuplicateMetric); ok {
 							continue
 						}
@@ -120,8 +121,9 @@ func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
 					}
 				}
 				if m.Type == metrics.Gauge {
+
 					g := gometrics.NewGauge()
-					if err := gometrics.Register(e.appID, g); err != nil {
+					if err := gometrics.Register(indetifier, g); err != nil {
 						if _, ok := err.(gometrics.DuplicateMetric); ok {
 							continue
 						}
@@ -137,6 +139,7 @@ func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
 			}
 		}
 	}
+
 	// aggregate units
 	for k, v := range units {
 		e.units[k] = v
@@ -146,11 +149,13 @@ func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
 }
 
 func (e *Executor) Run(ctx context.Context, conf models.Request) (err error) {
+	e.systemloadSetup(conf.ID)
 	e.status = Running
 	finished := make(chan error)
 	// when the runScen finished, we should stop the logScaled and systemloadRun
 	// also; however, not necessary since the executor will be shutdown anyway
 	go e.logScaled(ctx, poll*time.Second)
+	go e.systemloadRun(ctx)
 	select {
 	case err = <-finished:
 	case <-ctx.Done():
@@ -215,6 +220,17 @@ func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]mo
 				StartTime: e.startTime,
 			}
 			data = append(data, histo)
+		case metrics.Gauge:
+			counter := models.Loadster{
+				Count:     u.g.Value(),
+				Type:      string(u.Type),
+				Title:     u.Title,
+				ReqId:     e.appID,
+				ServerId:  e.serverId,
+				Created:   now,
+				StartTime: e.startTime,
+			}
+			data = append(data, counter)
 		}
 	}
 	e.mu.Unlock()
@@ -245,7 +261,7 @@ func (e *Executor) logScaledOnCue(ctx context.Context, ch chan interface{}) erro
 							log.Error("Failed to connect to master host", err.Error())
 						}
 						if res != nil {
-							log.Warnf("For url: %s, statusCode: %s", url, res.StatusCode)
+							log.Warnf("For url: %s, statusCode: %d", url, res.StatusCode)
 						}
 					} else {
 						db.Provider.AddLoadByRequestId(ctx, value)

@@ -17,6 +17,6 @@ func FiberConfig() fiber.Config {
 	// Return Fiber configuration.
 	return fiber.Config{
 		ReadTimeout: time.Second * time.Duration(readTimeoutSecondsCount),
-		Prefork:     true,
+		// Prefork:     true,
 	}
 }
