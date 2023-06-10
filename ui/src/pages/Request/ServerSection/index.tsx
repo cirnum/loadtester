@@ -43,10 +43,6 @@ export default function ServerSection() {
 
   const selectedServer = selected && data?.serverMap?.[selected];
 
-  if (serverNameList.length > 1) {
-    serverNameList.unshift("All");
-  }
-
   useEffect(() => {
     if (serverNameList.length) {
       setSelected(serverNameList[0]);
