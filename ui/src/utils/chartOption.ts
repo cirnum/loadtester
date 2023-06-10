@@ -68,6 +68,55 @@ export function getLatencyOptions(latency: LoadsterResponse[]) {
   };
 }
 
+export function getServerStatsOptions(data: LoadsterResponse[], title: string) {
+  const keyToMap = ["count"];
+  return {
+    legend: {
+      orient: "horizontal",
+      left: "right",
+      itemHeight: 15,
+      textStyle: {
+        color: "#171239",
+        fontWeight: "bold",
+        fontSize: "12px",
+        lineHeight: 20,
+      },
+      data: keyToMap,
+    },
+    title: {
+      text: title,
+      textStyle: {
+        color: "#837F9D",
+        fontWeight: "bold",
+        fontSize: "14px",
+      },
+    },
+    xAxis: {
+      splitLine: { show: false },
+      data: data?.map((item) => {
+        const someTime = utcToZonedTime(
+          item.created * 1000,
+          Intl.DateTimeFormat().resolvedOptions().timeZone
+        );
+        return format(someTime, "HH:mm:ss");
+      }),
+    },
+    tooltip: {
+      trigger: "axis",
+    },
+    yAxis: {
+      splitLine: { show: false },
+      type: "value",
+    },
+    grid: getGridOptions(),
+    series: keyToMap.map((key) => ({
+      name: key,
+      data: data?.map((item) => item[key]),
+      type: "line",
+    })),
+  };
+}
+
 export function getRps(latencyByServer: Record<string, ServerMapData>) {
   const servers = Object.values(latencyByServer);
   const aggregate: number[] = [];

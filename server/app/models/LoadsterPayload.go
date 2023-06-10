@@ -34,10 +34,21 @@ type WorkerData struct {
 	OtherFailRPS          int64             `json:"otherFailRPS"`
 	TimeTaken             int64             `json:"timeTaken"`
 	Latency               []models.Loadster `json:"latency"`
+	LoadAvg               []models.Loadster `json:"loadAvg"`
+	CpuUsage              []models.Loadster `json:"cpuUsage"`
+	Ingress               []models.Loadster `json:"ingress"`
+	Outgress              []models.Loadster `json:"outgress"`
+	RamUsage              []models.Loadster `json:"ramUsage"`
 	Success               []models.Loadster `json:"success"`
 	Fail                  []models.Loadster `json:"fail"`
 	OtherFail             []models.Loadster `json:"otherFail"`
 	FailPercentage        int               `json:"failPercentage"`
 	MinLatency            int64             `json:"minLatency"`
 	MaxLatency            int64             `json:"maxLatency"`
+	// cpu usage
+	LastCpuUsage int64 `json:"lastCpuUsage"`
+	LastLoadAvg  int64 `json:"lastLoadAvg"`
+	LastRamUsage int64 `json:"lastRamUsage"`
+	LastIngress  int64 `json:"lastIngress"`
+	LastOutgress int64 `json:"lastOutgress"`
 }

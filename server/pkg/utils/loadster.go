@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"fmt"
+
 	customModels "github.com/cirnum/loadtester/server/app/models"
 	"github.com/cirnum/loadtester/server/db/models"
 )
@@ -43,6 +45,13 @@ func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster) customModel
 		okHTTP, lastOkHttp := HttpReqByType(load, ".http_ok")
 		failHTTP, lastFailHTTP := HttpReqByType(load, ".http_fail")
 		otherFailHTTP, lastOtherFailHTTP := HttpReqByType(load, ".http_other_fail")
+		loadAvg1, lastLoadAvg := HttpReqByType(load, "LA1")
+		cpu, lastCpuUsage := HttpReqByType(load, "CPU")
+		ram, lastRamUsage := HttpReqByType(load, "RAM")
+		outgress, lastOutgress := HttpReqByType(load, "en0 transmit")
+		ingress, lastIngress := HttpReqByType(load, "en0 receive")
+
+		fmt.Println("lastCpuUsage", lastCpuUsage)
 		totalTimeTaken := lastLatency.CreatedAt - lastLatency.StartTime
 
 		if lastFailHTTP.Count > 0 {
@@ -77,6 +86,18 @@ func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster) customModel
 		loadPayload.MaxLatency = lastLatency.Max
 		loadPayload.Latency = latency
 		loadPayload.Success = okHTTP
+		// Server details
+		loadPayload.LoadAvg = loadAvg1
+		loadPayload.CpuUsage = cpu
+		loadPayload.RamUsage = ram
+		loadPayload.Ingress = ingress
+		loadPayload.Outgress = outgress
+		loadPayload.LastLoadAvg = lastLoadAvg.Count
+		loadPayload.LastCpuUsage = lastCpuUsage.Count
+		loadPayload.LastRamUsage = lastRamUsage.Count
+		loadPayload.LastIngress = lastIngress.Count
+		loadPayload.LastOutgress = lastOutgress.Count
+
 		loadPayload.Fail = failHTTP
 		loadPayload.OtherFail = otherFailHTTP
 		loadPayload.TimeTaken = totalTimeTaken
