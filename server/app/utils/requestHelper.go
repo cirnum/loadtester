@@ -24,7 +24,8 @@ func RunExecutor(ctx context.Context, request models.Request) error {
 
 	err := utils.RunWorker(request)
 	if err != nil {
-		log.Errorf("Error while sending request to Worker", err.Error())
+		log.Error("Error while sending request to Worker", err.Error())
+		cancelCtx()
 		return err
 	}
 
@@ -37,6 +38,7 @@ func RunExecutor(ctx context.Context, request models.Request) error {
 	client, err = httpRequest.Initializer(request)
 	if err != nil {
 		log.Error("Error while initiate http client", err.Error())
+		cancelCtx()
 		return err
 	}
 

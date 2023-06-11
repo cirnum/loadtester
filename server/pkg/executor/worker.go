@@ -181,7 +181,32 @@ func timestampMs() int64 {
 	return time.Now().UnixNano() / 1e6 // ms
 }
 
-func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]models.Loadster, error) {
+func (e *Executor) sendLoadData(isFinish bool) {
+	e.mu.Lock()
+	units := e.units
+	e.mu.Unlock()
+	data, _ := e.GrabCounter(isFinish, units)
+	ctx := context.Background()
+	config := configs.ConfigProvider
+
+	if config.IsSlave == true {
+		body, _ := json.Marshal(data)
+		url := config.MasterIp + "/api/v1/loadster"
+		headers := map[string]string{
+			"Content-Type": "application/json",
+		}
+		res, err := utils.Do(http.MethodPost, url, body, headers)
+		if err != nil {
+			log.Error("Failed to connect to master host", err.Error())
+		}
+		if res != nil {
+			log.Warnf("For url: %s, statusCode: %d", url, res.StatusCode)
+		}
+	} else {
+		db.Provider.AddBatchLoadByRequestId(ctx, data)
+	}
+}
+func (e *Executor) GrabCounter(isFinish bool, units map[string]unit) ([]models.Loadster, error) {
 	var data []models.Loadster
 	e.mu.Lock()
 	now := time.Now().Unix()
@@ -196,6 +221,7 @@ func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]mo
 				ServerId:  e.serverId,
 				Created:   now,
 				StartTime: e.startTime,
+				Finish:    isFinish,
 			}
 			data = append(data, counter)
 		case metrics.Histogram:
@@ -218,6 +244,7 @@ func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]mo
 				ServerId:  e.serverId,
 				Created:   now,
 				StartTime: e.startTime,
+				Finish:    isFinish,
 			}
 			data = append(data, histo)
 		case metrics.Gauge:
@@ -229,6 +256,7 @@ func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]mo
 				ServerId:  e.serverId,
 				Created:   now,
 				StartTime: e.startTime,
+				Finish:    isFinish,
 			}
 			data = append(data, counter)
 		}
@@ -240,53 +268,11 @@ func (e *Executor) logScaledOnCue(ctx context.Context, ch chan interface{}) erro
 	for {
 		select {
 		case <-ch:
-			e.mu.Lock()
-			units := e.units
-			e.mu.Unlock()
-			data, _ := e.GrabCounter(ctx, units)
-			ctx := context.Background()
-			for _, value := range data {
-				if value.Count > 0 {
-					config := configs.ConfigProvider
-					value.Token = config.Token
-
-					if config.IsSlave == true {
-						body, _ := json.Marshal(value)
-						url := config.MasterIp + "/api/v1/loadster"
-						headers := map[string]string{
-							"Content-Type": "application/json",
-						}
-						res, err := utils.Do(http.MethodPost, url, body, headers)
-						if err != nil {
-							log.Error("Failed to connect to master host", err.Error())
-						}
-						if res != nil {
-							log.Warnf("For url: %s, statusCode: %d", url, res.StatusCode)
-						}
-					} else {
-						db.Provider.AddLoadByRequestId(ctx, value)
-					}
-				}
-			}
+			finish := false
+			e.sendLoadData(finish)
 		case <-ctx.Done():
-			config := configs.ConfigProvider
-			data, _ := e.GrabCounter(ctx, e.units)
-			for _, value := range data {
-				value.Finish = true
-				if value.Count > 0 {
-					value.Token = config.Token
-					if config.IsSlave == true {
-						headers := map[string]string{
-							"Content-Type": "application/json",
-						}
-						body, _ := json.Marshal(value)
-						url := config.MasterIp + "/api/v1/loadster"
-						utils.Do("POST", url, body, headers)
-					} else {
-						db.Provider.AddLoadByRequestId(ctx, value)
-					}
-				}
-			}
+			finish := true
+			e.sendLoadData(finish)
 			return nil
 		}
 	}

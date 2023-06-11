@@ -50,25 +50,27 @@ func GetAllLoad(c *fiber.Ctx) error {
 
 func AddLoadRequest(c *fiber.Ctx) error {
 	ctx := context.Background()
-	loadsterRequest := &models.Loadster{}
+	loadsterRequests := &[]models.Loadster{}
 
-	if err := c.BodyParser(&loadsterRequest); err != nil {
+	if err := c.BodyParser(&loadsterRequests); err != nil {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
 
-	if loadsterRequest.Finish == true {
+	isFinish, reqId, serverID := utils.IsLoadTestingFinish(loadsterRequests)
+
+	if isFinish == true {
 		worker := &models.Worker{
 			Status:    true,
-			ServerId:  loadsterRequest.ServerId,
-			ReqId:     loadsterRequest.ReqId,
+			ServerId:  serverID,
+			ReqId:     reqId,
 			UpdatedAt: time.Now().Unix(),
 		}
 		db.Provider.UpdateWorkerStatusBySId(ctx, worker)
 	}
-	requestAnalysis, err := db.Provider.AddLoadByRequestId(ctx, *loadsterRequest)
+	err := db.Provider.AddBatchLoadByRequestId(ctx, *loadsterRequests)
 
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
-	return utils.ResponseSuccess(c, requestAnalysis, "Request analysis Saved.", fiber.StatusOK)
+	return utils.ResponseSuccess(c, nil, "Request analysis Saved.", fiber.StatusOK)
 }

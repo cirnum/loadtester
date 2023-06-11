@@ -25,7 +25,7 @@ func RunRequest(c *fiber.Ctx) error {
 	if err := c.BodyParser(request); err != nil {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
-	log.Info("Run request Body %+v \n", request)
+	log.Infof("Run request Body %+v \n", request)
 
 	executor := executor.NewExecutor(request.ID, request.ServerId)
 	ctx, cancelCtx := context.WithCancel(ctx)
