@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"strings"
+
 	customModels "github.com/cirnum/loadtester/server/app/models"
 	"github.com/cirnum/loadtester/server/db/models"
 )
@@ -18,10 +20,10 @@ func HttpReqByType(loads []models.Loadster, reqType string) ([]models.Loadster, 
 	filterLoad := []models.Loadster{}
 
 	for _, load := range loads {
-		if load.Title == reqType {
+		if strings.Contains(load.Title, reqType) {
 			filterLoad = append(filterLoad, load)
 		}
-		if load.Title == reqType && load.Finish {
+		if strings.Contains(load.Title, reqType) && load.Finish {
 			lastReqLoad = load
 		}
 	}
@@ -31,6 +33,17 @@ func HttpReqByType(loads []models.Loadster, reqType string) ([]models.Loadster, 
 	return filterLoad, lastReqLoad
 }
 
+func calcDataTransfer(load []models.Loadster, nsType string) ([]models.Loadster, models.Loadster) {
+	val := []models.Loadster{}
+	data, _ := HttpReqByType(load, nsType)
+	for _, value := range data {
+		if value.Count > 0 {
+			val = append(val, value)
+		}
+	}
+	return val, val[len(val)-1]
+
+}
 func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster) customModels.CalculatedLoad {
 	var minLat int64 = 999999
 	var maxLat int64 = 0
@@ -46,8 +59,8 @@ func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster) customModel
 		loadAvg1, lastLoadAvg := HttpReqByType(load, "LA1")
 		cpu, lastCpuUsage := HttpReqByType(load, "CPU")
 		ram, lastRamUsage := HttpReqByType(load, "RAM")
-		outgress, lastOutgress := HttpReqByType(load, "en0 transmit")
-		ingress, lastIngress := HttpReqByType(load, "en0 receive")
+		outgress, lastOutgress := calcDataTransfer(load, "transmit")
+		ingress, lastIngress := calcDataTransfer(load, "receive")
 
 		totalTimeTaken := lastLatency.CreatedAt - lastLatency.StartTime
 
