@@ -35,13 +35,17 @@ func HttpReqByType(loads []models.Loadster, reqType string) ([]models.Loadster, 
 
 func calcDataTransfer(load []models.Loadster, nsType string) ([]models.Loadster, models.Loadster) {
 	val := []models.Loadster{}
+	var lastLoad models.Loadster
 	data, _ := HttpReqByType(load, nsType)
 	for _, value := range data {
 		if value.Count > 0 {
 			val = append(val, value)
 		}
 	}
-	return val, val[len(val)-1]
+	if len(val) > 0 {
+		lastLoad = val[len(val)-1]
+	}
+	return val, lastLoad
 
 }
 func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster) customModels.CalculatedLoad {
