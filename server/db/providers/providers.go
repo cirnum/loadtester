@@ -27,6 +27,8 @@ type Provider interface {
 	DeleteRequestById(ctx context.Context, id string) error
 	// Add Load
 	AddLoadByRequestId(ctx context.Context, load models.Loadster) (models.Loadster, error)
+	// Add batch load
+	AddBatchLoadByRequestId(ctx context.Context, load []models.Loadster) error
 	// Get load
 	GetLoadByRequestId(ctx context.Context, pagination models.Pagination, requestId string) ([]models.Loadster, error)
 	// Add server

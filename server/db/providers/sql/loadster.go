@@ -26,6 +26,25 @@ func (p *provider) AddLoadByRequestId(ctx context.Context, request models.Loadst
 	return request, nil
 }
 
+// batchRequest to update user information in database
+func (p *provider) AddBatchLoadByRequestId(ctx context.Context, requests []models.Loadster) error {
+	loadReq := []models.Loadster{}
+	for _, req := range requests {
+		req.ID = uuid.New().String()
+		req.CreatedAt = time.Now().Unix()
+		req.UpdatedAt = time.Now().Unix()
+		loadReq = append(loadReq, req)
+	}
+
+	result := p.db.Create(&loadReq)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
 // get Load by request Id to update user information in database
 func (p *provider) GetLoadByRequestId(ctx context.Context, pagination models.Pagination, requestId string) ([]models.Loadster, error) {
 	var loadster []models.Loadster

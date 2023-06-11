@@ -12,7 +12,7 @@ var Provider providers.Provider
 func InitDB() error {
 	var err error
 
-	log.Info("Initializing SQLite")
+	log.Info("Initializing DB")
 	Provider, err = sql.NewProvider()
 	if err != nil {
 		log.Fatal("Failed to initialize SQL driver: ", err)
