@@ -136,8 +136,10 @@ func (e *Executor) systemloadRun(ctx context.Context) (err error) {
 
 						tx := float64(ns.TxBytes-prv.txBytes) / diffTime // Bps
 						rx := float64(ns.RxBytes-prv.rxBytes) / diffTime // Bps
-						Notify(ns.Name+" transmit", int64(tx/1000))      // KBps
-						Notify(ns.Name+" receive", int64(rx/1000))       // KBps
+						if int64(tx/1000) > 0 {
+							Notify(ns.Name+" transmit", int64(tx/1000)) // KBps
+							Notify(ns.Name+" receive", int64(rx/1000))  // KBps
+						}
 					}
 					// update prv values
 					nssPre[ns.Name] = rtxBytes{
