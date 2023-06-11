@@ -181,11 +181,11 @@ func timestampMs() int64 {
 	return time.Now().UnixNano() / 1e6 // ms
 }
 
-func (e *Executor) sendLoadData() {
+func (e *Executor) sendLoadData(isFinish bool) {
 	e.mu.Lock()
 	units := e.units
 	e.mu.Unlock()
-	data, _ := e.GrabCounter(nil, units)
+	data, _ := e.GrabCounter(isFinish, units)
 	ctx := context.Background()
 	config := configs.ConfigProvider
 
@@ -206,7 +206,7 @@ func (e *Executor) sendLoadData() {
 		db.Provider.AddBatchLoadByRequestId(ctx, data)
 	}
 }
-func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]models.Loadster, error) {
+func (e *Executor) GrabCounter(isFinish bool, units map[string]unit) ([]models.Loadster, error) {
 	var data []models.Loadster
 	e.mu.Lock()
 	now := time.Now().Unix()
@@ -221,10 +221,9 @@ func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]mo
 				ServerId:  e.serverId,
 				Created:   now,
 				StartTime: e.startTime,
+				Finish:    isFinish,
 			}
-			if counter.Count > 0 {
-				data = append(data, counter)
-			}
+			data = append(data, counter)
 		case metrics.Histogram:
 			h := u.h.Snapshot()
 			ps := h.Percentiles([]float64{0.5, 0.75, 0.95, 0.99, 0.999})
@@ -245,10 +244,9 @@ func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]mo
 				ServerId:  e.serverId,
 				Created:   now,
 				StartTime: e.startTime,
+				Finish:    isFinish,
 			}
-			if histo.Count > 0 {
-				data = append(data, histo)
-			}
+			data = append(data, histo)
 		case metrics.Gauge:
 			counter := models.Loadster{
 				Count:     u.g.Value(),
@@ -258,10 +256,9 @@ func (e *Executor) GrabCounter(ctx context.Context, units map[string]unit) ([]mo
 				ServerId:  e.serverId,
 				Created:   now,
 				StartTime: e.startTime,
+				Finish:    isFinish,
 			}
-			if counter.Count > 0 {
-				data = append(data, counter)
-			}
+			data = append(data, counter)
 		}
 	}
 	e.mu.Unlock()
@@ -271,9 +268,11 @@ func (e *Executor) logScaledOnCue(ctx context.Context, ch chan interface{}) erro
 	for {
 		select {
 		case <-ch:
-			e.sendLoadData()
+			finish := false
+			e.sendLoadData(finish)
 		case <-ctx.Done():
-			e.sendLoadData()
+			finish := true
+			e.sendLoadData(finish)
 			return nil
 		}
 	}
