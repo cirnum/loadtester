@@ -69,7 +69,7 @@ func NewProvider() (*provider, error) {
 		logrus.Debug("Failed to drop phone number constraint:", err)
 	}
 
-	err = sqlDB.AutoMigrate(&models.User{}, &models.Request{}, &models.Loadster{}, &models.Server{}, &models.Worker{})
+	err = sqlDB.AutoMigrate(&models.User{}, &models.Request{}, &models.Loadster{}, &models.Server{}, &models.Worker{}, &models.EC2{}, &models.EC2KeyPair{})
 	if err != nil {
 		return nil, err
 	}

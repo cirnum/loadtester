@@ -55,4 +55,12 @@ type Provider interface {
 	GetWorkerById(ctx context.Context, id string) (models.Worker, error)
 	// get worker by req id
 	GetWorkerByReqId(ctx context.Context, id string) ([]models.Worker, error)
+	// Create EC2
+	CreateEC2(ctx context.Context, ec2s []models.EC2) ([]models.EC2, error)
+	// Update EC2
+	UpdateEc2(ctx context.Context, ec2s []models.EC2) ([]models.EC2, error)
+	// Get All EC2s
+	GetAllEc2s(ctx context.Context) ([]models.EC2, error)
+	// Update ec2 status
+	UpdateEc2Status(ctx context.Context, ec2s []string, status string, code int) error
 }
