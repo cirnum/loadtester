@@ -14,6 +14,7 @@ import {
   Badge,
   Spinner as SP,
   Image,
+  HStack,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +25,7 @@ import {
   editServerAction,
   getAllServerAction,
   selectDeleteRequest,
+  synWithMasterAction,
 } from "../../store/stress/server/actions";
 import {
   AddServerRequestPayload,
@@ -197,9 +199,19 @@ export default function ServerBoard() {
           <Text fontSize="sm" fontWeight="bold">
             Server Details
           </Text>
-          <Button size="sm" onClick={() => onOpen("ADD")}>
-            Add New Server
-          </Button>
+          <HStack gap={3}>
+            <Button
+              size="sm"
+              colorScheme="primary"
+              variant="outline"
+              onClick={() => dispatch(synWithMasterAction())}
+            >
+              Sync With Master
+            </Button>
+            <Button size="sm" onClick={() => onOpen("ADD")}>
+              Add New Server
+            </Button>
+          </HStack>
         </Stack>
         <Table variant="simple" size="md">
           <Thead>

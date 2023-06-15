@@ -3,6 +3,7 @@ package models
 type EC2 struct {
 	ID               string `gorm:"primaryKey;type:char(36)" json:"id,omitempty"`
 	PrivateIp        string `json:"privateIp,omitempty"`
+	UserID           string `json:"userId,omitempty"`
 	PublicIp         string `json:"publicIp,omitempty"`
 	PublicDns        string `json:"publicDns,omitempty"`
 	Architecture     string `json:"type,arch"`
@@ -16,6 +17,11 @@ type EC2 struct {
 	KeyName          string `json:"keyName,omitempty"`
 	UpdatedAt        int64  `json:"updated_at" bson:"updated_at"`
 	CreatedAt        int64  `json:"created_at" bson:"created_at"`
+}
+
+type EC2List struct {
+	Pagination *Pagination `json:"pagination"`
+	Data       []EC2       `json:"data"`
 }
 
 type EC2KeyPair struct {

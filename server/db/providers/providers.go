@@ -35,6 +35,8 @@ type Provider interface {
 	AddServer(ctx context.Context, server models.Server) (models.Server, error)
 	// UpdateUser to update user information in database
 	UpdateServer(ctx context.Context, server models.Server) (models.Server, error)
+	// Update server by ip
+	UpdateServerByIp(ctx context.Context, server models.Server) (models.Server, error)
 	// Update server by ServerID
 	UpdateWorkerStatusBySId(ctx context.Context, worker *models.Worker) (*models.Worker, error)
 	// DeleteUser to delete user information from database
@@ -60,7 +62,7 @@ type Provider interface {
 	// Update EC2
 	UpdateEc2(ctx context.Context, ec2s []models.EC2) ([]models.EC2, error)
 	// Get All EC2s
-	GetAllEc2s(ctx context.Context) ([]models.EC2, error)
+	GetAllEc2s(ctx context.Context, pagination *models.Pagination) (*models.EC2List, error)
 	// Update ec2 status
 	UpdateEc2Status(ctx context.Context, ec2s []string, status string, code int) error
 }

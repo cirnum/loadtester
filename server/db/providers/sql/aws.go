@@ -52,11 +52,26 @@ func (p *provider) UpdateEc2Status(ctx context.Context, ec2s []string, status st
 }
 
 // get all ec2 by request Id to update user information in database
-func (p *provider) GetAllEc2s(ctx context.Context) ([]models.EC2, error) {
+func (p *provider) GetAllEc2s(ctx context.Context, pagination *models.Pagination) (*models.EC2List, error) {
+	userId := ctx.Value("userId")
 	var ec2s []models.EC2
-	result := p.db.Find(&ec2s)
+
+	result := p.db.Where("user_id = ?", userId).Limit(int(pagination.Limit)).Offset(int(pagination.Offset)).Order("created_at DESC").Find(&ec2s)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return ec2s, nil
+
+	var total int64
+	totalRes := p.db.Model(&models.Request{}).Count(&total)
+	if totalRes.Error != nil {
+		return nil, totalRes.Error
+	}
+
+	paginationClone := pagination
+	paginationClone.Total = total
+
+	return &models.EC2List{
+		Pagination: paginationClone,
+		Data:       ec2s,
+	}, nil
 }

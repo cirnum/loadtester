@@ -38,6 +38,7 @@ export default function AddOrEdit({ server }: { server?: Server }) {
       }
     }
   }, []);
+
   function onSubmit(values) {
     let payload: AddServerRequestPayload = values;
     if (values.port) {

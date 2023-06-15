@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"flag"
+	"fmt"
 
 	"os"
 	"time"
@@ -48,6 +49,7 @@ func main() {
 		routes.ServerRoutes(app)
 		routes.JobsRoutes(app)
 		routes.AWSRoutes(app)
+		routes.SettingRoute(app)
 
 		// Custom config
 		app.Static("/", "dist", fiber.Static{
@@ -81,24 +83,34 @@ func isWorkerMode() bool {
 	portPtr := flag.String("PORT", "3005", "Take the dafault port if port is empty")
 	token := flag.String("TOKEN", "", "Please pass the token (Required)")
 	masterIp := flag.String("MASTER_IP", "", "Please pass the master node ip. (Required)")
+	worker := flag.Bool("WORKER", false, "")
+
 	flag.Parse()
-
 	localIp := utils.GetPublicIp()
-	if *token == "" || *masterIp == "" {
-		configs.ConfigProvider = configs.Initialize(os.Getenv("PORT"), "", "")
-		configs.ConfigProvider.HostIp = localIp
-		configs.ConfigProvider.IsSlave = false
-		configs.ConfigProvider.IP = os.Getenv("SERVER_HOST")
-		log.Info("Master Config: %+v \n", configs.ConfigProvider)
-		log.Info(string("\033[34m"), "Master service initiated.")
-		return false
-	}
-	configs.ConfigProvider = configs.Initialize(*portPtr, *token, *masterIp)
-	configs.ConfigProvider.IsSlave = true
-	configs.ConfigProvider.IP = "0.0.0.0"
-	configs.ConfigProvider.HostIp = localIp
+	fmt.Println("master", *portPtr, *worker)
 
-	log.Info("Worker Config: %+v \n", configs.ConfigProvider)
-	log.Info(string("\033[34m"), "Worker service initiated.")
-	return true
+	if *worker == true || *token != "" || *masterIp != "" {
+		fmt.Println("portPtr", *portPtr, *worker)
+		configs.ConfigProvider = configs.Initialize(*portPtr, *token, *masterIp)
+		configs.ConfigProvider.IsSlave = true
+		configs.ConfigProvider.IP = "0.0.0.0"
+		configs.ConfigProvider.HostIp = localIp + ":" + *portPtr
+		configs.ConfigProvider.MasterIp = *masterIp
+		log.Infof("Worker Config: %+v \n", configs.ConfigProvider)
+		// log.Info(string("\033[34m"), "Worker service initiated.")
+		return true
+	}
+
+	if os.Getenv("PORT") != "" {
+		*portPtr = os.Getenv("PORT")
+	}
+
+	configs.ConfigProvider = configs.Initialize(*portPtr, "", "")
+	configs.ConfigProvider.HostIp = localIp
+	configs.ConfigProvider.IsSlave = false
+	configs.ConfigProvider.IP = os.Getenv("SERVER_HOST")
+	configs.ConfigProvider.HostUrl = fmt.Sprintf("http://%s:%s", configs.ConfigProvider.IP, *portPtr)
+	// log.Infof("Master Config:  %+v \n", configs.ConfigProvider)
+	log.Info(string("\033[34m"), "Master service initiated.")
+	return false
 }

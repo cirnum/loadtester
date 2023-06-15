@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	_ "github.com/cirnum/loadtester/server/app/models"
 	"github.com/cirnum/loadtester/server/app/utils"
@@ -57,7 +58,11 @@ func AddServer(c *fiber.Ctx) error {
 	if err := c.BodyParser(serverPayload); err != nil {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
+
 	serverPayload.UserID = c.Locals("userId").(string)
+	if pkgUtils.SendMasterIp(serverPayload.IP) {
+		serverPayload.Active = true
+	}
 	server, err := db.Provider.AddServer(ctx, *serverPayload)
 
 	if err != nil {
@@ -87,4 +92,29 @@ func DeleteServerById(c *fiber.Ctx) error {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
 	return utils.ResponseSuccess(c, nil, "Server deleted successfully.", fiber.StatusOK)
+}
+
+// To Update server
+func SyncServerWithMaster(c *fiber.Ctx) error {
+	ctx := context.WithValue(context.Background(), "userId", c.Locals("userId").(string))
+	pagination := utils.GetPagination(c)
+
+	ec2s, err := db.Provider.GetAllEc2s(ctx, &pagination)
+
+	success, failed := pkgUtils.SyncWithMaster(ec2s)
+	fmt.Println("Success list", success)
+	fmt.Println("failed list", failed)
+	serversToUpdate := pkgUtils.SaveEc2ToServer(success)
+	for _, server := range serversToUpdate {
+		db.Provider.UpdateServerByIp(ctx, server)
+	}
+
+	listServer, err := db.Provider.ListServer(ctx, &pagination)
+	serverList := pkgUtils.ServerStatus(listServer)
+
+	if err != nil {
+		return utils.ResponseError(c, err, "Failed to update the server.", 0)
+	}
+	return utils.ResponseSuccess(c, serverList, "Server Updated successfully.", 0)
+
 }

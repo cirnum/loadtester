@@ -3,6 +3,7 @@ import { AUTH, AuthAction } from "./auth/types";
 import { IDashboard, DashboardAction } from "./stress/dashboard/types";
 import { IRequestReport, RequestAction } from "./stress/request/types";
 import { IServer, ServerAction } from "./stress/server/types";
+import { AWSAction, IAWS } from "./stress/aws/types";
 
 export interface ApiCallAction extends Action {
   type: "@app/API_CALL";
@@ -22,6 +23,7 @@ export interface ApplicationState {
   dashboard: IDashboard;
   requestReport: IRequestReport;
   server: IServer;
+  aws: IAWS;
 }
 
 export interface CommonError {
@@ -38,7 +40,8 @@ export type ApplicationActions =
   | AuthAction
   | DashboardAction
   | RequestAction
-  | ServerAction;
+  | ServerAction
+  | AWSAction;
 
 export type ResponseBody = {
   status: number;

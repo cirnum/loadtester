@@ -114,7 +114,7 @@ func CreateInstance(client *ec2.EC2, ec2Options requstModels.CreateEC2Options) (
 	return res, nil
 }
 
-func CreateEC2(ec2Options requstModels.CreateEC2Options) ([]models.EC2, error) {
+func CreateEC2(ec2Options requstModels.CreateEC2Options, userId string) ([]models.EC2, error) {
 	sess, err := session.NewSessionWithOptions(session.Options{
 		Profile: "default",
 		Config: aws.Config{
@@ -130,23 +130,19 @@ func CreateEC2(ec2Options requstModels.CreateEC2Options) ([]models.EC2, error) {
 
 	ec2Client := ec2.New(sess)
 
-	// keyName := "ec2-go-tutorial-key-name2"
-	// instanceType := "t2.micro"
-	// minCount := 2
-	// maxCount := 2
-	// imageId := "ami-0cbcafc591a2f9771"
 	newInstance, err := CreateInstance(ec2Client, ec2Options)
 	if err != nil {
 		fmt.Printf("Couldn't create new instance: %v", err)
 		return nil, err
 	}
-	return filterEc2Data(newInstance.Instances), nil
+	return filterEc2Data(newInstance.Instances, userId), nil
 }
 
-func filterEc2Data(ec2Payload []*ec2.Instance) []models.EC2 {
+func filterEc2Data(ec2Payload []*ec2.Instance, userId string) []models.EC2 {
 	ec2s := []models.EC2{}
 	for _, instance := range ec2Payload {
 		ec2 := models.EC2{}
+		ec2.UserID = userId
 		ec2.Architecture = *instance.Architecture
 		ec2.AvailabilityZone = *instance.Placement.AvailabilityZone
 		ec2.Ec2State = *instance.State.Name
@@ -261,7 +257,7 @@ func TerminateEC2(instanceIds []string) error {
 	})
 
 	if err != nil {
-		fmt.Printf("Failed to initialize new session: %v", err)
+		fmt.Printf("Failed to terminate new session: %v", err)
 		return nil
 	}
 

@@ -1,6 +1,7 @@
 // Get Loadster data
 
 import { PaginationPayload } from "../../types";
+import { commonFailure, commonRequest } from "../aws/actions";
 import {
   ADD_SERVER_FAILURE,
   ADD_SERVER_SUCCESS,
@@ -15,6 +16,7 @@ import {
   DELETE_DIALOG_STATE,
   SELECT_DELETE_REQUEST,
   ADD_OR_EDIT_SERVER,
+  SYNC_WITH_MASTER,
 } from "./actionTypes";
 import {
   AddOrEditServer,
@@ -41,6 +43,9 @@ import {
   SelectDeleteRequest,
   Server,
   ServerList,
+  SynWithMasterAction,
+  SyncResponse,
+  SyncWithMaster,
 } from "./types";
 
 // Send request
@@ -170,4 +175,18 @@ export const addOrEditServer = (
 ): AddOrEditServer => ({
   type: ADD_OR_EDIT_SERVER,
   payload,
+});
+
+export const syncWithMaster = (payload: SyncResponse): SyncWithMaster => ({
+  type: SYNC_WITH_MASTER,
+  payload,
+});
+
+export const synWithMasterAction = (): SynWithMasterAction => ({
+  type: "@app/API_CALL",
+  method: "GET",
+  path: "/syncmaster",
+  onRequest: commonRequest,
+  onSuccess: syncWithMaster,
+  onFailure: commonFailure,
 });

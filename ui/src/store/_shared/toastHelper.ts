@@ -12,6 +12,16 @@ import {
 } from "../auth/types";
 import { ToastConfig } from "../middleware/toast";
 import {
+  COMMON_FAILURE,
+  CREATE_EC2_SUCCESS,
+  DELETE_EC2_SUCCESS,
+} from "../stress/aws/actionTypes";
+import {
+  CommonFailure,
+  CreateEC2Success,
+  DeleteEC2Success,
+} from "../stress/aws/types";
+import {
   SEND_REQUEST_FAILURE,
   SEND_REQUEST_SUCCESS,
 } from "../stress/dashboard/actionTypes";
@@ -24,12 +34,16 @@ import {
   ADD_SERVER_SUCCESS,
   DELETE_SERVER_FAILURE,
   DELETE_SERVER_SUCCESS,
+  GET_ALL_SERVER_FAILURE,
+  SYNC_WITH_MASTER,
 } from "../stress/server/actionTypes";
 import {
   AddServerFailure,
   AddServerSuccess,
   DeleteServerFailure,
   DeleteServerSuccess,
+  GetAllServerFailure,
+  SyncWithMaster,
 } from "../stress/server/types";
 import { ApplicationActions } from "../types";
 
@@ -75,6 +89,26 @@ export const toastActions: {
     message: action.payload.message,
   }),
   [SEND_REQUEST_SUCCESS]: (action: SendRequestSuccess) => ({
+    type: "success",
+    message: action.payload.message,
+  }),
+  [CREATE_EC2_SUCCESS]: (action: CreateEC2Success) => ({
+    type: "success",
+    message: action.payload.message,
+  }),
+  [GET_ALL_SERVER_FAILURE]: (action: GetAllServerFailure) => ({
+    type: "error",
+    message: action.payload.message,
+  }),
+  [DELETE_EC2_SUCCESS]: (action: DeleteEC2Success) => ({
+    type: "success",
+    message: action.payload.message,
+  }),
+  [COMMON_FAILURE]: (action: CommonFailure) => ({
+    type: "error",
+    message: action.payload.message,
+  }),
+  [SYNC_WITH_MASTER]: (action: SyncWithMaster) => ({
     type: "success",
     message: action.payload.message,
   }),

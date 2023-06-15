@@ -23,7 +23,7 @@ import {
   Spacer,
   Image,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   FiHome,
   FiTrendingUp,
@@ -53,20 +53,27 @@ const LinkItems: Array<LinkItemProps> = [
 const Links: Array<LinkItemProps> = [
   { name: "Requests", path: "/dashboard" },
   // { name: "Performance", path: "performace" },
-  { name: "Server", path: "server" },
+  { name: "Server", path: "/server" },
+  { name: "AWS", path: "/aws" },
+
   // { name: "Download Client", path: "client" },
 ];
 
 function NavItem({ icon, children, path, ...rest }: NavItemProps) {
+  const location = useLocation();
   return (
     <Link to={path || "/"} style={{ textDecoration: "none" }}>
       <Flex
+        minWidth="80px"
         align="center"
         p="2"
         mx="2"
         borderRadius="lg"
         role="group"
         cursor="pointer"
+        justifyContent="center"
+        bg={location.pathname === path ? "primary.500" : ""}
+        color={location.pathname === path ? "white" : "#171239"}
         _hover={{
           bg: "primary.400",
           color: "white",
@@ -74,7 +81,6 @@ function NavItem({ icon, children, path, ...rest }: NavItemProps) {
         fontWeight="600"
         fontSize="14px"
         lineHeight="20px"
-        color="#171239"
         {...rest}
       >
         {icon && (

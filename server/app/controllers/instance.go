@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"strings"
 
 	"github.com/cirnum/loadtester/server/app/models"
 	"github.com/cirnum/loadtester/server/app/utils"
@@ -37,8 +38,8 @@ func CreateEC2(c *fiber.Ctx) error {
 	if err := c.BodyParser(&ec2Options); err != nil {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
-
-	allCreatedEc2, err := utils.CreateEC2(ec2Options)
+	userId := c.Locals("userId").(string)
+	allCreatedEc2, err := utils.CreateEC2(ec2Options, userId)
 	workerData, err := db.Provider.CreateEC2(ctx, allCreatedEc2)
 	go utils.JobScheduler(workerData)
 	if err != nil {
@@ -48,15 +49,16 @@ func CreateEC2(c *fiber.Ctx) error {
 }
 
 func GetRunningEC2(c *fiber.Ctx) error {
-	// id := c.Params("id")
-	ctx := context.Background()
-	ec2s, err := db.Provider.GetAllEc2s(ctx)
+	ctx := context.WithValue(context.Background(), "userId", c.Locals("userId").(string))
+
+	pagination := utils.GetPagination(c)
+	ec2s, err := db.Provider.GetAllEc2s(ctx, &pagination)
 	// ec, err := utils.GetRunningInstance(ec2s)
 
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
-	return utils.ResponseSuccess(c, ec2s, "Get keys successfuly.", fiber.StatusOK)
+	return utils.ResponseSuccess(c, ec2s, "Get Running EC2 successfuly.", fiber.StatusOK)
 }
 
 func TerminateEC2(c *fiber.Ctx) error {
@@ -69,8 +71,9 @@ func TerminateEC2(c *fiber.Ctx) error {
 	}
 
 	err := utils.TerminateEC2(instanceIdsList.InstanceIds)
-	if err != nil {
-		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
+	if err != nil && strings.Contains(err.Error(), "NotFound") {
+		err = db.Provider.UpdateEc2Status(ctx, instanceIdsList.InstanceIds, "terminated", -1)
+		return utils.ResponseError(c, err, "Seems instance is already in terminated state.", fiber.StatusInternalServerError)
 	}
 	err = db.Provider.UpdateEc2Status(ctx, instanceIdsList.InstanceIds, "terminated", -1)
 

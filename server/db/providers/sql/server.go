@@ -52,6 +52,18 @@ func (p *provider) UpdateServer(ctx context.Context, server models.Server) (mode
 	return server, nil
 }
 
+// AddServer to update user information in database
+func (p *provider) UpdateServerByIp(ctx context.Context, server models.Server) (models.Server, error) {
+	server.UpdatedAt = time.Now().Unix()
+
+	result := p.db.Model(models.EC2{}).Where("ip LIKE ?", server.IP).Updates(server)
+
+	if result.Error != nil {
+		return server, result.Error
+	}
+	return server, nil
+}
+
 // ListServer to get list of users from database
 func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination) (*models.ServerList, error) {
 	userId := ctx.Value("userId")
@@ -62,8 +74,8 @@ func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination
 	}
 
 	serverList := []models.Server{}
-	for _, request := range servers {
-		serverList = append(serverList, request)
+	for _, server := range servers {
+		serverList = append(serverList, server)
 	}
 
 	var total int64
