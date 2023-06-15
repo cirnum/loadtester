@@ -85,11 +85,6 @@ func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination
 		return nil, result.Error
 	}
 
-	serverList := []models.Server{}
-	for _, server := range servers {
-		serverList = append(serverList, server)
-	}
-
 	var total int64
 	totalRes := p.db.Model(&models.Request{}).Count(&total)
 	if totalRes.Error != nil {
@@ -101,7 +96,7 @@ func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination
 
 	return &models.ServerList{
 		Pagination: paginationClone,
-		Data:       serverList,
+		Data:       servers,
 	}, nil
 }
 
