@@ -14,7 +14,7 @@ import { getCommonLoadingState } from "../../../store/stress/aws/selectors";
 import { createEC2Action } from "../../../store/stress/aws/actions";
 import { EC2CreatePayload } from "../../../store/stress/aws/types";
 
-const amiList = ["ami-0cbcafc591a2f9771"];
+const amiList = ["ami-07fe61018a1927002"];
 const instanceTypes = [
   "t2.nano",
   "t2.micro",

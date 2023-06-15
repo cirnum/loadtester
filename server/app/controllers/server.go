@@ -106,6 +106,7 @@ func SyncServerWithMaster(c *fiber.Ctx) error {
 	fmt.Println("failed list", failed)
 	serversToUpdate := pkgUtils.SaveEc2ToServer(success)
 	for _, server := range serversToUpdate {
+		server.UserID = c.Locals("userId").(string)
 		db.Provider.UpdateServerByIp(ctx, server)
 	}
 

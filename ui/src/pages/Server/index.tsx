@@ -73,7 +73,6 @@ function TableBody({
     ip,
     updated_at: updatedAt,
     active,
-    port,
     token,
     enabled,
   } = server;
@@ -106,13 +105,15 @@ function TableBody({
 
   return (
     <Tr key={id}>
-      <Td>{alias}</Td>
-      <Td>{description}</Td>
+      <Td>
+        <Text isTruncated>{alias}</Text>
+      </Td>
+      <Td>
+        <Text isTruncated>{description}</Text>
+      </Td>
 
       <Td>
-        <Badge color={ip ? "grey" : "red"}>
-          {ip ? `${ip}${port ? `:${port}` : ""}` : "Not connected"}{" "}
-        </Badge>
+        <Badge color={ip ? "grey" : "red"}>{ip || "Not connected"} </Badge>
       </Td>
       <Td
         cursor="pointer"
@@ -213,7 +214,11 @@ export default function ServerBoard() {
             </Button>
           </HStack>
         </Stack>
-        <Table variant="simple" size="md">
+        <Table
+          variant="simple"
+          size="md"
+          __css={{ "table-layout": "fixed", width: "full" }}
+        >
           <Thead>
             <Tr>
               {TableHeader.map((item) => (

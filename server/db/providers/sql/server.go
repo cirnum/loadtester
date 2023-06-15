@@ -56,7 +56,19 @@ func (p *provider) UpdateServer(ctx context.Context, server models.Server) (mode
 func (p *provider) UpdateServerByIp(ctx context.Context, server models.Server) (models.Server, error) {
 	server.UpdatedAt = time.Now().Unix()
 
-	result := p.db.Model(models.EC2{}).Where("ip LIKE ?", server.IP).Updates(server)
+	if p.db.Model(models.Server{}).Where("ip LIKE ?", server.IP).Updates(server).RowsAffected == 0 {
+		if server.ID == "" {
+			server.ID = uuid.New().String()
+		}
+		if server.Token == "" {
+			server.Token = UniqueToken(LENGth)
+		}
+		server.Enabled = true
+		server.CreatedAt = time.Now().Unix()
+		p.db.Create(&server)
+	}
+
+	result := p.db.Model(models.Server{}).Where("ip LIKE ?", server.IP).Updates(server)
 
 	if result.Error != nil {
 		return server, result.Error
