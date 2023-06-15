@@ -19,7 +19,7 @@ import (
 func SendMasterIp(publicIp string) bool {
 	var url string
 	hostDetails := &reqModels.MasterDetails{
-		Address: configs.ConfigProvider.HostIp,
+		Address: "http://" + configs.ConfigProvider.HostIp,
 	}
 	postData, _ := json.Marshal(hostDetails)
 	if strings.Contains(publicIp, "http") || strings.Contains(publicIp, "https") {
