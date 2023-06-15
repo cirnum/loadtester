@@ -19,9 +19,8 @@ import (
 func SendMasterIp(publicIp string) bool {
 	var url string
 	hostDetails := &reqModels.MasterDetails{
-		Address: configs.ConfigProvider.HostUrl,
+		Address: configs.ConfigProvider.HostIp,
 	}
-	fmt.Println("hostDetails", *hostDetails)
 	postData, _ := json.Marshal(hostDetails)
 	if strings.Contains(publicIp, "http") || strings.Contains(publicIp, "https") {
 		url = publicIp + "/worker/connect"
