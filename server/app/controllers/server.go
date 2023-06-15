@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"context"
-	"fmt"
+	"sync"
 
 	_ "github.com/cirnum/loadtester/server/app/models"
 	"github.com/cirnum/loadtester/server/app/utils"
@@ -96,18 +96,22 @@ func DeleteServerById(c *fiber.Ctx) error {
 
 // To Update server
 func SyncServerWithMaster(c *fiber.Ctx) error {
+	var wg sync.WaitGroup
+
 	ctx := context.WithValue(context.Background(), "userId", c.Locals("userId").(string))
 	pagination := utils.GetPagination(c)
 
 	ec2s, err := db.Provider.GetAllEc2s(ctx, &pagination)
 
-	success, failed := pkgUtils.SyncWithMaster(ec2s)
-	fmt.Println("Success list", success)
-	fmt.Println("failed list", failed)
+	success, _ := pkgUtils.SyncWithMaster(ec2s)
 	serversToUpdate := pkgUtils.SaveEc2ToServer(success)
+	wg.Add(len(serversToUpdate))
 	for _, server := range serversToUpdate {
-		server.UserID = c.Locals("userId").(string)
-		db.Provider.UpdateServerByIp(ctx, server)
+		go func(server models.Server) {
+			server.UserID = c.Locals("userId").(string)
+			db.Provider.UpdateServerByIp(ctx, server)
+			wg.Done()
+		}(server)
 	}
 
 	listServer, err := db.Provider.ListServer(ctx, &pagination)

@@ -32,7 +32,6 @@ func GetPemKey(c *fiber.Ctx) error {
 }
 
 func CreateEC2(c *fiber.Ctx) error {
-	// id := c.Params("id")
 	var ec2Options models.CreateEC2Options
 	ctx := context.Background()
 	if err := c.BodyParser(&ec2Options); err != nil {
