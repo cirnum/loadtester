@@ -31,10 +31,10 @@ import {
   FiStar,
   FiSettings,
   FiMenu,
-  FiBell,
   FiChevronDown,
 } from "react-icons/fi";
 import { IconType } from "react-icons";
+import { SettingsIcon } from "@chakra-ui/icons";
 import LogoImg from "../../assets/brand.svg";
 
 interface LinkItemProps {
@@ -98,23 +98,6 @@ function NavItem({ icon, children, path, ...rest }: NavItemProps) {
     </Link>
   );
 }
-
-// function NavLink({ children }: { children: ReactNode }) {
-//   return (
-//     <Link
-//       px={2}
-//       py={1}
-//       rounded="md"
-//       _hover={{
-//         textDecoration: "none",
-//         bg: useColorModeValue("gray.200", "gray.700"),
-//       }}
-//       href="/cat"
-//     >
-//       {children}
-//     </Link>
-//   );
-// }
 
 function MobileNav({ onOpen, ...rest }: MobileProps) {
   const [user] = useState(() => {
@@ -186,12 +169,14 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
         display={{ base: "none", md: "flex" }}
         justifyContent={{ base: "space-between", md: "flex-end" }}
       >
-        <IconButton
-          size="lg"
-          variant="ghost"
-          aria-label="open menu"
-          icon={<FiBell />}
-        />
+        <Link to="/settings">
+          <IconButton
+            size="lg"
+            variant="ghost"
+            aria-label="open menu"
+            icon={<SettingsIcon />}
+          />
+        </Link>
         <Flex alignItems="center" zIndex="dropdown">
           <Menu>
             <MenuButton
@@ -250,7 +235,7 @@ function SidebarContent({ onClose, ...rest }: SidebarProps) {
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="1xl" fontFamily="monospace" fontWeight="bold">
-          Strain-Hub
+          Load Tester
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>

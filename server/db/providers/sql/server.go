@@ -11,7 +11,12 @@ import (
 	"github.com/google/uuid"
 )
 
-const LENGth = 3
+const (
+	UserId       = "user_id"
+	UserToken    = "userId"
+	RandLength   = 3
+	ReqIdMissing = "Request id missing."
+)
 
 func UniqueToken(size int) string {
 	n := size
@@ -28,7 +33,7 @@ func (p *provider) AddServer(ctx context.Context, server models.Server) (models.
 	if server.ID == "" {
 		server.ID = uuid.New().String()
 	}
-	server.Token = UniqueToken(LENGth)
+	server.Token = UniqueToken(RandLength)
 	server.CreatedAt = time.Now().Unix()
 	server.UpdatedAt = time.Now().Unix()
 
@@ -61,7 +66,7 @@ func (p *provider) UpdateServerByIp(ctx context.Context, server models.Server) (
 			server.ID = uuid.New().String()
 		}
 		if server.Token == "" {
-			server.Token = UniqueToken(LENGth)
+			server.Token = UniqueToken(RandLength)
 		}
 		server.Enabled = true
 		server.CreatedAt = time.Now().Unix()
@@ -78,9 +83,9 @@ func (p *provider) UpdateServerByIp(ctx context.Context, server models.Server) (
 
 // ListServer to get list of users from database
 func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination) (*models.ServerList, error) {
-	userId := ctx.Value("userId")
+	userId := ctx.Value(UserToken)
 	var servers []models.Server
-	result := p.db.Where("user_id = ?", userId).Limit(int(pagination.Limit)).Offset(int(pagination.Offset)).Order("created_at DESC").Find(&servers)
+	result := p.db.Where(UserId+" = ?", userId).Limit(int(pagination.Limit)).Offset(int(pagination.Offset)).Order("created_at DESC").Find(&servers)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -103,7 +108,7 @@ func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination
 // ListServer  by Userid to get list of users from database
 func (p *provider) ListServerByUserId(ctx context.Context, userId string) ([]models.Server, error) {
 	var servers []models.Server
-	result := p.db.Where("user_id = ?", userId).Find(&servers)
+	result := p.db.Where(UserId+" = ?", userId).Find(&servers)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -121,7 +126,7 @@ func (p *provider) GetServerById(ctx context.Context, id string) (models.Server,
 	var server models.Server
 
 	if id == "" {
-		return server, errors.New("Request id missing.")
+		return server, errors.New(ReqIdMissing)
 	}
 
 	result := p.db.Where("id = ?", id).First(&server)
@@ -134,13 +139,13 @@ func (p *provider) GetServerById(ctx context.Context, id string) (models.Server,
 
 // DeleteServerById Request by id to update user information in database
 func (p *provider) DeleteServerById(ctx context.Context, id string) error {
-	userId := ctx.Value("userId")
+	userId := ctx.Value(UserToken)
 
 	if id == "" {
-		return errors.New("Request id missing.")
+		return errors.New(ReqIdMissing)
 	}
 
-	result := p.db.Where("user_id = ?", userId).Delete(&models.Server{
+	result := p.db.Where(UserId+" = ?", userId).Delete(&models.Server{
 		ID: id,
 	})
 	if result.Error != nil {

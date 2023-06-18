@@ -4,14 +4,38 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	requstModels "github.com/cirnum/loadtester/server/app/models"
 	"github.com/cirnum/loadtester/server/db/models"
+	"github.com/cirnum/loadtester/server/pkg/configs"
+	log "github.com/sirupsen/logrus"
 
 	"fmt"
 )
 
+const (
+	FailedToInitSessionMSG string = "Failed to initialize new session:"
+	FailedToCreateKeyPair  string = "Couldn't create key pair:"
+	FailedToFetchKeyPair   string = "Couldn't fetch key pairs:"
+	FailedToCreateInstance string = "Couldn't create new instance:"
+	FailedToFetchInstance  string = "Couldn't retrieve running instances:"
+	WriteFailedMSG         string = "Couldn't write key pair to file:"
+	RunningStat            string = "running"
+	DefaultKey             string = "loadtester"
+	TempDir                string = "path"
+)
+
+func sessionManager() (*session.Session, error) {
+	return session.NewSessionWithOptions(session.Options{
+		// Profile: "default",
+		Config: aws.Config{
+			Region:      &configs.StoreProvider.AWS_REGION,
+			Credentials: credentials.NewStaticCredentials(configs.StoreProvider.AWS_ACCESS_KEY, configs.StoreProvider.AWS_SECRET_KEY, ""),
+		},
+	})
+}
 func CreateKeyPair(client *ec2.EC2, keyName string) (*ec2.CreateKeyPairOutput, error) {
 	result, err := client.CreateKeyPair(&ec2.CreateKeyPairInput{
 		KeyName: aws.String(keyName),
@@ -30,33 +54,27 @@ func WriteKey(fileName string, fileData *string) error {
 }
 
 func CreatePem() error {
-	sess, err := session.NewSessionWithOptions(session.Options{
-		Profile: "default",
-		Config: aws.Config{
-			Region: aws.String("ap-south-1"),
-		},
-	})
+	sess, err := sessionManager()
 
 	if err != nil {
-		fmt.Printf("Failed to initialize new session: %v", err)
+		fmt.Printf("%s %v", FailedToInitSessionMSG, err)
 		return err
 	}
 
 	ec2Client := ec2.New(sess)
 
-	keyName := "ec2-go-tutorial-key-name2"
-	createRes, err := CreateKeyPair(ec2Client, keyName)
+	createRes, err := CreateKeyPair(ec2Client, DefaultKey)
 	if err != nil {
-		fmt.Printf("Couldn't create key pair: %v", err)
+		fmt.Printf("%s %v", FailedToCreateKeyPair, err)
 		return err
 	}
 
-	err = WriteKey("./temp/"+keyName+".pem", createRes.KeyMaterial)
+	path := fmt.Sprintf("./%s/%s.pem", TempDir, DefaultKey)
+	err = WriteKey(path, createRes.KeyMaterial)
 	if err != nil {
-		fmt.Printf("Couldn't write key pair to file: %v", err)
+		fmt.Printf("%s %v", WriteFailedMSG, err)
 		return err
 	}
-	fmt.Println("Created key pair: ", *createRes.KeyName)
 	return nil
 }
 
@@ -70,15 +88,10 @@ func DescribeKeyPairs(client *ec2.EC2) (*ec2.DescribeKeyPairsOutput, error) {
 }
 
 func GetKeyPair() error {
-	sess, err := session.NewSessionWithOptions(session.Options{
-		Profile: "default",
-		Config: aws.Config{
-			Region: aws.String("ap-south-1"),
-		},
-	})
+	sess, err := sessionManager()
 
 	if err != nil {
-		fmt.Printf("Failed to initialize new session: %v", err)
+		fmt.Printf("%s %v", FailedToInitSessionMSG, err)
 		return err
 	}
 
@@ -86,11 +99,10 @@ func GetKeyPair() error {
 
 	keyPairRes, err := DescribeKeyPairs(ec2Client)
 	if err != nil {
-		fmt.Printf("Couldn't fetch key pairs: %v", err)
+		fmt.Printf("%s %v", FailedToFetchKeyPair, err)
 		return err
 	}
 
-	fmt.Println("Key Pairs: ")
 	for _, pair := range keyPairRes.KeyPairs {
 		fmt.Printf("%s \n", *pair.KeyName)
 	}
@@ -114,17 +126,34 @@ func CreateInstance(client *ec2.EC2, ec2Options requstModels.CreateEC2Options) (
 	return res, nil
 }
 
+func GetVpcUpdate() (string, error) {
+	sess, err := sessionManager()
+	svc := ec2.New(sess)
+	result, err := svc.DescribeVpcs(nil)
+	if err != nil {
+		return "", err
+	}
+	if len(result.Vpcs) == 0 {
+		return "", err
+	}
+
+	return aws.StringValue(result.Vpcs[0].VpcId), nil
+}
+func CreateSG() {
+	GetVpcUpdate()
+}
 func CreateEC2(ec2Options requstModels.CreateEC2Options, userId string) ([]models.EC2, error) {
+
 	sess, err := session.NewSessionWithOptions(session.Options{
-		Profile: "default",
+		// Profile: "default",
 		Config: aws.Config{
-			Region: aws.String("ap-south-1"),
+			Region:      &configs.StoreProvider.AWS_REGION,
+			Credentials: credentials.NewStaticCredentials(configs.StoreProvider.AWS_ACCESS_KEY, configs.StoreProvider.AWS_SECRET_KEY, ""),
 		},
 	})
 
-	fmt.Println("ec2Options", ec2Options)
 	if err != nil {
-		fmt.Printf("Failed to initialize new session: %v", err)
+		log.Errorf("%s %v", FailedToInitSessionMSG, err)
 		return nil, err
 	}
 
@@ -132,7 +161,7 @@ func CreateEC2(ec2Options requstModels.CreateEC2Options, userId string) ([]model
 
 	newInstance, err := CreateInstance(ec2Client, ec2Options)
 	if err != nil {
-		fmt.Printf("Couldn't create new instance: %v", err)
+		log.Errorf("%s %v", FailedToCreateInstance, err)
 		return nil, err
 	}
 	return filterEc2Data(newInstance.Instances, userId), nil
@@ -159,14 +188,13 @@ func filterEc2Data(ec2Payload []*ec2.Instance, userId string) []models.EC2 {
 }
 
 func GetRunningInstances(client *ec2.EC2, instanceIds []*string) (*ec2.DescribeInstancesOutput, error) {
-	fmt.Println("Found instance id", instanceIds)
 	result, err := client.DescribeInstances(&ec2.DescribeInstancesInput{
 		InstanceIds: instanceIds,
 		Filters: []*ec2.Filter{
 			{
 				Name: aws.String("instance-state-name"),
 				Values: []*string{
-					aws.String("running"),
+					aws.String(RunningStat),
 				},
 			},
 		},
@@ -191,15 +219,9 @@ func GetRunningInstance(ec2s []models.EC2) ([]models.EC2, error) {
 	mappEc2 := make(map[string]*ec2.Instance)
 
 	pendingStateMap := make(map[string]bool)
-	sess, err := session.NewSessionWithOptions(session.Options{
-		Profile: "default",
-		Config: aws.Config{
-			Region: aws.String("ap-south-1"),
-		},
-	})
-
+	sess, err := sessionManager()
 	if err != nil {
-		fmt.Printf("Failed to initialize new session: %v", err)
+		fmt.Printf("%s %v", FailedToInitSessionMSG, err)
 		return foundEC2, err
 	}
 
@@ -207,7 +229,7 @@ func GetRunningInstance(ec2s []models.EC2) ([]models.EC2, error) {
 
 	runningInstances, err := GetRunningInstances(ec2Client, getAllEC2InstanceIds(ec2s))
 	if err != nil {
-		fmt.Printf("Couldn't retrieve running instances: %v", err)
+		log.Errorf("%s %v", FailedToFetchInstance, err)
 		return foundEC2, err
 	}
 
@@ -228,7 +250,6 @@ func GetRunningInstance(ec2s []models.EC2) ([]models.EC2, error) {
 			foundEC2 = append(foundEC2, ec2Instance)
 		}
 	}
-	fmt.Printf("Found running instance: %+v \n", foundEC2)
 
 	return foundEC2, nil
 }
@@ -249,16 +270,10 @@ func getInstanceIdList(ids []string) []*string {
 	return allInstance
 }
 func TerminateEC2(instanceIds []string) error {
-	sess, err := session.NewSessionWithOptions(session.Options{
-		Profile: "default",
-		Config: aws.Config{
-			Region: aws.String("ap-south-1"),
-		},
-	})
+	sess, err := sessionManager()
 
 	if err != nil {
-		fmt.Printf("Failed to terminate new session: %v", err)
-		return nil
+		return err
 	}
 
 	ec2Client := ec2.New(sess)

@@ -11,6 +11,7 @@ export default function ServerMap() {
       (worker) => id === worker.serverId
     );
     if (server) {
+      server.alias = server.id;
       return server;
     }
     return {

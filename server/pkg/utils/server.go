@@ -20,20 +20,25 @@ import (
 const (
 	WorkerConnectionFailed string = "connection failed to master due to status code: "
 	SomethingWentWrong     string = "Something went wrong."
+	ServerNotShutDown      string = "Oops... Server is not shutting down! Reason: "
+	ServerNotRunning       string = "Oops... Server is not running! Reason:"
 )
 const (
 	Protocol   string = "http://"
+	Http       string = "http"
+	Https      string = "https"
 	WorkerPath string = "/worker/connect"
 	WorkerReq  string = "/worker/request"
+	Fiber      string = "fiber"
 )
 
 func SendMasterIp(publicIp string) bool {
 	var url string
 	hostDetails := &reqModels.MasterDetails{
-		Address: Protocol + configs.ConfigProvider.HostIp,
+		Address: Protocol + configs.ConfigProvider.HostUrl,
 	}
 	postData, _ := json.Marshal(hostDetails)
-	if strings.Contains(publicIp, "http") || strings.Contains(publicIp, "https") {
+	if strings.Contains(publicIp, Http) || strings.Contains(publicIp, Https) {
 		url = publicIp + WorkerPath
 	} else {
 		url = Protocol + publicIp + WorkerPath
@@ -87,7 +92,7 @@ func ServerStatus(servers *models.ServerList) *models.ServerList {
 	wg.Add(len(servers.Data))
 	data := []models.Server{}
 	for _, server := range servers.Data {
-		func() {
+		go func() {
 			url := server.IP + WorkerReq
 			res, err := Do(http.MethodGet, url, nil, nil)
 			if err != nil {
@@ -124,7 +129,6 @@ func SaveEc2ToServer(ec2s []models.EC2) []models.Server {
 
 // StartServerWithGracefulShutdown function for starting server with a graceful shutdown.
 func StartServerWithGracefulShutdown(a *fiber.App) {
-	// Create channel for idle connections.
 	idleConnsClosed := make(chan struct{})
 
 	go func() {
@@ -132,21 +136,19 @@ func StartServerWithGracefulShutdown(a *fiber.App) {
 		signal.Notify(sigint, os.Interrupt) // Catch OS signals.
 		<-sigint
 
-		// Received an interrupt signal, shutdown.
 		if err := a.Shutdown(); err != nil {
-			// Error from closing listeners, or context timeout:
-			log.Errorf("Oops... Server is not shutting down! Reason: %v", err)
+			log.Errorf("%s %v", ServerNotShutDown, err)
 		}
 
 		close(idleConnsClosed)
 	}()
 
 	// Build Fiber connection URL.
-	fiberConnURL, _ := ConnectionURLBuilder("fiber")
+	fiberConnURL, _ := ConnectionURLBuilder(Fiber)
 
 	// Run server.
 	if err := a.Listen(fiberConnURL); err != nil {
-		log.Errorf("Oops... Server is not running! Reason: %v", err)
+		log.Errorf("%s %v", ServerNotRunning, err)
 	}
 
 	<-idleConnsClosed
@@ -155,9 +157,8 @@ func StartServerWithGracefulShutdown(a *fiber.App) {
 // StartServer func for starting a simple server.
 func StartServer(a *fiber.App) {
 	// Build Fiber connection URL.
-	fiberConnURL, _ := ConnectionURLBuilder("fiber")
-	// Run server.
+	fiberConnURL, _ := ConnectionURLBuilder(Fiber)
 	if err := a.Listen(fiberConnURL); err != nil {
-		log.Errorf("Oops... Server is not running! Reason: %v", err)
+		log.Errorf("%s %v", ServerNotRunning, err)
 	}
 }

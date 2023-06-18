@@ -12,9 +12,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+const (
+	ReqSendToTestMSG = "Request sent for stress testing."
+	ReqSavedMSG      = "Request save successfully."
+	ID               = "id"
+)
+
 // To Get all the users
 func GetAllRequest(c *fiber.Ctx) error {
-	ctx := context.WithValue(context.Background(), "userId", c.Locals("userId").(string))
+	ctx := context.WithValue(context.Background(), UserId, c.Locals(UserId).(string))
 	pagination := utils.GetPagination(c)
 	listUsers, err := db.Provider.RequestList(ctx, &pagination)
 
@@ -34,7 +40,7 @@ func NewRequest(c *fiber.Ctx) error {
 		return utils.ResponseError(c, err, constants.InvalidBody, fiber.StatusInternalServerError)
 	}
 
-	requestpayload.UserID = c.Locals("userId").(string)
+	requestpayload.UserID = c.Locals(UserId).(string)
 
 	// To check whether requested endpoint is reachable or not.
 	responsePayload.Response, err = utils.TestRequest(requestpayload)
@@ -49,28 +55,28 @@ func NewRequest(c *fiber.Ctx) error {
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
-	return utils.ResponseSuccess(c, responsePayload, "Request sent for stress testing.", fiber.StatusOK)
+	return utils.ResponseSuccess(c, responsePayload, ReqSendToTestMSG, fiber.StatusOK)
 }
 
 func GetRequest(c *fiber.Ctx) error {
 	ctx := context.Background()
-	id := c.Params("id")
+	id := c.Params(ID)
 
 	request, err := db.Provider.GetRequestById(ctx, id)
 
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
-	return utils.ResponseSuccess(c, request, "Request save successfully.", fiber.StatusOK)
+	return utils.ResponseSuccess(c, request, ReqSavedMSG, fiber.StatusOK)
 }
 
 func DeleteRequest(c *fiber.Ctx) error {
-	id := c.Params("id")
-	ctx := context.WithValue(context.Background(), "userId", c.Locals("userId").(string))
+	id := c.Params(ID)
+	ctx := context.WithValue(context.Background(), UserId, c.Locals(UserId).(string))
 
 	err := db.Provider.DeleteRequestById(ctx, id)
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
-	return utils.ResponseSuccess(c, nil, "Request save successfully.", fiber.StatusOK)
+	return utils.ResponseSuccess(c, nil, ReqSavedMSG, fiber.StatusOK)
 }
