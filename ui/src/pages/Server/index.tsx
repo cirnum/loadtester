@@ -210,7 +210,7 @@ export default function ServerBoard() {
               p={2}
               textTransform="lowercase"
             >
-              Master: {settings?.data?.HostIp}:{settings?.data?.Port}
+              Master: {settings?.data?.HostUrl}
             </Badge>
             <Button
               size="sm"
