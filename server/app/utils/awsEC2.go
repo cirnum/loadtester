@@ -2,6 +2,7 @@ package utils
 
 import (
 	"os"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -24,7 +25,7 @@ const (
 	WriteFailedMSG         string = "Couldn't write key pair to file:"
 	RunningStat            string = "running"
 	DefaultKey             string = "loadtester"
-	TempDir                string = "path"
+	TempDir                string = "/temp"
 )
 
 func sessionManager() (*session.Session, error) {
@@ -62,14 +63,14 @@ func CreatePem() error {
 	}
 
 	ec2Client := ec2.New(sess)
-
-	createRes, err := CreateKeyPair(ec2Client, DefaultKey)
+	key := fmt.Sprintf("%d-%s", time.Now().Unix(), DefaultKey)
+	createRes, err := CreateKeyPair(ec2Client, key)
 	if err != nil {
 		fmt.Printf("%s %v", FailedToCreateKeyPair, err)
 		return err
 	}
 
-	path := fmt.Sprintf("./%s/%s.pem", TempDir, DefaultKey)
+	path := fmt.Sprintf("./%s/%s.pem", TempDir, key)
 	err = WriteKey(path, createRes.KeyMaterial)
 	if err != nil {
 		fmt.Printf("%s %v", WriteFailedMSG, err)
@@ -87,12 +88,13 @@ func DescribeKeyPairs(client *ec2.EC2) (*ec2.DescribeKeyPairsOutput, error) {
 	return result, err
 }
 
-func GetKeyPair() error {
+func GetKeyPair() ([]*string, error) {
+	var keyPairs []*string
 	sess, err := sessionManager()
 
 	if err != nil {
 		fmt.Printf("%s %v", FailedToInitSessionMSG, err)
-		return err
+		return keyPairs, err
 	}
 
 	ec2Client := ec2.New(sess)
@@ -100,13 +102,13 @@ func GetKeyPair() error {
 	keyPairRes, err := DescribeKeyPairs(ec2Client)
 	if err != nil {
 		fmt.Printf("%s %v", FailedToFetchKeyPair, err)
-		return err
+		return keyPairs, err
 	}
 
 	for _, pair := range keyPairRes.KeyPairs {
-		fmt.Printf("%s \n", *pair.KeyName)
+		keyPairs = append(keyPairs, pair.KeyName)
 	}
-	return nil
+	return keyPairs, nil
 }
 
 // Create ec2

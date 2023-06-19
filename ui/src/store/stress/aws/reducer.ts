@@ -2,10 +2,14 @@ import {
   COMMON_FAILURE,
   COMMON_REQUEST,
   CREATE_EC2_SUCCESS,
+  CREATE_PEM_FILE_REQUEST,
+  CREATE_PEM_FILE_SUCCESS_AND_FAIL,
   DELETE_EC2_SUCCESS,
   GET_EC2_SERVERS_FAILURE,
   GET_EC2_SERVERS_REQUEST,
   GET_EC2_SERVERS_SUCCESS,
+  GET_PEM_FILES_REQUEST,
+  GET_PEM_FILES_SUCCESS,
   SELECT_DELETE_EC2,
   TOGGLE_CREATE_EC2_FORM,
 } from "./actionTypes";
@@ -20,6 +24,14 @@ const initialState: IAWS = {
     loading: false,
     data: undefined,
   },
+  pem: {
+    loading: false,
+    data: undefined,
+  },
+  createPem: {
+    loading: false,
+    data: undefined,
+  },
   willDelete: undefined,
   actions: {
     openCreateEC2Form: false,
@@ -28,6 +40,42 @@ const initialState: IAWS = {
 
 export default (state = initialState, action: AWSAction) => {
   switch (action.type) {
+    case CREATE_PEM_FILE_REQUEST:
+      return {
+        ...state,
+        createPem: {
+          ...state.createPem,
+          loading: true,
+        },
+      };
+    case CREATE_PEM_FILE_SUCCESS_AND_FAIL:
+      return {
+        ...state,
+        createPem: {
+          ...state.createPem,
+          loading: false,
+          data: action.payload,
+        },
+      };
+
+    case GET_PEM_FILES_REQUEST:
+      return {
+        ...state,
+        pem: {
+          ...state.pem,
+          loading: true,
+        },
+      };
+    case GET_PEM_FILES_SUCCESS:
+      return {
+        ...state,
+        pem: {
+          ...state.pem,
+          loading: false,
+          data: action.payload,
+        },
+      };
+
     case COMMON_REQUEST:
       return {
         ...state,

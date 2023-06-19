@@ -14,12 +14,16 @@ import { ToastConfig } from "../middleware/toast";
 import {
   COMMON_FAILURE,
   CREATE_EC2_SUCCESS,
+  CREATE_PEM_FILE_SUCCESS_AND_FAIL,
   DELETE_EC2_SUCCESS,
+  GET_PEM_FILES_SUCCESS,
 } from "../stress/aws/actionTypes";
 import {
   CommonFailure,
   CreateEC2Success,
+  CreatePemKeyRequestSuccessAndFail,
   DeleteEC2Success,
+  GetPemFilesSuccess,
 } from "../stress/aws/types";
 import {
   SEND_REQUEST_FAILURE,
@@ -111,5 +115,18 @@ export const toastActions: {
   [SYNC_WITH_MASTER]: (action: SyncWithMaster) => ({
     type: "success",
     message: action.payload.message,
+  }),
+  [GET_PEM_FILES_SUCCESS]: (action: GetPemFilesSuccess) => ({
+    type: action.payload.error === true ? "error" : "success",
+    message: action.payload.error === true ? action.payload.message : "",
+  }),
+  [CREATE_PEM_FILE_SUCCESS_AND_FAIL]: (
+    action: CreatePemKeyRequestSuccessAndFail
+  ) => ({
+    type: action.payload.error === true ? "error" : "success",
+    message:
+      action.payload.error === true
+        ? action.payload.message
+        : action.payload.message,
   }),
 };

@@ -17,7 +17,6 @@ import {
   FlexProps,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem,
   MenuList,
   Spacer,
@@ -209,9 +208,9 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
               bg={useColorModeValue("white", "gray.900")}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuDivider />
+              {/* <MenuItem>Profile</MenuItem>
+              <MenuItem>Settings</MenuItem> */}
+              {/* <MenuDivider /> */}
               <MenuItem onClick={onLogout}>Sign out</MenuItem>
             </MenuList>
           </Menu>

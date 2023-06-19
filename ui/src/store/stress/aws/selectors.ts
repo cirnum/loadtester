@@ -15,3 +15,11 @@ export const getWillDeleteEC2 = (state: ApplicationState) => {
 export const getCommonLoadingState = (state: ApplicationState) => {
   return state.aws.common.loading;
 };
+
+export const getPemFileState = (state: ApplicationState) => {
+  return state.aws.pem;
+};
+
+export const getCreatePemState = (state: ApplicationState) => {
+  return state.aws.createPem;
+};

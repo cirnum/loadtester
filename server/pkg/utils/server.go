@@ -35,7 +35,7 @@ const (
 func SendMasterIp(publicIp string) bool {
 	var url string
 	hostDetails := &reqModels.MasterDetails{
-		Address: Protocol + configs.ConfigProvider.HostUrl,
+		Address: Protocol + configs.ConfigProvider.HostIp,
 	}
 	postData, _ := json.Marshal(hostDetails)
 	if strings.Contains(publicIp, Http) || strings.Contains(publicIp, Https) {

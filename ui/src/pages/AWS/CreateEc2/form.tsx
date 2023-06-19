@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 // eslint-disable-next-line import/no-extraneous-dependencies
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   FormErrorMessage,
@@ -8,11 +9,19 @@ import {
   Input,
   Button,
   Select,
+  HStack,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
-import { getCommonLoadingState } from "../../../store/stress/aws/selectors";
-import { createEC2Action } from "../../../store/stress/aws/actions";
+import {
+  getCommonLoadingState,
+  getPemFileState,
+} from "../../../store/stress/aws/selectors";
+import {
+  createEC2Action,
+  getPemFilesAction,
+} from "../../../store/stress/aws/actions";
 import { EC2CreatePayload } from "../../../store/stress/aws/types";
+import CreatePem from "../Pem/createPem";
 
 const amiList = ["ami-07fe61018a1927002"];
 const instanceTypes = [
@@ -24,6 +33,8 @@ const instanceTypes = [
 ];
 export default function Form() {
   const loading = useSelector(getCommonLoadingState);
+  const { loading: pemLoading, data: pemFileList } =
+    useSelector(getPemFileState);
   const dispatch = useDispatch();
   const {
     handleSubmit,
@@ -31,6 +42,9 @@ export default function Form() {
     formState: { errors },
   } = useForm<any>();
 
+  function fetchPemFilesName() {
+    dispatch(getPemFilesAction());
+  }
   function onSubmit(values) {
     if (values.count > 0) {
       values.count = parseInt(values.count, 10);
@@ -38,6 +52,9 @@ export default function Form() {
     dispatch(createEC2Action(values as EC2CreatePayload));
   }
 
+  useEffect(() => {
+    fetchPemFilesName();
+  }, []);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl>
@@ -61,13 +78,24 @@ export default function Form() {
           {errors.name && errors.name.message?.toString()}
         </FormErrorMessage>
         <FormLabel htmlFor="keyname">Select Pem KeyName</FormLabel>
-        <Input
-          id="keyName"
-          placeholder="Pem Key Name"
-          {...register("keyName", {
-            required: "KeyName is required",
-          })}
-        />
+        <HStack>
+          <Select
+            id="keyName"
+            placeholder={pemLoading ? "Fetching key names" : "Select Key Name"}
+            {...register("keyName", {
+              required: "KeyName is required",
+            })}
+          >
+            {pemFileList?.data?.map((item) => {
+              return (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              );
+            })}
+          </Select>
+          <CreatePem />
+        </HStack>
         <FormErrorMessage>
           {errors.name && errors.name.message?.toString()}
         </FormErrorMessage>

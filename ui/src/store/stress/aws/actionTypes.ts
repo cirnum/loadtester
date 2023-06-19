@@ -7,5 +7,10 @@ export const SELECT_DELETE_EC2 = "@app/aws/SELECT_DELETE_EC2";
 export const COMMON_REQUEST = "@app/aws/COMMON_REQUEST";
 export const COMMON_FAILURE = "@app/aws/COMMON_FAILURE";
 export const COMMON_SUCCESS = "@app/aws/COMMON_SUCCESS";
-
+export const GET_PEM_FILES_REQUEST = "@app/aws/GET_PEM_FILES_REQUEST";
+export const GET_PEM_FILES_FAILURE = "@app/aws/GET_PEM_FILES_FAILURE";
+export const GET_PEM_FILES_SUCCESS = "@app/aws/GET_PEM_FILES_SUCCESS";
+export const CREATE_PEM_FILE_SUCCESS_AND_FAIL =
+  "@app/aws/CREATE_PEM_FILE_SUCCESS_AND_FAIL";
+export const CREATE_PEM_FILE_REQUEST = "@app/aws/CREATE_PEM_FILE_REQUEST";
 export const TOGGLE_CREATE_EC2_FORM = "@app/aws/TOGGLE_CREATE_EC2_FORM";

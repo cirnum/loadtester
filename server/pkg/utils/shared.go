@@ -42,6 +42,7 @@ func GetRunnerType() bool {
 		*portPtr = configs.StoreProvider.PORT
 	}
 
+	fmt.Printf("Master data %+v \n", configs.ConfigProvider)
 	configs.ConfigProvider = configs.Initialize(*portPtr, "", "")
 	configs.ConfigProvider.HostIp = localIp
 	configs.ConfigProvider.IsSlave = false

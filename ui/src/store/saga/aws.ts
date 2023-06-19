@@ -2,14 +2,16 @@ import { all, takeLatest, put } from "redux-saga/effects";
 import {
   CommonFailure,
   CreateEC2Success,
+  CreatePemKeyRequestSuccessAndFail,
   DeleteEC2Success,
 } from "../stress/aws/types";
 import {
   COMMON_FAILURE,
   CREATE_EC2_SUCCESS,
+  CREATE_PEM_FILE_SUCCESS_AND_FAIL,
   DELETE_EC2_SUCCESS,
 } from "../stress/aws/actionTypes";
-import { getEC2ServerAction } from "../stress/aws/actions";
+import { getEC2ServerAction, getPemFilesAction } from "../stress/aws/actions";
 
 function* awsListSaga() {
   const pagination = {
@@ -17,6 +19,9 @@ function* awsListSaga() {
     limit: 10,
   };
   yield put(getEC2ServerAction(pagination));
+}
+function* awsGetPemKeys() {
+  yield put(getPemFilesAction());
 }
 
 function* combineSaga() {
@@ -32,6 +37,10 @@ function* combineSaga() {
     takeLatest<DeleteEC2Success["type"], typeof awsListSaga>(
       DELETE_EC2_SUCCESS,
       awsListSaga
+    ),
+    takeLatest<CreatePemKeyRequestSuccessAndFail["type"], typeof awsGetPemKeys>(
+      CREATE_PEM_FILE_SUCCESS_AND_FAIL,
+      awsGetPemKeys
     ),
   ]);
 }

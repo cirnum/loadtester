@@ -5,10 +5,14 @@ import {
   COMMON_FAILURE,
   COMMON_REQUEST,
   CREATE_EC2_SUCCESS,
+  CREATE_PEM_FILE_REQUEST,
+  CREATE_PEM_FILE_SUCCESS_AND_FAIL,
   DELETE_EC2_SUCCESS,
   GET_EC2_SERVERS_FAILURE,
   GET_EC2_SERVERS_REQUEST,
   GET_EC2_SERVERS_SUCCESS,
+  GET_PEM_FILES_REQUEST,
+  GET_PEM_FILES_SUCCESS,
   SELECT_DELETE_EC2,
   TOGGLE_CREATE_EC2_FORM,
 } from "./actionTypes";
@@ -18,6 +22,10 @@ import {
   CommonRequest,
   CreateEC2Action,
   CreateEC2Success,
+  CreatePemKeyRequest,
+  CreatePemKeyRequestAction,
+  CreatePemKeyRequestSuccessAndFail,
+  CreatePemResponse,
   DeleteEC2Action,
   DeleteEC2Payload,
   DeleteEC2Success,
@@ -27,6 +35,10 @@ import {
   GetEC2ServerFailure,
   GetEC2ServerRequest,
   GetEC2ServerSuccess,
+  GetPemFilesAction,
+  GetPemFilesRequest,
+  GetPemFilesSuccess,
+  PemFileResponse,
   SelectDeleteEC2,
   ToggleEC2Form,
 } from "./types";
@@ -125,4 +137,48 @@ export const deleteEC2Action = (
   onRequest: commonRequest,
   onSuccess: deleteEC2Success,
   onFailure: commonFailure,
+});
+
+// Get Pem File
+
+export const getPemFilesRequest = (): GetPemFilesRequest => ({
+  type: GET_PEM_FILES_REQUEST,
+});
+
+export const getPemFilesSuccess = (
+  payload: PemFileResponse
+): GetPemFilesSuccess => ({
+  type: GET_PEM_FILES_SUCCESS,
+  payload,
+});
+
+export const getPemFilesAction = (): GetPemFilesAction => ({
+  type: "@app/API_CALL",
+  method: "GET",
+  path: "/aws/pem",
+  onRequest: getPemFilesRequest,
+  onSuccess: getPemFilesSuccess,
+  onFailure: getPemFilesSuccess,
+});
+
+// Create Pem
+
+export const createPemKeyRequest = (): CreatePemKeyRequest => ({
+  type: CREATE_PEM_FILE_REQUEST,
+});
+
+export const createPemKeyRequestSuccessAndFail = (
+  payload: CreatePemResponse
+): CreatePemKeyRequestSuccessAndFail => ({
+  type: CREATE_PEM_FILE_SUCCESS_AND_FAIL,
+  payload,
+});
+
+export const createPemKeyRequestAction = (): CreatePemKeyRequestAction => ({
+  type: "@app/API_CALL",
+  method: "POST",
+  path: "/aws/pem",
+  onRequest: createPemKeyRequest,
+  onSuccess: createPemKeyRequestSuccessAndFail,
+  onFailure: createPemKeyRequestSuccessAndFail,
 });

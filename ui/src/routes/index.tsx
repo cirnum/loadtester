@@ -65,6 +65,12 @@ const AWSPage = lazy(() =>
   }))
 );
 
+const SettingPage = lazy(() =>
+  import("../pages/Settings").then((m) => ({
+    default: m.default,
+  }))
+);
+
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route
@@ -122,6 +128,14 @@ export const router = createBrowserRouter(
           element={
             <Suspense fallback={<Spinner />}>
               <AWSPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="settings"
+          element={
+            <Suspense fallback={<Spinner />}>
+              <SettingPage />
             </Suspense>
           }
         />

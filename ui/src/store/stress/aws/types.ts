@@ -6,10 +6,14 @@ import {
   COMMON_REQUEST,
   COMMON_SUCCESS,
   CREATE_EC2_SUCCESS,
+  CREATE_PEM_FILE_REQUEST,
+  CREATE_PEM_FILE_SUCCESS_AND_FAIL,
   DELETE_EC2_SUCCESS,
   GET_EC2_SERVERS_FAILURE,
   GET_EC2_SERVERS_REQUEST,
   GET_EC2_SERVERS_SUCCESS,
+  GET_PEM_FILES_REQUEST,
+  GET_PEM_FILES_SUCCESS,
   SELECT_DELETE_EC2,
   TOGGLE_CREATE_EC2_FORM,
 } from "./actionTypes";
@@ -18,6 +22,14 @@ export interface IAWS {
   list: {
     loading: boolean;
     data?: EC2ListPayload;
+  };
+  pem: {
+    loading: boolean;
+    data?: PemFileResponse;
+  };
+  createPem: {
+    loading: boolean;
+    data?: CreatePemResponse;
   };
   common: {
     loading: boolean;
@@ -62,6 +74,19 @@ export interface AWSEC2 {
   instanceType: boolean;
   privateDns: number;
   updated_at: number;
+}
+
+export interface CommonLoad {
+  error: boolean;
+  message: string;
+}
+export interface CreatePemResponse extends CommonLoad {
+  data?: string;
+}
+export interface PemFileResponse {
+  data: string[];
+  error: boolean;
+  message: string;
 }
 
 // Get EC2s data
@@ -140,6 +165,41 @@ export interface DeleteEC2Action extends ApiCallAction {
   onFailure?: ActionCreator<CommonFailure>;
 }
 
+// Delete server Action
+export interface GetPemFilesRequest extends Action {
+  type: typeof GET_PEM_FILES_REQUEST;
+}
+
+export interface GetPemFilesSuccess extends Action {
+  type: typeof GET_PEM_FILES_SUCCESS;
+  payload: PemFileResponse;
+}
+
+export interface GetPemFilesAction extends ApiCallAction {
+  method: "GET";
+  payload?: PemFileResponse;
+  onRequest?: ActionCreator<GetPemFilesRequest>;
+  onSuccess?: ActionCreator<GetPemFilesSuccess>;
+  onFailure?: ActionCreator<GetPemFilesSuccess>;
+}
+
+// Create Key File
+export interface CreatePemKeyRequest extends Action {
+  type: typeof CREATE_PEM_FILE_REQUEST;
+}
+
+export interface CreatePemKeyRequestSuccessAndFail extends Action {
+  type: typeof CREATE_PEM_FILE_SUCCESS_AND_FAIL;
+  payload: CreatePemResponse;
+}
+
+export interface CreatePemKeyRequestAction extends ApiCallAction {
+  method: "POST";
+  onRequest?: ActionCreator<CreatePemKeyRequest>;
+  onSuccess?: ActionCreator<CreatePemKeyRequestSuccessAndFail>;
+  onFailure?: ActionCreator<CreatePemKeyRequestSuccessAndFail>;
+}
+
 export type AWSAction =
   | GetEC2ServerRequest
   | GetEC2ServerSuccess
@@ -152,4 +212,10 @@ export type AWSAction =
   | SelectDeleteEC2
   | CommonFailure
   | CommonRequest
-  | DeleteEC2Action;
+  | DeleteEC2Action
+  | GetPemFilesSuccess
+  | GetPemFilesRequest
+  | CreatePemKeyRequestAction
+  | CreatePemKeyRequest
+  | CreatePemKeyRequestSuccessAndFail
+  | GetPemFilesAction;

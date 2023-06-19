@@ -42,6 +42,7 @@ import Spinner from "../../components/Spinner";
 import { DeleteDialog } from "./DeleteRequest";
 import AddOrEditComp from "./AddEdit";
 import { CustomizeToolTipInfo } from "../Dashboard/AddEditRequest/selectedRequest";
+import { getSettigs } from "../../store/stress/common/selectors";
 
 const pagination = {
   limit: 10,
@@ -159,6 +160,7 @@ function TableBody({
 
 export default function ServerBoard() {
   const { loading, data } = useSelector(getServerList);
+  const settings = useSelector(getSettigs);
   const [copy, setCopy] = useState<string>("");
   const dispatch = useDispatch();
 
@@ -201,6 +203,15 @@ export default function ServerBoard() {
             Server Details
           </Text>
           <HStack gap={3}>
+            <Badge
+              fontSize="sm"
+              variant="outline"
+              colorScheme="primary"
+              p={2}
+              textTransform="lowercase"
+            >
+              Master: {settings?.data?.HostIp}:{settings?.data?.Port}
+            </Badge>
             <Button
               size="sm"
               colorScheme="primary"

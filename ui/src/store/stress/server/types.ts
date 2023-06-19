@@ -16,8 +16,9 @@ import {
   GET_ALL_SERVER_SUCCESS,
   SELECT_DELETE_REQUEST,
   SYNC_WITH_MASTER,
+  SYNC_WITH_MASTER_REQUEST,
 } from "./actionTypes";
-import { CommonFailure, CommonRequest } from "../aws/types";
+import { CommonRequest } from "../aws/types";
 
 export interface IServer {
   serverList: ServerList;
@@ -192,11 +193,16 @@ export interface SyncWithMaster extends Action {
   type: typeof SYNC_WITH_MASTER;
   payload: SyncResponse;
 }
+
+export interface SyncWithMasterRequest extends Action {
+  type: typeof SYNC_WITH_MASTER_REQUEST;
+  payload: SyncResponse;
+}
 export interface SynWithMasterAction extends ApiCallAction {
   method: "GET";
   onRequest?: ActionCreator<CommonRequest>;
   onSuccess?: ActionCreator<SyncWithMaster>;
-  onFailure?: ActionCreator<CommonFailure>;
+  onFailure?: ActionCreator<SyncWithMaster>;
 }
 
 export type ServerAction =

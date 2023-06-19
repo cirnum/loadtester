@@ -33,12 +33,12 @@ func CreatePemKey(c *fiber.Ctx) error {
 }
 
 func GetPemKey(c *fiber.Ctx) error {
-	err := utils.GetKeyPair()
+	keyPairs, err := utils.GetKeyPair()
 
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
-	return utils.ResponseSuccess(c, GetKeyMSG, GetKeyMSG, fiber.StatusOK)
+	return utils.ResponseSuccess(c, keyPairs, GetKeyMSG, fiber.StatusOK)
 }
 
 func CreateEC2(c *fiber.Ctx) error {
