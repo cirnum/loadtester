@@ -1,7 +1,7 @@
 // Get Loadster data
 
 import { PaginationPayload } from "../../types";
-import { commonFailure, commonRequest } from "../aws/actions";
+import { commonRequest } from "../aws/actions";
 import {
   ADD_SERVER_FAILURE,
   ADD_SERVER_SUCCESS,
@@ -188,5 +188,5 @@ export const synWithMasterAction = (): SynWithMasterAction => ({
   path: "/syncmaster",
   onRequest: commonRequest,
   onSuccess: syncWithMaster,
-  onFailure: commonFailure,
+  onFailure: syncWithMaster,
 });
