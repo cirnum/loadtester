@@ -13,6 +13,7 @@ import {
   Text,
   Spinner as SP,
   Badge,
+  Image,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,6 +33,9 @@ import { AWSEC2 } from "../../store/stress/aws/types";
 import CreateEC2 from "./CreateEc2";
 import { DeleteDialog } from "./DeleteEC2";
 import { useInterval } from "../../hooks/useInterval";
+import { getSettigs } from "../../store/stress/common/selectors";
+import Warning from "../../components/Error";
+import Creds from "../../assets/code.png";
 
 const pagination = {
   limit: 10,
@@ -123,7 +127,7 @@ function TableBody({
   );
 }
 
-export default function ServerBoard() {
+export function ServerBoard() {
   const { loading, data } = useSelector(getEC2List);
   const [copy, setCopy] = useState<string>("");
 
@@ -211,6 +215,30 @@ export default function ServerBoard() {
           <Button colorScheme="blue">Next</Button>
         </Stack>
       </TableContainer>
+    </Box>
+  );
+}
+
+export default function AWS() {
+  const settings = useSelector(getSettigs);
+
+  if (settings?.data?.isAwsAvailable) {
+    return <ServerBoard />;
+  }
+  return (
+    <Box
+      bg="white"
+      height="calc(100vh - 65px)"
+      alignItems="center"
+      display="flex"
+      flexDirection="column"
+    >
+      <Warning
+        type="warning"
+        title="AWS credentials are missing."
+        message={settings?.data?.awsErrorMessage}
+      />
+      <Image width="50%" src={Creds} />
     </Box>
   );
 }

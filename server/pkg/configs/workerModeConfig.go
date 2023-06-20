@@ -1,13 +1,15 @@
 package configs
 
 type Config struct {
-	Token    string
-	Port     string
-	MasterIp string
-	IP       string
-	HostIp   string
-	HostUrl  string
-	IsSlave  bool
+	Token           string `json:"token"`
+	Port            string `json:"port"`
+	MasterIp        string `json:"masterIp"`
+	IP              string `json:"ip"`
+	HostIp          string `json:"hostIp"`
+	HostUrl         string `json:"hostUrl"`
+	IsAwsAvailable  bool   `json:"isAwsAvailable"`
+	AwsErrorMessage string `json:"awsErrorMessage"`
+	IsSlave         bool   `json:"ssSlave"`
 }
 
 var ConfigProvider *Config

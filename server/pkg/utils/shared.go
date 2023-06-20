@@ -19,7 +19,7 @@ func GetWorkerLoa(request models.Request) *models.Worker {
 	return worker
 }
 
-func GetRunnerType() bool {
+func GetRunnerType(store configs.Store) bool {
 	portPtr := flag.String("PORT", "3005", "Take the dafault port if port is empty")
 	token := flag.String("TOKEN", "", "Please pass the token (Required)")
 	masterIp := flag.String("MASTER_IP", "", "Please pass the master node ip. (Required)")
@@ -27,7 +27,6 @@ func GetRunnerType() bool {
 
 	flag.Parse()
 	localIp := GetPublicIp()
-	fmt.Println("Adasdasdasdasdasd", localIp)
 	if *worker == true || *token != "" || *masterIp != "" {
 		configs.ConfigProvider = configs.Initialize(*portPtr, *token, *masterIp)
 		configs.ConfigProvider.IsSlave = true
@@ -42,12 +41,16 @@ func GetRunnerType() bool {
 		*portPtr = configs.StoreProvider.PORT
 	}
 
-	fmt.Printf("Master data %+v \n", configs.ConfigProvider)
+	// AWS integration check
+	available, errMsg := store.IsAwsAvailable()
+
 	configs.ConfigProvider = configs.Initialize(*portPtr, "", "")
 	configs.ConfigProvider.HostIp = localIp
 	configs.ConfigProvider.IsSlave = false
 	configs.ConfigProvider.IP = configs.StoreProvider.SERVER_HOST
 	configs.ConfigProvider.HostUrl = formedUrl(*portPtr, localIp)
+	configs.ConfigProvider.AwsErrorMessage = errMsg
+	configs.ConfigProvider.IsAwsAvailable = available
 	log.Info(string("\033[34m"), "Master service initiated.")
 	return false
 }

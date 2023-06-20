@@ -210,7 +210,7 @@ export default function ServerBoard() {
               p={2}
               textTransform="lowercase"
             >
-              Master: {settings?.data?.HostUrl}
+              Master: {settings?.data?.hostUrl}
             </Badge>
             <Button
               size="sm"

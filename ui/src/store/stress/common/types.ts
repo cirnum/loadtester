@@ -16,9 +16,11 @@ export interface CommonResponse {
 export type SettingPayload = CommonResponse & { data?: Settings };
 export type Settings = {
   ip: string;
-  Port: string;
-  HostIp: string;
-  HostUrl: string;
+  port: string;
+  hostIp: string;
+  hostUrl: string;
+  isAwsAvailable: string;
+  awsErrorMessage: string;
 };
 
 export interface SettingsOnSuccessAndFailure extends Action {
