@@ -92,7 +92,7 @@ func ServerStatus(servers *models.ServerList) *models.ServerList {
 	wg.Add(len(servers.Data))
 	data := []models.Server{}
 	for _, server := range servers.Data {
-		go func() {
+		go func(server models.Server) {
 			url := server.IP + WorkerReq
 			res, err := Do(http.MethodGet, url, nil, nil)
 			if err != nil {
@@ -105,7 +105,7 @@ func ServerStatus(servers *models.ServerList) *models.ServerList {
 			}
 			data = append(data, server)
 			wg.Done()
-		}()
+		}(server)
 	}
 	wg.Wait()
 	servers.Data = data
