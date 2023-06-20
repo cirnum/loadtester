@@ -44,5 +44,5 @@ func GetPublicIp() string {
 	if len(allIp) > 0 {
 		return allIp[0]
 	}
-	return "http://localhost"
+	return "localhost"
 }

@@ -27,7 +27,7 @@ func GetRunnerType() bool {
 
 	flag.Parse()
 	localIp := GetPublicIp()
-
+	fmt.Println("Adasdasdasdasdasd", localIp)
 	if *worker == true || *token != "" || *masterIp != "" {
 		configs.ConfigProvider = configs.Initialize(*portPtr, *token, *masterIp)
 		configs.ConfigProvider.IsSlave = true
@@ -47,7 +47,16 @@ func GetRunnerType() bool {
 	configs.ConfigProvider.HostIp = localIp
 	configs.ConfigProvider.IsSlave = false
 	configs.ConfigProvider.IP = configs.StoreProvider.SERVER_HOST
-	configs.ConfigProvider.HostUrl = fmt.Sprintf("%s://%s:%s", Http, configs.ConfigProvider.IP, *portPtr)
+	configs.ConfigProvider.HostUrl = formedUrl(*portPtr, localIp)
 	log.Info(string("\033[34m"), "Master service initiated.")
 	return false
+}
+
+func formedUrl(port string, host string) string {
+	if port == "80" {
+		return fmt.Sprintf("%s://%s", Http, host)
+	} else if port == "443" {
+		return fmt.Sprintf("%s://%s", Https, host)
+	}
+	return fmt.Sprintf("%s://%s:%s", Http, host, port)
 }

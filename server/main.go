@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	log "github.com/sirupsen/logrus"
 
 	"github.com/cirnum/loadtester/server/db"
@@ -29,7 +27,6 @@ func main() {
 
 	routes.RouteAggregator(isWorker, app)
 
-	fmt.Println("asdasd", configs.StoreProvider)
 	// Start server (with or without graceful shutdown).
 	if configs.StoreProvider.STAGE_STATUS == "dev" {
 		utils.StartServer(app)
