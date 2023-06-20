@@ -52,3 +52,7 @@ type WorkerData struct {
 	LastIngress  int64 `json:"lastIngress"`
 	LastOutgress int64 `json:"lastOutgress"`
 }
+
+type MasterDetails struct {
+	Address string `json:"address"`
+}

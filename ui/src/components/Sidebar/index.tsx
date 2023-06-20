@@ -17,13 +17,12 @@ import {
   FlexProps,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem,
   MenuList,
   Spacer,
   Image,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   FiHome,
   FiTrendingUp,
@@ -31,10 +30,10 @@ import {
   FiStar,
   FiSettings,
   FiMenu,
-  FiBell,
   FiChevronDown,
 } from "react-icons/fi";
 import { IconType } from "react-icons";
+import { SettingsIcon } from "@chakra-ui/icons";
 import LogoImg from "../../assets/brand.svg";
 
 interface LinkItemProps {
@@ -53,20 +52,27 @@ const LinkItems: Array<LinkItemProps> = [
 const Links: Array<LinkItemProps> = [
   { name: "Requests", path: "/dashboard" },
   // { name: "Performance", path: "performace" },
-  { name: "Server", path: "server" },
+  { name: "Server", path: "/server" },
+  { name: "AWS", path: "/aws" },
+
   // { name: "Download Client", path: "client" },
 ];
 
 function NavItem({ icon, children, path, ...rest }: NavItemProps) {
+  const location = useLocation();
   return (
     <Link to={path || "/"} style={{ textDecoration: "none" }}>
       <Flex
+        minWidth="80px"
         align="center"
         p="2"
         mx="2"
         borderRadius="lg"
         role="group"
         cursor="pointer"
+        justifyContent="center"
+        bg={location.pathname === path ? "primary.500" : ""}
+        color={location.pathname === path ? "white" : "#171239"}
         _hover={{
           bg: "primary.400",
           color: "white",
@@ -74,7 +80,6 @@ function NavItem({ icon, children, path, ...rest }: NavItemProps) {
         fontWeight="600"
         fontSize="14px"
         lineHeight="20px"
-        color="#171239"
         {...rest}
       >
         {icon && (
@@ -92,23 +97,6 @@ function NavItem({ icon, children, path, ...rest }: NavItemProps) {
     </Link>
   );
 }
-
-// function NavLink({ children }: { children: ReactNode }) {
-//   return (
-//     <Link
-//       px={2}
-//       py={1}
-//       rounded="md"
-//       _hover={{
-//         textDecoration: "none",
-//         bg: useColorModeValue("gray.200", "gray.700"),
-//       }}
-//       href="/cat"
-//     >
-//       {children}
-//     </Link>
-//   );
-// }
 
 function MobileNav({ onOpen, ...rest }: MobileProps) {
   const [user] = useState(() => {
@@ -180,12 +168,14 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
         display={{ base: "none", md: "flex" }}
         justifyContent={{ base: "space-between", md: "flex-end" }}
       >
-        <IconButton
-          size="lg"
-          variant="ghost"
-          aria-label="open menu"
-          icon={<FiBell />}
-        />
+        <Link to="/settings">
+          <IconButton
+            size="lg"
+            variant="ghost"
+            aria-label="open menu"
+            icon={<SettingsIcon />}
+          />
+        </Link>
         <Flex alignItems="center" zIndex="dropdown">
           <Menu>
             <MenuButton
@@ -218,9 +208,9 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
               bg={useColorModeValue("white", "gray.900")}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuDivider />
+              {/* <MenuItem>Profile</MenuItem>
+              <MenuItem>Settings</MenuItem> */}
+              {/* <MenuDivider /> */}
               <MenuItem onClick={onLogout}>Sign out</MenuItem>
             </MenuList>
           </Menu>
@@ -244,7 +234,7 @@ function SidebarContent({ onClose, ...rest }: SidebarProps) {
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="1xl" fontFamily="monospace" fontWeight="bold">
-          Strain-Hub
+          Load Tester
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>

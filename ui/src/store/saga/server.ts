@@ -6,8 +6,13 @@ import {
 import {
   ADD_SERVER_SUCCESS,
   DELETE_SERVER_SUCCESS,
+  SYNC_WITH_MASTER,
 } from "../stress/server/actionTypes";
-import { AddServerSuccess, DeleteServerSuccess } from "../stress/server/types";
+import {
+  AddServerSuccess,
+  DeleteServerSuccess,
+  SyncWithMaster,
+} from "../stress/server/types";
 
 function* serverSaga(action: AddServerSuccess) {
   if (!action.payload.error) {
@@ -42,6 +47,10 @@ function* combineSaga() {
     takeLatest<DeleteServerSuccess["type"], typeof changeDeleteState>(
       DELETE_SERVER_SUCCESS,
       changeDeleteState
+    ),
+    takeLatest<SyncWithMaster["type"], typeof serverSaga>(
+      SYNC_WITH_MASTER,
+      serverSaga
     ),
   ]);
 }

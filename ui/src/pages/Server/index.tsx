@@ -14,6 +14,7 @@ import {
   Badge,
   Spinner as SP,
   Image,
+  HStack,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +25,7 @@ import {
   editServerAction,
   getAllServerAction,
   selectDeleteRequest,
+  synWithMasterAction,
 } from "../../store/stress/server/actions";
 import {
   AddServerRequestPayload,
@@ -40,6 +42,7 @@ import Spinner from "../../components/Spinner";
 import { DeleteDialog } from "./DeleteRequest";
 import AddOrEditComp from "./AddEdit";
 import { CustomizeToolTipInfo } from "../Dashboard/AddEditRequest/selectedRequest";
+import { getSettigs } from "../../store/stress/common/selectors";
 
 const pagination = {
   limit: 10,
@@ -71,7 +74,6 @@ function TableBody({
     ip,
     updated_at: updatedAt,
     active,
-    port,
     token,
     enabled,
   } = server;
@@ -104,13 +106,15 @@ function TableBody({
 
   return (
     <Tr key={id}>
-      <Td>{alias}</Td>
-      <Td>{description}</Td>
+      <Td>
+        <Text isTruncated>{alias}</Text>
+      </Td>
+      <Td>
+        <Text isTruncated>{description}</Text>
+      </Td>
 
       <Td>
-        <Badge color={ip ? "grey" : "red"}>
-          {ip ? `${ip}${port ? `:${port}` : ""}` : "Not connected"}{" "}
-        </Badge>
+        <Badge color={ip ? "grey" : "red"}>{ip || "Not connected"} </Badge>
       </Td>
       <Td
         cursor="pointer"
@@ -156,6 +160,7 @@ function TableBody({
 
 export default function ServerBoard() {
   const { loading, data } = useSelector(getServerList);
+  const settings = useSelector(getSettigs);
   const [copy, setCopy] = useState<string>("");
   const dispatch = useDispatch();
 
@@ -197,11 +202,34 @@ export default function ServerBoard() {
           <Text fontSize="sm" fontWeight="bold">
             Server Details
           </Text>
-          <Button size="sm" onClick={() => onOpen("ADD")}>
-            Add New Server
-          </Button>
+          <HStack gap={3}>
+            <Badge
+              fontSize="sm"
+              variant="outline"
+              colorScheme="primary"
+              p={2}
+              textTransform="lowercase"
+            >
+              Master: {settings?.data?.hostUrl}
+            </Badge>
+            <Button
+              size="sm"
+              colorScheme="primary"
+              variant="outline"
+              onClick={() => dispatch(synWithMasterAction())}
+            >
+              Sync With Master
+            </Button>
+            <Button size="sm" onClick={() => onOpen("ADD")}>
+              Add New Server
+            </Button>
+          </HStack>
         </Stack>
-        <Table variant="simple" size="md">
+        <Table
+          variant="simple"
+          size="md"
+          __css={{ "table-layout": "fixed", width: "full" }}
+        >
           <Thead>
             <Tr>
               {TableHeader.map((item) => (

@@ -11,7 +11,12 @@ import (
 	"github.com/google/uuid"
 )
 
-const LENGth = 3
+const (
+	UserId       = "user_id"
+	UserToken    = "userId"
+	RandLength   = 3
+	ReqIdMissing = "Request id missing."
+)
 
 func UniqueToken(size int) string {
 	n := size
@@ -28,7 +33,7 @@ func (p *provider) AddServer(ctx context.Context, server models.Server) (models.
 	if server.ID == "" {
 		server.ID = uuid.New().String()
 	}
-	server.Token = UniqueToken(LENGth)
+	server.Token = UniqueToken(RandLength)
 	server.CreatedAt = time.Now().Unix()
 	server.UpdatedAt = time.Now().Unix()
 
@@ -52,18 +57,37 @@ func (p *provider) UpdateServer(ctx context.Context, server models.Server) (mode
 	return server, nil
 }
 
-// ListServer to get list of users from database
-func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination) (*models.ServerList, error) {
-	userId := ctx.Value("userId")
-	var servers []models.Server
-	result := p.db.Where("user_id = ?", userId).Limit(int(pagination.Limit)).Offset(int(pagination.Offset)).Order("created_at DESC").Find(&servers)
-	if result.Error != nil {
-		return nil, result.Error
+// AddServer to update user information in database
+func (p *provider) UpdateServerByIp(ctx context.Context, server models.Server) (models.Server, error) {
+	server.UpdatedAt = time.Now().Unix()
+
+	if p.db.Model(models.Server{}).Where("ip LIKE ?", server.IP).Updates(server).RowsAffected == 0 {
+		if server.ID == "" {
+			server.ID = uuid.New().String()
+		}
+		if server.Token == "" {
+			server.Token = UniqueToken(RandLength)
+		}
+		server.Enabled = true
+		server.CreatedAt = time.Now().Unix()
+		p.db.Create(&server)
 	}
 
-	serverList := []models.Server{}
-	for _, request := range servers {
-		serverList = append(serverList, request)
+	result := p.db.Model(models.Server{}).Where("ip LIKE ?", server.IP).Updates(server)
+
+	if result.Error != nil {
+		return server, result.Error
+	}
+	return server, nil
+}
+
+// ListServer to get list of users from database
+func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination) (*models.ServerList, error) {
+	userId := ctx.Value(UserToken)
+	var servers []models.Server
+	result := p.db.Where(UserId+" = ?", userId).Limit(int(pagination.Limit)).Offset(int(pagination.Offset)).Order("created_at DESC").Find(&servers)
+	if result.Error != nil {
+		return nil, result.Error
 	}
 
 	var total int64
@@ -77,14 +101,14 @@ func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination
 
 	return &models.ServerList{
 		Pagination: paginationClone,
-		Data:       serverList,
+		Data:       servers,
 	}, nil
 }
 
 // ListServer  by Userid to get list of users from database
 func (p *provider) ListServerByUserId(ctx context.Context, userId string) ([]models.Server, error) {
 	var servers []models.Server
-	result := p.db.Where("user_id = ?", userId).Find(&servers)
+	result := p.db.Where(UserId+" = ?", userId).Find(&servers)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -102,7 +126,7 @@ func (p *provider) GetServerById(ctx context.Context, id string) (models.Server,
 	var server models.Server
 
 	if id == "" {
-		return server, errors.New("Request id missing.")
+		return server, errors.New(ReqIdMissing)
 	}
 
 	result := p.db.Where("id = ?", id).First(&server)
@@ -115,13 +139,13 @@ func (p *provider) GetServerById(ctx context.Context, id string) (models.Server,
 
 // DeleteServerById Request by id to update user information in database
 func (p *provider) DeleteServerById(ctx context.Context, id string) error {
-	userId := ctx.Value("userId")
+	userId := ctx.Value(UserToken)
 
 	if id == "" {
-		return errors.New("Request id missing.")
+		return errors.New(ReqIdMissing)
 	}
 
-	result := p.db.Where("user_id = ?", userId).Delete(&models.Server{
+	result := p.db.Where(UserId+" = ?", userId).Delete(&models.Server{
 		ID: id,
 	})
 	if result.Error != nil {

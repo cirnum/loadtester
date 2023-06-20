@@ -1,4 +1,4 @@
-# api-stress-testing-tool (stress testing tool)
+# Load tester (stress testing tool)
 
   
 
@@ -62,3 +62,24 @@ as many server as you can to run test script across all the server at same time.
 * Time - Till time you want to run this requests
 
 * Select Method Get Post whatever your stress url serve
+
+## AWS integration 
+### Required Env for AWS - 
+`AWS_ACCESS_KEY=<ACCESS_KEY>`
+`AWS_SECRET_KEY=SECERET_KEY>`
+`AWS_REGION=<ap-south-1>`
+
+
+## Request Page
+
+<img width="956" alt="Screenshot 2023-06-20 at 7 29 03 PM" src="https://github.com/cirnum/loadtester/assets/24589611/70190661-9622-4b3a-b574-3ac55725bb68">
+
+## Request Stats - You can check request stats here
+<img width="953" alt="Screenshot 2023-06-20 at 7 30 55 PM" src="https://github.com/cirnum/loadtester/assets/24589611/cffbf239-0ecd-4335-8c4c-3ea6d019ec4d">
+
+## AWS section - Create multiple nodes for distributed testing
+<img width="958" alt="Screenshot 2023-06-20 at 7 33 53 PM" src="https://github.com/cirnum/loadtester/assets/24589611/c5db347b-d8c3-47cd-94c0-ffcba1ad1085">
+
+## Check, enable, and disable the connected nodes from the server section
+<img width="958" alt="Screenshot 2023-06-20 at 7 35 34 PM" src="https://github.com/cirnum/loadtester/assets/24589611/7aac3ede-9a2b-4485-9a47-a7006852ec2c">
+
