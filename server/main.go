@@ -14,9 +14,9 @@ import (
 
 func main() {
 	config := configs.FiberConfig()
-	configs.StoreInitialize()
+	store := configs.StoreInitialize()
 	app := fiber.New(config)
-	isWorker := utils.GetRunnerType()
+	isWorker := utils.GetRunnerType(store)
 	// initialize db provider
 	if !isWorker {
 		err := db.InitDB()
