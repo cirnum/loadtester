@@ -6,6 +6,7 @@ type Config struct {
 	MasterIp string
 	IP       string
 	HostIp   string
+	HostUrl  string
 	IsSlave  bool
 }
 

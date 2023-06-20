@@ -14,6 +14,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+const (
+	ReqAnalysisSaved = "Request analysis Saved."
+	ReqLoadRecieved  = "Request Load Recieved."
+)
+
 func GetLoadByRequestId(c *fiber.Ctx) error {
 	ctx := context.Background()
 	id := c.Params("id")
@@ -24,13 +29,12 @@ func GetLoadByRequestId(c *fiber.Ctx) error {
 	}, id)
 
 	workerData, err := db.Provider.GetWorkerByReqId(ctx, id)
-
 	load := pkgUtils.CalculateRPS(loads, workerData)
 
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
-	return utils.ResponseSuccess(c, load, "Request Load Recieve.", fiber.StatusOK)
+	return utils.ResponseSuccess(c, load, ReqLoadRecieved, fiber.StatusOK)
 }
 
 func GetAllLoad(c *fiber.Ctx) error {
@@ -45,7 +49,7 @@ func GetAllLoad(c *fiber.Ctx) error {
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
-	return utils.ResponseSuccess(c, loads, "Request Load Recieve.", fiber.StatusOK)
+	return utils.ResponseSuccess(c, loads, ReqLoadRecieved, fiber.StatusOK)
 }
 
 func AddLoadRequest(c *fiber.Ctx) error {
@@ -72,5 +76,5 @@ func AddLoadRequest(c *fiber.Ctx) error {
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
 	}
-	return utils.ResponseSuccess(c, nil, "Request analysis Saved.", fiber.StatusOK)
+	return utils.ResponseSuccess(c, nil, ReqAnalysisSaved, fiber.StatusOK)
 }

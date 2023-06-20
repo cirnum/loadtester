@@ -10,4 +10,6 @@ export const DELETE_SERVER_SUCCESS = "@app/dashboard/DELETE_SERVER_SUCCESS";
 export const DELETE_SERVER_FAILURE = "@app/server/DELETE_SERVER__FAILURE";
 export const DELETE_DIALOG_STATE = "@app/server/DELETE_DIALOG_STATE";
 export const SELECT_DELETE_REQUEST = "@app/server/SELECT_DELETE_REQUEST";
+export const SYNC_WITH_MASTER = "@app/server/SYNC_WITH_MASTER";
+export const SYNC_WITH_MASTER_REQUEST = "@app/server/SYNC_WITH_MASTER_REQUEST";
 export const ADD_OR_EDIT_SERVER = "@app/server/ADD_OR_EDIT_SERVER";

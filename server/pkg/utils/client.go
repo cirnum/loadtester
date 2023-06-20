@@ -22,7 +22,7 @@ func Do(method, url string, body []byte, headers map[string]string) (
 	}
 	client := &http.Client{
 		Transport: tr,
-		Timeout:   time.Second * 5,
+		Timeout:   time.Second * 2,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
