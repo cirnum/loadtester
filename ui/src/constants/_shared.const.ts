@@ -3,6 +3,16 @@ export const PAGINATION = {
   page: 1,
 };
 
+export const AmiList = ["ami-0d1557d58f87569f8"];
+
+export const InstanceTypes = [
+  "t2.nano",
+  "t2.micro",
+  "t2.small",
+  "t2.medium",
+  "t2.large",
+];
+
 export const AWSHeader = [
   "Instace Id",
   "Instance Type",

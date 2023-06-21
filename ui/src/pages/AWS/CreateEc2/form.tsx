@@ -22,15 +22,8 @@ import {
 } from "../../../store/stress/aws/actions";
 import { EC2CreatePayload } from "../../../store/stress/aws/types";
 import CreatePem from "../Pem/createPem";
+import { AmiList, InstanceTypes } from "../../../constants/_shared.const";
 
-const amiList = ["ami-07fe61018a1927002"];
-const instanceTypes = [
-  "t2.nano",
-  "t2.micro",
-  "t2.small",
-  "t2.medium",
-  "t2.large",
-];
 export default function Form() {
   const loading = useSelector(getCommonLoadingState);
   const { loading: pemLoading, data: pemFileList } =
@@ -66,7 +59,7 @@ export default function Form() {
             required: "Image Id Field required.",
           })}
         >
-          {amiList.map((item) => {
+          {AmiList.map((item) => {
             return (
               <option key={item} value={item}>
                 {item}
@@ -107,7 +100,7 @@ export default function Form() {
             required: "Instance Type Field required.",
           })}
         >
-          {instanceTypes.map((item) => {
+          {InstanceTypes.map((item) => {
             return (
               <option key={item} value={item}>
                 {item}
