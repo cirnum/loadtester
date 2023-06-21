@@ -16,7 +16,7 @@ import { getEC2ServerAction, getPemFilesAction } from "../stress/aws/actions";
 function* awsListSaga() {
   const pagination = {
     page: 1,
-    limit: 10,
+    limit: 25,
   };
   yield put(getEC2ServerAction(pagination));
 }

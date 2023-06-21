@@ -38,7 +38,7 @@ import Warning from "../../components/Error";
 import Creds from "../../assets/code.png";
 
 const pagination = {
-  limit: 10,
+  limit: 25,
   page: 1,
 };
 const TableHeader = [

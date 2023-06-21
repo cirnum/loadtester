@@ -45,7 +45,7 @@ import { CustomizeToolTipInfo } from "../Dashboard/AddEditRequest/selectedReques
 import { getSettigs } from "../../store/stress/common/selectors";
 
 const pagination = {
-  limit: 10,
+  limit: 25,
   page: 1,
 };
 const TableHeader = [

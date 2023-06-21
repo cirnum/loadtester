@@ -18,7 +18,7 @@ function* serverSaga(action: AddServerSuccess) {
   if (!action.payload.error) {
     const pagination = {
       page: 1,
-      limit: 10,
+      limit: 25,
     };
     yield put(getAllServerAction(pagination));
   }
