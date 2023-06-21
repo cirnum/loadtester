@@ -95,7 +95,7 @@ export function getServerStatsOptions(data: LoadsterResponse[], title: string) {
       splitLine: { show: false },
       data: data?.map((item) => {
         const someTime = utcToZonedTime(
-          item.created * 1000,
+          item.created,
           Intl.DateTimeFormat().resolvedOptions().timeZone
         );
         return format(someTime, "HH:mm:ss");
@@ -144,7 +144,7 @@ export function getRps(latencyByServer: Record<string, ServerMapData>) {
     xAxis: {
       data: servers[0]?.latency?.map((item) => {
         const someTime = utcToZonedTime(
-          item.created * 1000,
+          item.created,
           Intl.DateTimeFormat().resolvedOptions().timeZone
         );
         return format(someTime, "HH:mm:ss");

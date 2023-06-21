@@ -13,7 +13,7 @@ import (
 func GetWorkerLoa(request models.Request) *models.Worker {
 	worker := &models.Worker{}
 	worker.Clients = request.Clients
-	worker.Created = time.Now().Unix()
+	worker.Created = time.Now().UnixMilli()
 	worker.ReqId = request.ID
 	worker.Status = true
 	return worker

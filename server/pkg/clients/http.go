@@ -146,7 +146,7 @@ func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan
 	}
 	var wg sync.WaitGroup
 	wg.Add(numOfClient)
-	h.startTime = time.Now().Unix()
+	h.startTime = time.Now().UnixMilli()
 	go func() {
 		for j := 0; j < numOfClient; j++ {
 			go func() {

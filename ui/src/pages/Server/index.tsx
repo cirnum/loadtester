@@ -1,6 +1,5 @@
 import {
   TableContainer,
-  TableCaption,
   Table,
   Thead,
   Tr,
@@ -43,20 +42,8 @@ import { DeleteDialog } from "./DeleteRequest";
 import AddOrEditComp from "./AddEdit";
 import { CustomizeToolTipInfo } from "../Dashboard/AddEditRequest/selectedRequest";
 import { getSettigs } from "../../store/stress/common/selectors";
-
-const pagination = {
-  limit: 25,
-  page: 1,
-};
-const TableHeader = [
-  "Server Alias",
-  "Description",
-  "IP",
-  "Token",
-  "Last Update",
-  "Active",
-  "Action",
-];
+import { paginationHandler } from "../../utils/_shared";
+import { PAGINATION, ServerHeader } from "../../constants/_shared.const";
 
 function TableBody({
   server,
@@ -123,7 +110,7 @@ function TableBody({
       >
         {token} {copy === token ? <CheckIcon /> : <CopyIcon />}
       </Td>
-      <Td>{format(updatedAt * 1000, "dd, MMM, Y, HH:MM")}</Td>
+      <Td>{format(updatedAt, "dd, MMM, Y, HH:MM")}</Td>
       <Td>
         <Badge colorScheme={active ? "green" : "red"}>
           {active ? "Connected" : "Disconnected"}
@@ -162,6 +149,7 @@ export default function ServerBoard() {
   const { loading, data } = useSelector(getServerList);
   const settings = useSelector(getSettigs);
   const [copy, setCopy] = useState<string>("");
+  const [pagination, setPagination] = useState<typeof PAGINATION>(PAGINATION);
   const dispatch = useDispatch();
 
   const onOpen = (action: "ADD" | "EDIT", server?: Server) => {
@@ -173,11 +161,17 @@ export default function ServerBoard() {
     );
   };
 
+  const paginate = (action: "next" | "prev") => {
+    const total = data?.pagination?.total || 0;
+    paginationHandler(action, total, pagination, setPagination);
+  };
+
+  console.log("pagination change", pagination);
   useEffect(() => {
-    if (!data && !loading) {
+    if (!loading) {
       dispatch(getAllServerAction(pagination));
     }
-  }, []);
+  }, [pagination]);
 
   const onCopy = (text) => {
     navigator.clipboard.writeText(text);
@@ -232,17 +226,12 @@ export default function ServerBoard() {
         >
           <Thead>
             <Tr>
-              {TableHeader.map((item) => (
+              {ServerHeader.map((item) => (
                 <Th>{item}</Th>
               ))}
             </Tr>
           </Thead>
           <Tbody>
-            {loading && (
-              <TableCaption>
-                <SP />
-              </TableCaption>
-            )}
             {data?.data?.map((server) => (
               <TableBody server={server} copy={copy} onCopy={onCopy} />
             ))}
@@ -256,8 +245,12 @@ export default function ServerBoard() {
           justifyContent="center"
           align="center"
         >
-          <Button colorScheme="blue">Prev</Button>
-          <Button colorScheme="blue">Next</Button>
+          <Button colorScheme="blue" onClick={() => paginate("prev")}>
+            Prev
+          </Button>
+          <Button colorScheme="blue" onClick={() => paginate("next")}>
+            Next
+          </Button>
         </Stack>
       </TableContainer>
     </Box>

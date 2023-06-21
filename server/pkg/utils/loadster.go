@@ -65,8 +65,7 @@ func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster) customModel
 		ram, lastRamUsage := HttpReqByType(load, "RAM")
 		outgress, lastOutgress := calcDataTransfer(load, "transmit")
 		ingress, lastIngress := calcDataTransfer(load, "receive")
-
-		totalTimeTaken := lastLatency.CreatedAt - lastLatency.StartTime
+		totalTimeTaken := int64((lastLatency.CreatedAt - lastLatency.StartTime) / 1000)
 
 		if lastFailHTTP.Count > 0 {
 			loadPayload.FailRPS = lastFailHTTP.Count / totalTimeTaken
@@ -143,7 +142,7 @@ func calculatePercentage(total int64, amount int64) int {
 func calculateRpsForEachLoad(load models.Loadster) int64 {
 	endTime := load.Created
 	startTime := load.StartTime
-	return (load.Count / (endTime - startTime))
+	return (load.Count / ((endTime - startTime) / 1000))
 }
 func MapReqByServer(loads []models.Loadster) (map[string][]models.Loadster, bool) {
 	var isFinish bool = false
