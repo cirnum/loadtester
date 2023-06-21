@@ -157,7 +157,7 @@ export function ServerBoard() {
     return <Spinner />;
   }
   return (
-    <Box w="100%" bg="white" h="calc(100vh - 65px)" p={10}>
+    <Box w="100%" bg="white" h="calc(100vh - 65px)" overflow="scroll" p={10}>
       <CreateEC2 />
       <DeleteDialog />
       <TableContainer border="1px solid #f6f6f6">
