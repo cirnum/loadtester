@@ -166,7 +166,6 @@ export default function ServerBoard() {
     paginationHandler(action, total, pagination, setPagination);
   };
 
-  console.log("pagination change", pagination);
   useEffect(() => {
     if (!loading) {
       dispatch(getAllServerAction(pagination));
