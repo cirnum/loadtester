@@ -14,8 +14,8 @@ func (p *provider) AddLoadByRequestId(ctx context.Context, request models.Loadst
 		request.ID = uuid.New().String()
 	}
 
-	request.CreatedAt = time.Now().Unix()
-	request.UpdatedAt = time.Now().Unix()
+	request.CreatedAt = time.Now().UnixMilli()
+	request.UpdatedAt = time.Now().UnixMilli()
 
 	result := p.db.Create(&request)
 
@@ -31,8 +31,8 @@ func (p *provider) AddBatchLoadByRequestId(ctx context.Context, requests []model
 	loadReq := []models.Loadster{}
 	for _, req := range requests {
 		req.ID = uuid.New().String()
-		req.CreatedAt = time.Now().Unix()
-		req.UpdatedAt = time.Now().Unix()
+		req.CreatedAt = time.Now().UnixMilli()
+		req.UpdatedAt = time.Now().UnixMilli()
 		loadReq = append(loadReq, req)
 	}
 

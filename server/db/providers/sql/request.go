@@ -15,8 +15,8 @@ func (p *provider) AddRequest(ctx context.Context, request models.Request) (mode
 		request.ID = uuid.New().String()
 	}
 
-	request.CreatedAt = time.Now().Unix()
-	request.UpdatedAt = time.Now().Unix()
+	request.CreatedAt = time.Now().UnixMilli()
+	request.UpdatedAt = time.Now().UnixMilli()
 
 	result := p.db.Create(&request)
 

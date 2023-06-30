@@ -88,24 +88,25 @@ func SyncWithMaster(servers *models.EC2List) ([]models.EC2, []models.EC2) {
 // Check server Status
 func ServerStatus(servers *models.ServerList) *models.ServerList {
 	wg := new(sync.WaitGroup)
+	totalServers := len(servers.Data)
 
-	wg.Add(len(servers.Data))
-	data := []models.Server{}
-	for _, server := range servers.Data {
-		go func(server models.Server) {
+	wg.Add(totalServers)
+	data := make([]models.Server, totalServers)
+	for i, server := range servers.Data {
+		go func(server models.Server, i int) {
 			url := server.IP + WorkerReq
 			res, err := Do(http.MethodGet, url, nil, nil)
 			if err != nil {
-				server.UpdatedAt = time.Now().Unix()
+				server.UpdatedAt = time.Now().UnixMilli()
 				server.Active = false
 			}
 			if err == nil && res.StatusCode == fiber.StatusOK {
-				server.UpdatedAt = time.Now().Unix()
+				server.UpdatedAt = time.Now().UnixMilli()
 				server.Active = true
 			}
-			data = append(data, server)
+			data[i] = server
 			wg.Done()
-		}(server)
+		}(server, i)
 	}
 	wg.Wait()
 	servers.Data = data
@@ -118,7 +119,7 @@ func SaveEc2ToServer(ec2s []models.EC2) []models.Server {
 	for _, ec2 := range ec2s {
 		server := models.Server{}
 		server.Active = true
-		server.UpdatedAt = time.Now().Unix()
+		server.UpdatedAt = time.Now().UnixMilli()
 		server.IP = Protocol + ec2.PublicIp
 		server.Alias = ec2.InstanceId
 		server.Description = ec2.PublicDns

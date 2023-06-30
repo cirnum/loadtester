@@ -67,7 +67,7 @@ func AddLoadRequest(c *fiber.Ctx) error {
 			Status:    true,
 			ServerId:  serverID,
 			ReqId:     reqId,
-			UpdatedAt: time.Now().Unix(),
+			UpdatedAt: time.Now().UnixMilli(),
 		}
 		db.Provider.UpdateWorkerStatusBySId(ctx, worker)
 	}

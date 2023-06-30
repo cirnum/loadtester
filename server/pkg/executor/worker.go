@@ -144,7 +144,7 @@ func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
 	for k, v := range units {
 		e.units[k] = v
 	}
-	e.startTime = time.Now().Unix()
+	e.startTime = time.Now().UnixMilli()
 	return nil
 }
 
@@ -209,7 +209,7 @@ func (e *Executor) sendLoadData(isFinish bool) {
 func (e *Executor) GrabCounter(isFinish bool, units map[string]unit) ([]models.Loadster, error) {
 	var data []models.Loadster
 	e.mu.Lock()
-	now := time.Now().Unix()
+	now := time.Now().UnixMilli()
 	for _, u := range units {
 		switch u.Type {
 		case metrics.Counter:
