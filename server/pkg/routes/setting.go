@@ -12,6 +12,7 @@ func SettingRoute(a *fiber.App) {
 	route := a.Group("/api/v1/setting")
 	// user routes
 	route.Get("/", controllers.GetTempConfig)
+	route.Get("/g", controllers.GetData)
 	route.Post("/", middleware.JWTProtected, controllers.UpdateTempConfig)
 
 	// route.Post("/loadster", controllers.AddLoadRequest)
