@@ -7,55 +7,21 @@ import (
 	"github.com/cirnum/loadtester/server/db/models"
 )
 
-func CalculateRPS(loads []models.Loadster, worker []models.Worker) customModels.CalculatedLoad {
+func CalculateRPS(loads []models.Loadster, workers []models.Worker) customModels.CalculatedLoad {
 	serverMap, isFinish := MapReqByServer(loads)
-	calculatedInfo := CalculateRPSByTitle(serverMap)
+	calculatedInfo := CalculateRPSByTitle(serverMap, workers)
 	calculatedInfo.Finish = isFinish
-	calculatedInfo.Workers = worker
 	return calculatedInfo
 }
 
-func HttpReqByType(loads []models.Loadster, reqType string) ([]models.Loadster, models.Loadster) {
-	var lastReqLoad models.Loadster
-	filterLoad := []models.Loadster{}
-
-	for _, load := range loads {
-		if strings.Contains(load.Title, reqType) {
-			filterLoad = append(filterLoad, load)
-		}
-		if strings.Contains(load.Title, reqType) && load.Finish {
-			lastReqLoad = load
-		}
-	}
-	if lastReqLoad.Count < 1 && len(filterLoad) > 0 {
-		lastReqLoad = filterLoad[len(filterLoad)-1]
-	}
-	return filterLoad, lastReqLoad
-}
-
-func calcDataTransfer(load []models.Loadster, nsType string) ([]models.Loadster, models.Loadster) {
-	val := []models.Loadster{}
-	var lastLoad models.Loadster
-	data, _ := HttpReqByType(load, nsType)
-	for _, value := range data {
-		if value.Count > 0 {
-			val = append(val, value)
-		}
-	}
-	if len(val) > 0 {
-		lastLoad = val[len(val)-1]
-	}
-	return val, lastLoad
-
-}
-func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster) customModels.CalculatedLoad {
+func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster, workers []models.Worker) customModels.CalculatedLoad {
 	var minLat int64 = 999999
 	var maxLat int64 = 0
 
 	calculatedLoads := customModels.CalculatedLoad{}
-	calculatedLoads.ServerMap = map[string]customModels.WorkerData{}
+	calculatedLoads.ServerMap = make(map[string]customModels.WorkerData, len(loadsByServer))
 	for key, load := range loadsByServer {
-		var loadPayload customModels.WorkerData
+		loadPayload := customModels.WorkerData{}
 		latency, lastLatency := HttpReqByType(load, ".latency")
 		okHTTP, lastOkHttp := HttpReqByType(load, ".http_ok")
 		failHTTP, lastFailHTTP := HttpReqByType(load, ".http_fail")
@@ -126,10 +92,44 @@ func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster) customModel
 			maxLat = loadPayload.MaxLatency
 		}
 	}
+	calculatedLoads.Workers = workers
 	calculatedLoads.FailPercentage = calculatePercentage(calculatedLoads.TotalRequest, calculatedLoads.TotalSuccessRequest)
 	calculatedLoads.MaxLatency = maxLat
 	calculatedLoads.MinLatency = minLat
 	return calculatedLoads
+}
+
+func HttpReqByType(loads []models.Loadster, reqType string) ([]models.Loadster, models.Loadster) {
+	var lastReqLoad models.Loadster
+	filterLoad := []models.Loadster{}
+
+	for _, load := range loads {
+		if strings.Contains(load.Title, reqType) {
+			filterLoad = append(filterLoad, load)
+		}
+		if strings.Contains(load.Title, reqType) && load.Finish {
+			lastReqLoad = load
+		}
+	}
+	if lastReqLoad.Count < 1 && len(filterLoad) > 0 {
+		lastReqLoad = filterLoad[len(filterLoad)-1]
+	}
+	return filterLoad, lastReqLoad
+}
+
+func calcDataTransfer(load []models.Loadster, nsType string) ([]models.Loadster, models.Loadster) {
+	val := []models.Loadster{}
+	var lastLoad models.Loadster
+	data, _ := HttpReqByType(load, nsType)
+	for _, value := range data {
+		if value.Count > 0 {
+			val = append(val, value)
+		}
+	}
+	if len(val) > 0 {
+		lastLoad = val[len(val)-1]
+	}
+	return val, lastLoad
 }
 
 func calculatePercentage(total int64, amount int64) int {
@@ -144,8 +144,9 @@ func calculateRpsForEachLoad(load models.Loadster) int64 {
 	startTime := load.StartTime
 	return (load.Count / ((endTime - startTime) / 1000))
 }
+
 func MapReqByServer(loads []models.Loadster) (map[string][]models.Loadster, bool) {
-	var isFinish bool = false
+	var isFinish bool
 	loadByServer := make(map[string][]models.Loadster)
 	for _, load := range loads {
 		serverId := load.ServerId
@@ -155,9 +156,9 @@ func MapReqByServer(loads []models.Loadster) (map[string][]models.Loadster, bool
 			load.ServerId = serverId
 		}
 		if load.Finish {
-			isFinish = load.Finish
+			isFinish = true
 		}
-		if len(loadByServer[serverId]) > 0 {
+		if _, ok := loadByServer[serverId]; ok {
 			loadByServer[serverId] = append(loadByServer[serverId], load)
 		} else {
 			loadByServer[serverId] = []models.Loadster{load}

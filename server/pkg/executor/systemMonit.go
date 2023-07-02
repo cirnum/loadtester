@@ -12,9 +12,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const slLA1 string = "LA1"
-const cpuUser string = "CPU"
-const ramUsing string = "RAM"
+const (
+	slLA1    = "LA1"
+	cpuUser  = "CPU"
+	ramUsing = "RAM"
+)
 
 // systemload report the current host system load like cpu, ram, and network
 // status
