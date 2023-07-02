@@ -136,21 +136,6 @@ func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan
 	}
 	var wg sync.WaitGroup
 	wg.Add(numOfClient)
-<<<<<<< Updated upstream
-	h.startTime = time.Now().UnixMilli()
-	go func() {
-		for j := 0; j < numOfClient; j++ {
-			go func() {
-				for {
-					select {
-					case <-ctx.Done():
-						return
-					default:
-						if conf.QPS > 0 {
-							<-throttle
-						}
-						h.Request()
-=======
 	h.startTime = time.Now().Unix()
 
 	for j := 0; j < numOfClient; j++ {
@@ -163,7 +148,6 @@ func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan
 				default:
 					if conf.QPS > 0 {
 						<-throttle
->>>>>>> Stashed changes
 					}
 					h.Request()
 				}
