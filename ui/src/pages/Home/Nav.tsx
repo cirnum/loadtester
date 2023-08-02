@@ -26,10 +26,6 @@ interface NavItem {
 
 const NAV_ITEMS: Array<NavItem> = [
   {
-    label: "Document",
-    href: "#",
-  },
-  {
     label: "Github",
     href: "#",
   },
@@ -142,7 +138,7 @@ export function WithSubnavigation() {
           direction="row"
           spacing={6}
         >
-          <Button
+          {/* <Button
             as="a"
             display={{ base: "none", md: "inline-flex" }}
             fontSize="sm"
@@ -151,7 +147,7 @@ export function WithSubnavigation() {
             href="#"
           >
             Document
-          </Button>
+          </Button> */}
           <Button
             as="a"
             fontSize="sm"

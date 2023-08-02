@@ -862,7 +862,7 @@ export default function CallToActionWithIllustration() {
           <Stack spacing={6} direction="row">
             <RouterLink to="signin">
               <Button rounded="full" px={6} colorScheme="primary">
-                ui
+                Login
               </Button>
             </RouterLink>
             <RouterLink to="signup">
