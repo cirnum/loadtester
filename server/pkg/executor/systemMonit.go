@@ -5,7 +5,7 @@ import (
 	"time"
 
 	metrics "github.com/cirnum/loadtester/server/pkg/executor/metrics"
-	"github.com/mackerelio/go-osstat/cpu"
+	cpu "github.com/mackerelio/go-osstat/cpu"
 	"github.com/mackerelio/go-osstat/loadavg"
 	"github.com/mackerelio/go-osstat/memory"
 	"github.com/mackerelio/go-osstat/network"
