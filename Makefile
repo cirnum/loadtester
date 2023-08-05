@@ -8,7 +8,7 @@ clean:
 build: ui/build build/server
 build/server:
 	# cd server && go build -ldflags "-w -X main.VERSION=$(VERSION)" -o '../build/server'
-	cd server && rice embed-go && gox \
+	cd server && rice embed-go && CGO_ENABLED=1 gox \
 		-osarch="linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64" \
 		-ldflags "-w -X main.VERSION=$(VERSION)" \
 		-output="../build/{{.OS}}/{{.Arch}}/loadster" \
