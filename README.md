@@ -41,7 +41,7 @@ as many servers as you can run the test script across all the servers at the sam
 1. `docker run -it -p 3005:3005 --platform linux/amd64 manojown1/loadtester:latest` (outer port can be changed according to the need.)
 
 ## Run as workers for distributed testing 
- `docker run -it -p ANY_AVAILABLE_PORT:3005 -e TOKEN="YOU_CAN_GET_WHILE_CREATE_SERVER" -e MASTER_IP="YOUR_MAIN_SERVER_IP" --platform linux/amd64 manojown1/loadtester:latest`
+ `docker run -it -p ANY_AVAILABLE_PORT:3005 -e WORKER=true -e MASTER_IP="YOUR_MAIN_SERVER_IP" --platform linux/amd64 manojown1/loadtester:latest`
 
   
 
