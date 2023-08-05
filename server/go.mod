@@ -20,6 +20,7 @@ require (
 )
 
 require (
+	github.com/GeertJohan/go.rice v1.0.3
 	github.com/aws/aws-sdk-go v1.44.281
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/mackerelio/go-osstat v0.2.4
@@ -28,6 +29,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
+	github.com/daaku/go.zipexe v1.0.2 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/glebarez/go-sqlite v1.21.1 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
