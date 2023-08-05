@@ -11,7 +11,7 @@ build/server:
 	cd server && rice embed-go && gox \
 		-osarch="linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64" \
 		-ldflags "-w -X main.VERSION=$(VERSION)" \
-		-output="../build/{{.OS}}/{{.Arch}}/server" \
+		-output="../build/{{.OS}}/{{.Arch}}/loadster" \
 		./...
 ui/build:
 	@echo "Building UI..."
