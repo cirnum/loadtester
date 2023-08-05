@@ -5,10 +5,10 @@ import (
 	"time"
 
 	metrics "github.com/cirnum/loadtester/server/pkg/executor/metrics"
-	cpu "github.com/mackerelio/go-osstat/cpu"
 	"github.com/mackerelio/go-osstat/loadavg"
-	"github.com/mackerelio/go-osstat/memory"
 	"github.com/mackerelio/go-osstat/network"
+	"github.com/shirou/gopsutil/v3/cpu"
+	"github.com/shirou/gopsutil/v3/mem"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -111,9 +111,7 @@ func (e *Executor) systemloadRun(ctx context.Context) (err error) {
 
 	nssPre := make(map[string]rtxBytes)
 	nssPreTime := time.Now()
-
-	var cpuPre *cpu.Stats
-	// cpuPreTime := time.Now()
+	var cpuPre []cpu.TimesStat
 
 	for {
 		select {
@@ -152,19 +150,35 @@ func (e *Executor) systemloadRun(ctx context.Context) (err error) {
 				nssPreTime = now
 			}
 
-			if cpuNow, err := cpu.Get(); err == nil {
-				if cpuPre != nil {
-					total := float64(cpuNow.Total - cpuPre.Total)
-					user := float64(cpuNow.User-cpuPre.User) / total * 100
-					Notify(cpuUser, int64(user))
-				}
-				cpuPre = cpuNow
+			if memStats, err := mem.VirtualMemory(); err == nil {
+				memUsage := memStats.UsedPercent
+				Notify(ramUsing, int64(memUsage))
 			}
 
-			if mem, err := memory.Get(); err == nil {
-				r := float64(mem.Used) / float64(mem.Total) * 100.0
-				Notify(ramUsing, int64(r))
+			if cpuNow, err := cpu.Times(false); err == nil {
+				userPercentage := calculateCpuUsage(cpuPre, cpuNow)
+				Notify(cpuUser, int64(userPercentage))
+				cpuPre = cpuNow
 			}
 		}
 	}
+}
+
+func calculateCpuUsage(cpuStats1 []cpu.TimesStat, cpuStats2 []cpu.TimesStat) float64 {
+	if len(cpuStats1) > 0 && len(cpuStats2) > 0 {
+		totalUsage1, userUsage1 := totalUsage(cpuStats1)
+		totalUsage2, userUsage2 := totalUsage(cpuStats2)
+		totalDelta := totalUsage2 - totalUsage1
+		userDelta := userUsage2 - userUsage1
+		userPercentage := 100 * (userDelta / totalDelta)
+		return userPercentage
+	}
+	return 0
+}
+
+func totalUsage(cpuStats []cpu.TimesStat) (float64, float64) {
+	userUsage1 := cpuStats[0].User
+	systemUsage1 := cpuStats[0].System
+	idleUsage1 := cpuStats[0].Idle
+	return (userUsage1 + systemUsage1 + idleUsage1), userUsage1
 }

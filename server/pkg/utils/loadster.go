@@ -39,20 +39,20 @@ func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster, workers []m
 			calculatedLoads.TotalFailRequest += lastFailHTTP.Count
 			calculatedLoads.FailRPS += loadPayload.FailRPS
 		}
-		if lastOtherFailHTTP.Count > 0 {
+		if lastOtherFailHTTP.Count > 0 && totalTimeTaken > 0 {
 			loadPayload.OtherFailRPS = lastOtherFailHTTP.Count / totalTimeTaken
 			loadPayload.TotalOtherFailRequest = lastOtherFailHTTP.Count
 			calculatedLoads.TotalOtherFailRequest += lastOtherFailHTTP.Count
 			calculatedLoads.OtherFailRPS += loadPayload.OtherFailRPS
 
 		}
-		if lastOkHttp.Count > 0 {
+		if lastOkHttp.Count > 0 && totalTimeTaken > 0 {
 			loadPayload.SuccessRPS = lastOkHttp.Count / totalTimeTaken
 			loadPayload.TotalSuccessRequest = lastOkHttp.Count
 			calculatedLoads.TotalSuccessRequest += lastOkHttp.Count
 			calculatedLoads.SuccessRPS += loadPayload.SuccessRPS
 		}
-		if lastLatency.Count > 0 {
+		if lastLatency.Count > 0 && totalTimeTaken > 0 {
 			loadPayload.TotalRPS = lastLatency.Count / totalTimeTaken
 			loadPayload.TotalRequest = lastLatency.Count
 			calculatedLoads.TotalRequest += lastLatency.Count
@@ -142,7 +142,10 @@ func calculatePercentage(total int64, amount int64) int {
 func calculateRpsForEachLoad(load models.Loadster) int64 {
 	endTime := load.Created
 	startTime := load.StartTime
-	return (load.Count / ((endTime - startTime) / 1000))
+	if load.Count > 0 && ((endTime-startTime)/1000) > 0 {
+		return (load.Count / ((endTime - startTime) / 1000))
+	}
+	return 0
 }
 
 func MapReqByServer(loads []models.Loadster) (map[string][]models.Loadster, bool) {
