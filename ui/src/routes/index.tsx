@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import {
   Route,
-  createBrowserRouter,
+  createHashRouter,
   createRoutesFromElements,
   defer,
 } from "react-router-dom";
@@ -71,7 +71,7 @@ const SettingPage = lazy(() =>
   }))
 );
 
-export const router = createBrowserRouter(
+export const router = createHashRouter(
   createRoutesFromElements(
     <Route
       element={<AuthLayout />}

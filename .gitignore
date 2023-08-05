@@ -15,6 +15,8 @@ temp
 /strain-ui/docs
 /*.log
 inMemory*
+loadtester-db*
+rice-box*
 /build/*
 /server/dist
 /server/main

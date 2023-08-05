@@ -1,10 +1,10 @@
 package sql
 
 import (
-	"os"
 	"time"
 
 	"github.com/cirnum/loadtester/server/db/models"
+	"github.com/cirnum/loadtester/server/pkg/configs"
 	"github.com/cirnum/loadtester/server/pkg/constants"
 	"github.com/glebarez/sqlite"
 	"github.com/sirupsen/logrus"
@@ -49,8 +49,8 @@ func NewProvider() (*provider, error) {
 		AllowGlobalUpdate: true,
 	}
 
-	dbType := os.Getenv(constants.DbType)
-	dbDNS := os.Getenv(constants.DbDns)
+	dbType := configs.StoreProvider.DB_TYPE
+	dbDNS := configs.StoreProvider.DB_DNS
 	log.Infof("dbType: %s, dbDNS: %s \n", dbType, dbDNS)
 	switch dbType {
 	case constants.DbTypeSQL:

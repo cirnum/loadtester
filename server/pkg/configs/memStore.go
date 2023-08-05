@@ -20,16 +20,35 @@ type Store struct {
 var StoreProvider *Store
 
 func StoreInitialize() Store {
-	store := new(Store)
+	store := &Store{
+		JWT_SECRET_KEY:      "723bhhghv23466v6234bvhahhdvvasd727364364bd7",
+		DB_DNS:              "loadtester-db",
+		DB_TYPE:             "sqlite",
+		SERVER_HOST:         "0.0.0.0",
+		PORT:                "3005",
+		SERVER_READ_TIMEOUT: "60",
+	}
+
+	if os.Getenv("JWT_SECRET_KEY") != "" {
+		store.JWT_SECRET_KEY = os.Getenv("JWT_SECRET_KEY")
+	}
+	if os.Getenv("DB_DNS") != "" {
+		store.DB_DNS = os.Getenv("DB_DNS")
+	}
+	if os.Getenv("DB_TYPE") != "" {
+		store.DB_TYPE = os.Getenv("DB_TYPE")
+	}
+	if os.Getenv("STAGE_STATUS") != "" {
+		store.STAGE_STATUS = os.Getenv("STAGE_STATUS")
+	}
+	if os.Getenv("PORT") != "" {
+		store.PORT = os.Getenv("PORT")
+	}
+
 	store.AWS_ACCESS_KEY = os.Getenv("AWS_ACCESS_KEY")
 	store.AWS_SECRET_KEY = os.Getenv("AWS_SECRET_KEY")
-	store.JWT_SECRET_KEY = os.Getenv("JWT_SECRET_KEY")
 	store.AWS_REGION = os.Getenv("AWS_REGION")
-	store.DB_DNS = os.Getenv("DB_DNS")
-	store.DB_TYPE = os.Getenv("DB_TYPE")
-	store.STAGE_STATUS = os.Getenv("STAGE_STATUS")
-	store.SERVER_HOST = "0.0.0.0"
-	store.PORT = os.Getenv("PORT")
+
 	StoreProvider = store
 	return *StoreProvider
 }
