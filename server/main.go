@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	rice "github.com/GeertJohan/go.rice"
 	log "github.com/sirupsen/logrus"
 
@@ -33,7 +31,6 @@ func main() {
 	}
 
 	routes.RouteAggregator(isWorker, app)
-	fmt.Printf("%+v", configs.StoreProvider)
 	// Start server (with or without graceful shutdown).
 	if configs.StoreProvider.STAGE_STATUS == "dev" {
 		utils.StartServer(app)
