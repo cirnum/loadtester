@@ -15,7 +15,7 @@ build/server:
 		./...
 ui/build:
 	@echo "Building UI..."
-	cd ui && npm i --force && npm run build
+	cd ui && npm i --force && npm run build && cp -r dist ../server/
 ui/node_module:
 	@echo "Installing node modules..."
 	cd ui && npm install
