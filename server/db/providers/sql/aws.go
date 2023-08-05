@@ -13,8 +13,8 @@ func (p *provider) CreateEC2(ctx context.Context, ec2s []models.EC2) ([]models.E
 	ec2List := []models.EC2{}
 	for _, ec2 := range ec2s {
 		ec2.ID = uuid.New().String()
-		ec2.CreatedAt = time.Now().Unix()
-		ec2.UpdatedAt = time.Now().Unix()
+		ec2.CreatedAt = time.Now().UnixMilli()
+		ec2.UpdatedAt = time.Now().UnixMilli()
 		ec2List = append(ec2List, ec2)
 	}
 
@@ -31,7 +31,7 @@ func (p *provider) CreateEC2(ctx context.Context, ec2s []models.EC2) ([]models.E
 func (p *provider) UpdateEc2(ctx context.Context, ec2s []models.EC2) ([]models.EC2, error) {
 	ec2List := []models.EC2{}
 	for _, ec2 := range ec2s {
-		ec2.UpdatedAt = time.Now().Unix()
+		ec2.UpdatedAt = time.Now().UnixMilli()
 		ec2List = append(ec2List, ec2)
 	}
 	result := p.db.Save(&ec2List)
@@ -62,7 +62,7 @@ func (p *provider) GetAllEc2s(ctx context.Context, pagination *models.Pagination
 	}
 
 	var total int64
-	totalRes := p.db.Model(&models.Request{}).Count(&total)
+	totalRes := p.db.Model(&models.EC2{}).Where("user_id = ?", userId).Count(&total)
 	if totalRes.Error != nil {
 		return nil, totalRes.Error
 	}

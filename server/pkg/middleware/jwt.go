@@ -2,14 +2,12 @@ package middleware
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/cirnum/loadtester/server/app/utils"
 	"github.com/cirnum/loadtester/server/pkg/configs"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
-
-	jwtMiddleware "github.com/gofiber/jwt/v2"
 )
 
 // JWTProtected func for specify routes group with JWT authentication.
@@ -79,16 +77,16 @@ func JWTProtected(c *fiber.Ctx) error {
 	return utils.ResponseError(c, err, "", fiber.StatusInternalServerError)
 }
 
-func JWTProtectedClient() func(*fiber.Ctx) error {
-	// Create config for JWT authentication middleware.
-	config := jwtMiddleware.Config{
-		SigningKey:   []byte(os.Getenv("CLIENT_SECRET_KEY")),
-		ContextKey:   "jwt", // used in private routes
-		ErrorHandler: jwtError,
-	}
+// func JWTProtectedClient() func(*fiber.Ctx) error {
+// 	// Create config for JWT authentication middleware.
+// 	config := jwtMiddleware.Config{
+// 		SigningKey:   []byte(os.Getenv("CLIENT_SECRET_KEY")),
+// 		ContextKey:   "jwt", // used in private routes
+// 		ErrorHandler: jwtError,
+// 	}
 
-	return jwtMiddleware.New(config)
-}
+// 	return jwtMiddleware.New(config)
+// }
 
 func jwtError(c *fiber.Ctx, err error) error {
 	// Return status 401 and failed authentication error.

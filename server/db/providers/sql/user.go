@@ -18,8 +18,8 @@ func (p *provider) AddUser(ctx context.Context, user models.User) (models.User, 
 		user.ID = uuid.New().String()
 	}
 
-	user.CreatedAt = time.Now().Unix()
-	user.UpdatedAt = time.Now().Unix()
+	user.CreatedAt = time.Now().UnixMilli()
+	user.UpdatedAt = time.Now().UnixMilli()
 
 	_, err := p.GetUserByEmail(ctx, user.Email)
 	if err != nil {
@@ -44,7 +44,7 @@ func (p *provider) AddUser(ctx context.Context, user models.User) (models.User, 
 
 // UpdateUser to update user information in database
 func (p *provider) UpdateUser(ctx context.Context, user models.User) (models.User, error) {
-	user.UpdatedAt = time.Now().Unix()
+	user.UpdatedAt = time.Now().UnixMilli()
 
 	result := p.db.Save(&user)
 
@@ -120,7 +120,7 @@ func (p *provider) GetUserByID(ctx context.Context, id string) (models.User, err
 // If ids set to nil / empty all the users will be updated
 func (p *provider) UpdateUsers(ctx context.Context, data map[string]interface{}, ids []string) error {
 	// set updated_at time for all users
-	data["updated_at"] = time.Now().Unix()
+	data["updated_at"] = time.Now().UnixMilli()
 
 	var res *gorm.DB
 	if ids != nil && len(ids) > 0 {

@@ -1,6 +1,5 @@
 import {
   TableContainer,
-  TableCaption,
   Table,
   Thead,
   Tr,
@@ -11,9 +10,9 @@ import {
   Stack,
   Button,
   Text,
-  Spinner as SP,
   Badge,
   Image,
+  Tooltip,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,22 +35,8 @@ import { useInterval } from "../../hooks/useInterval";
 import { getSettigs } from "../../store/stress/common/selectors";
 import Warning from "../../components/Error";
 import Creds from "../../assets/code.png";
-
-const pagination = {
-  limit: 10,
-  page: 1,
-};
-const TableHeader = [
-  "Instace Id",
-  "Instance Type",
-  "Public Ip",
-  "Public DNS",
-  "Status",
-  "KeyName",
-  "Last Update",
-  "AMI",
-  "Action",
-];
+import { paginationHandler } from "../../utils/_shared";
+import { AWSHeader, PAGINATION } from "../../constants/_shared.const";
 
 function TableBody({
   server,
@@ -85,7 +70,11 @@ function TableBody({
 
   return (
     <Tr key={id}>
-      <Td>{instanceId}</Td>
+      <Td>
+        <Tooltip label={instanceId}>
+          <Text isTruncated>{instanceId}</Text>
+        </Tooltip>
+      </Td>
       <Td>{instanceType}</Td>
 
       <Td
@@ -96,7 +85,9 @@ function TableBody({
         {publicIp} {copy === publicIp ? <CheckIcon /> : <CopyIcon />}
       </Td>
       <Td>
-        <Text isTruncated>{publicDns}</Text>
+        <Tooltip label={publicDns}>
+          <Text isTruncated>{publicDns}</Text>
+        </Tooltip>
       </Td>
       <Td>
         <Badge colorScheme={ec2State === "running" ? "green" : "red"}>
@@ -107,7 +98,9 @@ function TableBody({
         <Text isTruncated>{keyName}</Text>
       </Td>
       <Td>
-        <Text isTruncated>{imgId}</Text>
+        <Tooltip label={imgId}>
+          <Text isTruncated>{imgId}</Text>
+        </Tooltip>
       </Td>
       <Td>
         <Text isTruncated>{format(updatedAt * 1000, "dd, MMM, Y, HH:MM")}</Text>
@@ -116,6 +109,7 @@ function TableBody({
         <Button
           variant="outline"
           colorScheme="red"
+          size="sm"
           onClick={() => {
             dispatch(selectDeleteEC2(server));
           }}
@@ -130,12 +124,17 @@ function TableBody({
 export function ServerBoard() {
   const { loading, data } = useSelector(getEC2List);
   const [copy, setCopy] = useState<string>("");
+  const [pagination, setPagination] = useState<typeof PAGINATION>(PAGINATION);
 
   const isFinish = data?.data?.find((item) => {
     return item.ec2State === "pending";
   });
   const dispatch = useDispatch();
 
+  const paginate = (action: "next" | "prev") => {
+    const total = data?.pagination?.total || 0;
+    paginationHandler(action, total, pagination, setPagination);
+  };
   useInterval(
     () => {
       dispatch(getEC2ServerAction(pagination));
@@ -143,10 +142,8 @@ export function ServerBoard() {
     !isFinish ? null : 3000
   );
   useEffect(() => {
-    if (!data) {
-      dispatch(getEC2ServerAction(pagination));
-    }
-  }, []);
+    dispatch(getEC2ServerAction(pagination));
+  }, [pagination]);
 
   const onCopy = (text) => {
     navigator.clipboard.writeText(text);
@@ -157,7 +154,7 @@ export function ServerBoard() {
     return <Spinner />;
   }
   return (
-    <Box w="100%" bg="white" h="calc(100vh - 65px)" p={10}>
+    <Box w="100%" bg="white" h="calc(100vh - 65px)" overflow="scroll" p={10}>
       <CreateEC2 />
       <DeleteDialog />
       <TableContainer border="1px solid #f6f6f6">
@@ -187,17 +184,12 @@ export function ServerBoard() {
         >
           <Thead>
             <Tr>
-              {TableHeader.map((item) => (
+              {AWSHeader.map((item) => (
                 <Th>{item}</Th>
               ))}
             </Tr>
           </Thead>
           <Tbody>
-            {loading && (
-              <TableCaption>
-                <SP />
-              </TableCaption>
-            )}
             {data?.data?.map((server) => (
               <TableBody server={server} copy={copy} onCopy={onCopy} />
             ))}
@@ -211,8 +203,12 @@ export function ServerBoard() {
           justifyContent="center"
           align="center"
         >
-          <Button colorScheme="blue">Prev</Button>
-          <Button colorScheme="blue">Next</Button>
+          <Button colorScheme="blue" onClick={() => paginate("prev")}>
+            Prev
+          </Button>
+          <Button colorScheme="blue" onClick={() => paginate("next")} disabled>
+            Next
+          </Button>
         </Stack>
       </TableContainer>
     </Box>

@@ -12,13 +12,10 @@ import {
   DELETE_EC2_SUCCESS,
 } from "../stress/aws/actionTypes";
 import { getEC2ServerAction, getPemFilesAction } from "../stress/aws/actions";
+import { PAGINATION } from "../../constants/_shared.const";
 
 function* awsListSaga() {
-  const pagination = {
-    page: 1,
-    limit: 10,
-  };
-  yield put(getEC2ServerAction(pagination));
+  yield put(getEC2ServerAction(PAGINATION));
 }
 function* awsGetPemKeys() {
   yield put(getPemFilesAction());

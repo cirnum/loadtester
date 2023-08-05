@@ -10,14 +10,14 @@ clean:
 build: ui/build build/server
 build/server:
 	# cd server && go build -ldflags "-w -X main.VERSION=$(VERSION)" -o '../build/server'
-	cd server && gox \
+	cd server && rice embed-go && gox \
 		-osarch="linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64" \
 		-ldflags "-w -X main.VERSION=$(VERSION)" \
 		-output="../build/{{.OS}}/{{.Arch}}/server" \
 		./...
 ui/build:
 	@echo "Building UI..."
-	cd ui && npm i --force && npm run build
+	cd ui && npm i --force && npm run build && cp -r dist ../server/
 ui/node_module:
 	@echo "Installing node modules..."
 	cd ui && npm install

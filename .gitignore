@@ -16,6 +16,8 @@ temp
 /strain-ui/docs
 /*.log
 inMemory*
+loadtester-db*
+rice-box*
 /build/*
 /server/dist
 /server/main
@@ -36,3 +38,4 @@ yarn-error.log*
 node_modules/
 server/cli/cli
 .env.pg
+.air.*

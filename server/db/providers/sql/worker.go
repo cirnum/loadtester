@@ -14,8 +14,8 @@ func (p *provider) AddWorker(ctx context.Context, worker models.Worker) (models.
 	if worker.ID == "" {
 		worker.ID = uuid.New().String()
 	}
-	worker.CreatedAt = time.Now().Unix()
-	worker.UpdatedAt = time.Now().Unix()
+	worker.CreatedAt = time.Now().UnixMilli()
+	worker.UpdatedAt = time.Now().UnixMilli()
 
 	result := p.db.Create(&worker)
 
@@ -28,7 +28,7 @@ func (p *provider) AddWorker(ctx context.Context, worker models.Worker) (models.
 
 // AddServer to update user information in database
 func (p *provider) UpdateWorker(ctx context.Context, worker models.Worker) (models.Worker, error) {
-	worker.UpdatedAt = time.Now().Unix()
+	worker.UpdatedAt = time.Now().UnixMilli()
 
 	result := p.db.Save(&worker)
 	if result.Error != nil {

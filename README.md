@@ -17,7 +17,7 @@ Steps:
 2.  Use the intuitive graphical interface to design your load test scenario.
 3.  Configure test settings such as the number of virtual users, test duration, and test environment.
 4.  Distribute the load test across multiple machines or servers using the Loadtester controller.
-5.  Monitor test results in real-time using built-in reporting and analysis tools.
+5.  Monitor test results in real time using built-in reporting and analysis tools.
 6.  Analyze test results to identify performance bottlenecks and optimize your system for maximum scalability.
 
 Try Loadtester today and discover how it can help you improve the performance and scalability of your application or website.
@@ -27,47 +27,56 @@ Try Loadtester today and discover how it can help you improve the performance an
 
 ### Create server
 
-Note - becasue of resource limit (cpu,bandwidth) you can configure
+Note - because of resource limit (CPU, bandwidth) you can configure
 
-as many server as you can to run test script across all the server at same time.
+as many servers as you can run the test script across all the servers at the same time.
 
-## To configure Server with docker
+## Possible ENV to pass while running the Binary
+| Env Name  | Default | Description                                                                                                      |
+|-----------|---------------|------------------------------------------------------------------------------------------------------------------|
+| WORKER    | false         | User can run loadtester as a worker or as a Master node                                                            |
+| MASTER_IP | empty            | If the user runs the node as a Worker then the worker node can accept the MASTER_IP env which is the actual master ip |
+## To configure the Server with docker
 
-1. `docker run -it -p 3005:3005 --platform linux/amd64 manojown1/loadtester:latest` (outer port can be change according to the need.)
+1. `docker run -it -p 3005:3005 --platform linux/amd64 manojown1/loadtester:latest` (outer port can be changed according to the need.)
 
 ## Run as workers for distributed testing 
- `docker run -it -p ANY_AVAILABLE_PORT:3005 -e TOKEN="YOU_CAN_GET_WHILE_CREATE_SERVER" -e MASTER_IP="YOUR_MAIN_SERVER_IP" --platform linux/amd64 manojown1/loadtester:latest`
+ `docker run -it -p ANY_AVAILABLE_PORT:3005 -e WORKER=true -e MASTER_IP="YOUR_MAIN_SERVER_IP" --platform linux/amd64 manojown1/loadtester:latest`
 
   
 
 ## Download the binary
 
 1. Download binary from releases - https://github.com/cirnum/loadtester/releases/
-	1. `darwin amd64` - For mac user
-	2. `darwin arm64` - For mac user (new mac)
-	3. `linux amd64` - Linux arch `amd64` users (64 bit system)
-	4. `linux arm64` - Linux arch `arm` users (32 bit system)
+	1. `Darwin amd64` - For Mac user
+	2. `Darwin arm64` - For Mac users (new Mac)
+	3. `Linux amd64` - Linux arch `amd64` users (64-bit system)
+	4. `Linux arm64` - Linux arch `arm` users (32-bit system)
 	5. `windows amd64` - Windows Users
 
-## Creating first request
+## Creating the first request
 
 1. Click on **Request** tab on header
 
-2. Fill the form
+2. Fill out the form
 
 * Url - stress testing target Url
 
-* Client - Total client want to initiate - use 100 to 1000 (depends on your cores and cpu)
+* Client - Total client wants to initiate - use 100 to 1000 (depends on your cores and cpu)
 
-* Time - Till time you want to run this requests
+* Time - Till the time you want to run these requests
 
 * Select Method Get Post whatever your stress url serve
 
-## AWS integration 
-### Required Env for AWS - 
-`AWS_ACCESS_KEY=<ACCESS_KEY>`
-`AWS_SECRET_KEY=SECERET_KEY>`
-`AWS_REGION=<ap-south-1>`
+## AWS integration (Required Env)
+| Env Name       |
+|----------------|
+| AWS_ACCESS_KEY |
+| AWS_SECRET_KEY |
+| AWS_REGION     |
+
+## How can I modify the .env file inside a running Docker container?
+	docker exec -it CONTAINER_ID_OR_NAME vim .env
 
 
 ## Request Page

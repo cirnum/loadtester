@@ -34,8 +34,8 @@ func (p *provider) AddServer(ctx context.Context, server models.Server) (models.
 		server.ID = uuid.New().String()
 	}
 	server.Token = UniqueToken(RandLength)
-	server.CreatedAt = time.Now().Unix()
-	server.UpdatedAt = time.Now().Unix()
+	server.CreatedAt = time.Now().UnixMilli()
+	server.UpdatedAt = time.Now().UnixMilli()
 
 	result := p.db.Create(&server)
 
@@ -48,7 +48,7 @@ func (p *provider) AddServer(ctx context.Context, server models.Server) (models.
 
 // AddServer to update user information in database
 func (p *provider) UpdateServer(ctx context.Context, server models.Server) (models.Server, error) {
-	server.UpdatedAt = time.Now().Unix()
+	server.UpdatedAt = time.Now().UnixMilli()
 
 	result := p.db.Save(&server)
 	if result.Error != nil {
@@ -59,7 +59,7 @@ func (p *provider) UpdateServer(ctx context.Context, server models.Server) (mode
 
 // AddServer to update user information in database
 func (p *provider) UpdateServerByIp(ctx context.Context, server models.Server) (models.Server, error) {
-	server.UpdatedAt = time.Now().Unix()
+	server.UpdatedAt = time.Now().UnixMilli()
 
 	if p.db.Model(models.Server{}).Where("ip LIKE ?", server.IP).Updates(server).RowsAffected == 0 {
 		if server.ID == "" {
@@ -69,7 +69,7 @@ func (p *provider) UpdateServerByIp(ctx context.Context, server models.Server) (
 			server.Token = UniqueToken(RandLength)
 		}
 		server.Enabled = true
-		server.CreatedAt = time.Now().Unix()
+		server.CreatedAt = time.Now().UnixMilli()
 		p.db.Create(&server)
 	}
 
@@ -85,17 +85,16 @@ func (p *provider) UpdateServerByIp(ctx context.Context, server models.Server) (
 func (p *provider) ListServer(ctx context.Context, pagination *models.Pagination) (*models.ServerList, error) {
 	userId := ctx.Value(UserToken)
 	var servers []models.Server
-	result := p.db.Where(UserId+" = ?", userId).Limit(int(pagination.Limit)).Offset(int(pagination.Offset)).Order("created_at DESC").Find(&servers)
+	result := p.db.Where(UserId+" = ?", userId).Limit(int(pagination.Limit)).Offset(int(pagination.Offset)).Order("created_at desc").Find(&servers)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
 	var total int64
-	totalRes := p.db.Model(&models.Request{}).Count(&total)
+	totalRes := p.db.Model(&models.Server{}).Where(UserId+" = ?", userId).Count(&total)
 	if totalRes.Error != nil {
 		return nil, totalRes.Error
 	}
-
 	paginationClone := pagination
 	paginationClone.Total = total
 

@@ -22,5 +22,5 @@ COPY --from=builder /app/server/.env.example .env
 RUN chmod +x ./main
 EXPOSE 3005
 ENV MASTER_IP ""
-ENV TOKEN ""
-CMD ./main -MASTER_IP $MASTER_IP -TOKEN $TOKEN
+ENV WORKER false
+CMD ./main --WORKER=$WORKER --MASTER_IP=$MASTER_IP

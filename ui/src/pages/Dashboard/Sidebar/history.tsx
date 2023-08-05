@@ -63,7 +63,7 @@ function ItemList({ item }: { item: RequestHistoryPayload }) {
   );
 }
 
-const pagination = { page: 1, limit: 20 };
+const pagination = { page: 1, limit: 25 };
 export default function History() {
   const dispatch = useDispatch();
   useEffect(() => {

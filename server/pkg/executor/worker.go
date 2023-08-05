@@ -74,13 +74,15 @@ func init() {
 	}
 }
 
-func NewExecutor(reqId string, serverId string) (e *Executor) {
-	e = getExecutor()
+func NewExecutor(reqId string, serverId string) *Executor {
+	e := getExecutor()
+	e.mu.Lock()
+	defer e.mu.Unlock()
 	e.units = make(map[string]unit)
 	e.appID = reqId
 	e.serverId = serverId
 	e.status = Idle
-	return
+	return e
 }
 
 func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
@@ -89,7 +91,8 @@ func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
 		for _, graph := range group.Graphs {
 			for _, m := range graph.Metrics {
 				indetifier := e.appID + m.Title
-				if m.Type == metrics.Counter {
+				switch m.Type {
+				case metrics.Counter:
 					c := gometrics.NewCounter()
 					if err := gometrics.Register(indetifier, c); err != nil {
 						if _, ok := err.(gometrics.DuplicateMetric); ok {
@@ -103,8 +106,7 @@ func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
 						metricID: e.appID,
 						c:        c,
 					}
-				}
-				if m.Type == metrics.Histogram {
+				case metrics.Histogram:
 					s := gometrics.NewExpDecaySample(1028, 0.015)
 					h := gometrics.NewHistogram(s)
 					if err := gometrics.Register(indetifier, h); err != nil {
@@ -119,9 +121,7 @@ func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
 						metricID: e.appID,
 						h:        h,
 					}
-				}
-				if m.Type == metrics.Gauge {
-
+				case metrics.Gauge:
 					g := gometrics.NewGauge()
 					if err := gometrics.Register(indetifier, g); err != nil {
 						if _, ok := err.(gometrics.DuplicateMetric); ok {
@@ -141,39 +141,45 @@ func (e *Executor) Setup(groups []metrics.Group, reqId string) error {
 	}
 
 	// aggregate units
+	e.mu.Lock()
+	defer e.mu.Unlock()
 	for k, v := range units {
 		e.units[k] = v
 	}
-	e.startTime = time.Now().Unix()
+	e.startTime = time.Now().UnixMilli()
 	return nil
 }
 
-func (e *Executor) Run(ctx context.Context, conf models.Request) (err error) {
+func (e *Executor) Run(ctx context.Context, conf models.Request) error {
 	e.systemloadSetup(conf.ID)
 	e.status = Running
 	finished := make(chan error)
-	// when the runScen finished, we should stop the logScaled and systemloadRun
-	// also; however, not necessary since the executor will be shutdown anyway
-	go e.logScaled(ctx, poll*time.Second)
+	go e.logScaled(ctx, poll*time.Second, finished)
 	go e.systemloadRun(ctx)
 	select {
-	case err = <-finished:
+	case err := <-finished:
+		e.status = Finished
+		return err
 	case <-ctx.Done():
-		err = ErrAppCancel
+		e.status = Finished
+		return ErrAppCancel
 	}
-	e.status = Finished
-	return
 }
 
-func (e *Executor) logScaled(ctx context.Context, freq time.Duration) {
-	ch := make(chan interface{})
-	go func(channel chan interface{}) {
-		for range time.Tick(freq) {
-			channel <- struct{}{}
+func (e *Executor) logScaled(ctx context.Context, freq time.Duration, finished chan error) {
+	ticker := time.NewTicker(freq)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			finish := false
+			e.sendLoadData(finish)
+		case <-ctx.Done():
+			finish := true
+			e.sendLoadData(finish)
+			finished <- nil
+			return
 		}
-	}(ch)
-	if err := e.logScaledOnCue(ctx, ch); err != nil {
-		log.Fatal("failed logScaledOnCue", "err", err)
 	}
 }
 
@@ -189,7 +195,7 @@ func (e *Executor) sendLoadData(isFinish bool) {
 	ctx := context.Background()
 	config := configs.ConfigProvider
 
-	if config.IsSlave == true {
+	if config.IsSlave {
 		body, _ := json.Marshal(data)
 		url := config.MasterIp + "/api/v1/loadster"
 		headers := map[string]string{
@@ -206,10 +212,12 @@ func (e *Executor) sendLoadData(isFinish bool) {
 		db.Provider.AddBatchLoadByRequestId(ctx, data)
 	}
 }
+
 func (e *Executor) GrabCounter(isFinish bool, units map[string]unit) ([]models.Loadster, error) {
-	var data []models.Loadster
 	e.mu.Lock()
+	defer e.mu.Unlock()
 	now := time.Now().Unix()
+	var data []models.Loadster
 	for _, u := range units {
 		switch u.Type {
 		case metrics.Counter:
@@ -261,21 +269,7 @@ func (e *Executor) GrabCounter(isFinish bool, units map[string]unit) ([]models.L
 			data = append(data, counter)
 		}
 	}
-	e.mu.Unlock()
 	return data, nil
-}
-func (e *Executor) logScaledOnCue(ctx context.Context, ch chan interface{}) error {
-	for {
-		select {
-		case <-ch:
-			finish := false
-			e.sendLoadData(finish)
-		case <-ctx.Done():
-			finish := true
-			e.sendLoadData(finish)
-			return nil
-		}
-	}
 }
 
 func (e *Executor) Notify(title string, value int64) error {
@@ -285,13 +279,12 @@ func (e *Executor) Notify(title string, value int64) error {
 	if !ok {
 		return ErrIDNotFound
 	}
-	if u.Type == metrics.Counter {
+	switch u.Type {
+	case metrics.Counter:
 		u.c.Inc(value)
-	}
-	if u.Type == metrics.Histogram {
+	case metrics.Histogram:
 		u.h.Update(value)
-	}
-	if u.Type == metrics.Gauge {
+	case metrics.Gauge:
 		u.g.Update(value)
 	}
 	return nil

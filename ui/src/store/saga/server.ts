@@ -13,14 +13,11 @@ import {
   DeleteServerSuccess,
   SyncWithMaster,
 } from "../stress/server/types";
+import { PAGINATION } from "../../constants/_shared.const";
 
 function* serverSaga(action: AddServerSuccess) {
   if (!action.payload.error) {
-    const pagination = {
-      page: 1,
-      limit: 10,
-    };
-    yield put(getAllServerAction(pagination));
+    yield put(getAllServerAction(PAGINATION));
   }
 }
 
