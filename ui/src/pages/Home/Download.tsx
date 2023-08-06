@@ -19,6 +19,7 @@ interface Asset {
 }
 
 function ReleaseDropdown() {
+  const [copy, setCopy] = useState<string>("");
   const [releases, setReleases] = useState<Release[]>([]);
   const [selectedRelease, setSelectedRelease] = useState<number | null>(null);
   const [selectedOS, setSelectedOS] = useState<string>("");
@@ -41,6 +42,11 @@ function ReleaseDropdown() {
 
     fetchReleases();
   }, []);
+
+  const onCopy = (text) => {
+    navigator.clipboard.writeText(text);
+    setCopy(() => text);
+  };
 
   useEffect(() => {
     // Fetch OS names for the selected release
@@ -122,10 +128,11 @@ function ReleaseDropdown() {
   };
 
   const handleArchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setCopy("");
     setSelectedArch(event.target.value);
   };
 
-  const handleDownloadClick = () => {
+  const handleDownloadClick = (isCopy?: boolean) => {
     if (selectedRelease && selectedOS && selectedArch) {
       const fileName = `${selectedOS}-${selectedArch}.tar.gz`;
       const selectedReleaseData = releases.find(
@@ -138,10 +145,14 @@ function ReleaseDropdown() {
       )?.browser_download_url;
       if (downloadUrl) {
         // Create a temporary link element and simulate click to trigger download
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.download = fileName;
-        link.click();
+        if (isCopy) {
+          onCopy(`wget ${downloadUrl}`);
+        } else {
+          const link = document.createElement("a");
+          link.href = downloadUrl;
+          link.download = fileName;
+          link.click();
+        }
       } else {
         console.error("Download URL not found for selected options.");
       }
@@ -193,10 +204,17 @@ function ReleaseDropdown() {
       </Box>
       <Button
         colorScheme="primary"
-        onClick={handleDownloadClick}
+        onClick={() => handleDownloadClick()}
         isDisabled={!selectedArch}
       >
         Download
+      </Button>
+      <Button
+        onClick={() => {
+          handleDownloadClick(true);
+        }}
+      >
+        {copy ? "Copied!" : "Copy Url"}
       </Button>
     </HStack>
   );
