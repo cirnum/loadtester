@@ -7,7 +7,7 @@
 </div>
 
 <p align="center">
-  <a  target="_blank" href="https://www.docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a>
+  <a  target="_blank" href="https://docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a>
 </p>
 
 # How to Use
