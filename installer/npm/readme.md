@@ -1,14 +1,11 @@
+# Load tester (stress testing tool)
 
-<div align="center">
-<h1>
-  Load tester (stress testing tool)
-</h1>
-<p>Loadtester is a powerful tool that helps you simulate millions of concurrent users by distributing load tests across multiple computers.</p>
-</div>
+  Demo - https://www.perfcheck.com/ 
 
-<p align="center">
-  <a  target="_blank" href="https://docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a>
-</p>
+  
+# Install with Npm and rum
+    1. npm install loadtesterr
+    2. loadster
 
 # How to Use
 Scale Your Load Testing Efforts with Loadtester.
@@ -40,16 +37,7 @@ as many servers as you can run the test script across all the servers at the sam
 |-----------|---------------|------------------------------------------------------------------------------------------------------------------|
 | WORKER    | false         | User can run loadtester as a worker or as a Master node                                                            |
 | MASTER_IP | empty            | If the user runs the node as a Worker then the worker node can accept the MASTER_IP env which is the actual master ip |
-## To configure the Server with docker
 
-1. `docker run -it -p 3005:3005 --platform linux/amd64 manojown1/loadtester:latest` (outer port can be changed according to the need.)
-
-## Run as workers for distributed testing 
- `docker run -it -p ANY_AVAILABLE_PORT:3005 -e WORKER=true -e MASTER_IP="YOUR_MAIN_SERVER_IP" --platform linux/amd64 manojown1/loadtester:latest`
-
-  
-
-## Download the binary
 
 1. Download binary from releases - https://github.com/cirnum/loadtester/releases/
 	1. `Darwin amd64` - For Mac user
@@ -57,6 +45,7 @@ as many servers as you can run the test script across all the servers at the sam
 	3. `Linux amd64` - Linux arch `amd64` users (64-bit system)
 	4. `Linux arm64` - Linux arch `arm` users (32-bit system)
 	5. `windows amd64` - Windows Users
+
 
 ## Creating the first request
 
