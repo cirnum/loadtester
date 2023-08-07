@@ -1,19 +1,23 @@
 
 <div align="center">
 <h1>
-  <img src="./ui/src/assets/brand.svg" width="300">
+  <img src="https://raw.githubusercontent.com/cirnum/loadtester/main/ui/src/assets/brand.svg" width="300">
 </h1>
-<p>Loadtester is a powerful tool that helps you simulate millions of concurrent users by distributing load tests across multiple computers.</p>
+<b>Scale Your Load Testing Efforts with Loadtester.</b>
+<p>Loadtester is a powerful tool that helps you simulate millions of concurrent users by distributing load tests across multiple computers.
+
+</p>
 </div>
 
 <p align="center">
   <a  target="_blank" href="https://docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a>
 </p>
 
-# How to Use
-Scale Your Load Testing Efforts with Loadtester.
+# Install - [ref](https://docs.perfcheck.com/installation)
+    npm  install perfcheck -g && perfcheck
 
-Loadtester is a powerful tool that helps you simulate millions of concurrent users by distributing load tests across multiple computers.
+        
+# How to Use
 
 Steps:
 
@@ -40,18 +44,16 @@ as many servers as you can run the test script across all the servers at the sam
 |-----------|---------------|------------------------------------------------------------------------------------------------------------------|
 | WORKER    | false         | User can run loadtester as a worker or as a Master node                                                            |
 | MASTER_IP | empty            | If the user runs the node as a Worker then the worker node can accept the MASTER_IP env which is the actual master ip |
-## To configure the Server with docker
+## To configure the Server with docker [ref](https://docs.perfcheck.com/installation#docker-setup-loadtester)
 
 1. `docker run -it -p 3005:3005 --platform linux/amd64 manojown1/loadtester:latest` (outer port can be changed according to the need.)
 
-## Run as workers for distributed testing 
+### Worker setup with docker image
  `docker run -it -p ANY_AVAILABLE_PORT:3005 -e WORKER=true -e MASTER_IP="YOUR_MAIN_SERVER_IP" --platform linux/amd64 manojown1/loadtester:latest`
 
   
 
-## Download the binary
-
-1. Download binary from releases - https://github.com/cirnum/loadtester/releases/
+## Download binary [ref](https://docs.perfcheck.com/installation#download-binary-releases)
 	1. `Darwin amd64` - For Mac user
 	2. `Darwin arm64` - For Mac users (new Mac)
 	3. `Linux amd64` - Linux arch `amd64` users (64-bit system)
