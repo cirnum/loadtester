@@ -10,7 +10,7 @@
 </div>
 
 <p align="center">
-  <a  target="_blank" href="https://docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a>
+  <a  target="_blank" href="https://docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a> | <a href="https://discord.gg/SQ5DZEBt"> Help And Support</a>  
 </p>
 
 # Install - [ref](https://docs.perfcheck.com/installation)
