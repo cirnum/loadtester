@@ -1,11 +1,21 @@
-# Load tester (stress testing tool)
+<div align="center">
+<h1>
+  <img src="https://raw.githubusercontent.com/cirnum/loadtester/main/ui/src/assets/brand.svg" width="300">
+</h1>
+<b>Scale Your Load Testing Efforts with Loadtester.</b>
+<p>Loadtester is a powerful tool that helps you simulate millions of concurrent users by distributing load tests across multiple computers.
 
-  Demo - https://www.perfcheck.com/ 
+</p>
+</div>
+
+<p align="center">
+  <a  target="_blank" href="https://docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a>
+</p>
 
   
-# Install with Npm and rum
-    1. npm install perfcheck -g
-    2. perfcheck
+# Install with Npm [ref](https://docs.perfcheck.com/installation#install-with-npm)
+    npm install perfcheck -g && perfcheck
+    
 
 # How to Use
 Scale Your Load Testing Efforts with Loadtester.
@@ -39,7 +49,8 @@ as many servers as you can run the test script across all the servers at the sam
 | MASTER_IP | empty            | If the user runs the node as a Worker then the worker node can accept the MASTER_IP env which is the actual master ip |
 
 
-1. Download binary from releases - https://github.com/cirnum/loadtester/releases/
+
+# Download binary - [ref](https://docs.perfcheck.com/installation#download-binary-releases)
 	1. `Darwin amd64` - For Mac user
 	2. `Darwin arm64` - For Mac users (new Mac)
 	3. `Linux amd64` - Linux arch `amd64` users (64-bit system)
