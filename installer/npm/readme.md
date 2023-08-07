@@ -4,8 +4,8 @@
 
   
 # Install with Npm and rum
-    1. npm install loadtesterr
-    2. loadster
+    1. npm install perfcheck -g
+    2. perfcheck
 
 # How to Use
 Scale Your Load Testing Efforts with Loadtester.
