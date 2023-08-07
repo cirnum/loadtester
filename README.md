@@ -14,7 +14,7 @@
 </p>
 
 # Install - [ref](https://docs.perfcheck.com/installation)
-    npm  install perfcheck -g && perfcheck
+    sudo npm install perfcheck -g && perfcheck
 
         
 # How to Use
