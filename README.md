@@ -1,7 +1,7 @@
 
 <div align="center">
 <h1>
-  Load tester (stress testing tool)
+  <img src="./ui/src/assets/brand.svg" width="300">
 </h1>
 <p>Loadtester is a powerful tool that helps you simulate millions of concurrent users by distributing load tests across multiple computers.</p>
 </div>
