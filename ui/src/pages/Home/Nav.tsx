@@ -142,16 +142,16 @@ export function WithSubnavigation() {
           direction="row"
           spacing={6}
         >
-          {/* <Button
+          <Button
             as="a"
             display={{ base: "none", md: "inline-flex" }}
             fontSize="sm"
             fontWeight={400}
             variant="link"
-            href="#"
+            href="https://docs.perfcheck.com/"
           >
             Document
-          </Button> */}
+          </Button>
           <Button
             as="a"
             fontSize="sm"
