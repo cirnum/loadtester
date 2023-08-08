@@ -132,7 +132,7 @@ func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan
 	numOfClient := conf.Clients
 	var throttle <-chan time.Time
 	if conf.QPS > 0 {
-		throttle = time.Tick(time.Duration(1e6/conf.QPS) * time.Microsecond)
+		throttle = time.Tick(time.Duration(1e6/conf.QPS+1) * time.Microsecond)
 	}
 	var wg sync.WaitGroup
 	wg.Add(numOfClient)

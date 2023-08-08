@@ -83,7 +83,7 @@ export default function RequestStats() {
         />
         <Stats
           state={STATE.NAGATIVE}
-          value={loadsterRespons?.failRPS || 0}
+          value={loadsterRespons?.totalFailRPS || 0}
           text="Failed RPS"
         />
       </Box>
