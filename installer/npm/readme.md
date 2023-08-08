@@ -11,10 +11,18 @@
   <a  target="_blank" href="https://docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a> | <a href="https://discord.gg/SQ5DZEBt">Help And Support</a>  
 </p>
 
-# Install with Npm [ref](https://docs.perfcheck.com/installation#install-with-npm)
+# Install - [ref](https://docs.perfcheck.com/installation)
+### npm 
     npm install loadster -g && loadster
-    
+
 > Note: In case of permission issue try it with sudo.
+
+### Script for linux and macOs versions
+    curl -sL https://raw.githubusercontent.com/cirnum/loadtester/main/installer/bash/install-loadtester.sh | sudo bash && loadster
+
+## binary 
+    https://docs.perfcheck.com/installation#install-with-shell-script
+    
     
 ## Run as a worker
     loadster --WORKER=true --MASTER_IP="MASTER_NODE_IP_OR_DNS"
