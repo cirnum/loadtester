@@ -33,6 +33,7 @@ const (
 )
 
 func SendMasterIp(publicIp string) bool {
+	publicIp = strings.Trim(publicIp, " /")
 	var url string
 	hostDetails := &reqModels.MasterDetails{
 		Address: configs.ConfigProvider.HostUrl,
