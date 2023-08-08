@@ -21,7 +21,7 @@ func init() {
 	}
 	httpClient = &http.Client{
 		Transport: tr,
-		Timeout:   time.Second * 2,
+		Timeout:   time.Second * 5,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},

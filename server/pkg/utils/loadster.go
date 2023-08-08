@@ -140,7 +140,7 @@ func calculatePercentage(total int64, amount int64) int {
 }
 
 func calculateRpsForEachLoad(load models.Loadster) int64 {
-	endTime := load.Created
+	endTime := load.CreatedAt
 	startTime := load.StartTime
 	if load.Count > 0 && ((endTime-startTime)/1000) > 0 {
 		return (load.Count / ((endTime - startTime) / 1000))
