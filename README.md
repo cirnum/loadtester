@@ -14,9 +14,16 @@
 </p>
 
 # Install - [ref](https://docs.perfcheck.com/installation)
+### npm 
     sudo npm install loadster -g && loadster
 
 > Note: In case of permission issue try it with sudo.
+
+### Script for linux and macOs versions
+    curl -sL https://raw.githubusercontent.com/cirnum/loadtester/main/installer/bash/install-loadtester.sh | sudo bash && loadster
+
+## binary 
+    https://docs.perfcheck.com/installation#install-with-shell-script
         
 # How to Use
 
