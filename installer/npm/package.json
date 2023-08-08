@@ -1,5 +1,5 @@
 {
-  "name": "perfcheck",
+  "name": "loadster",
   "version": "1.0.3",
   "description": "Loadtester allows for the distribution of load tests across numerous computers, making it possible to simulate millions of concurrent users.",
   "main": "index.js",
@@ -18,17 +18,24 @@
     "url": "https://github.com/cirnum/loadtester"
   },
   "keywords": [
-    "http",
     "benchmarking",
     "performance",
     "load-testing",
     "load-generator",
     "performance-testing",
     "load-test",
+    "stress-testing",
     "load-tests",
     "loadtester",
     "api-testing",
-    "stress-testing"
+    "stress-testing",
+    "latency-testing",
+    "HTTP-load-testing",
+    "spike-testing",
+    "stress-test-tool",
+    "concurrency-testing",
+    "http",
+    "apache-benchmark"
   ],
   "author": {
     "name": "Manoj Choudhary",

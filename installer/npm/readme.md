@@ -14,9 +14,12 @@
 
   
 # Install with Npm [ref](https://docs.perfcheck.com/installation#install-with-npm)
-    npm install perfcheck -g && perfcheck
+    npm install loadster -g && loadster
     
-
+    
+## Run as a worker
+    loadster --WORKER=true --MASTER_IP="MASTER_NODE_IP_OR_DNS"
+     
 # How to Use
 Scale Your Load Testing Efforts with Loadtester.
 
@@ -78,10 +81,6 @@ as many servers as you can run the test script across all the servers at the sam
 | AWS_ACCESS_KEY |
 | AWS_SECRET_KEY |
 | AWS_REGION     |
-
-## How can I modify the .env file inside a running Docker container?
-	docker exec -it CONTAINER_ID_OR_NAME vim .env
-
 
 ## Request Page
 
