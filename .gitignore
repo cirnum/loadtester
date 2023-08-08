@@ -22,6 +22,7 @@ rice-box*
 /server/main
 *.tar.gz
 
+.goreleaser*
 logfile.*
 # misc
 .DS_Store
