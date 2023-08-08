@@ -11,15 +11,17 @@
   <a  target="_blank" href="https://docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a> | <a href="https://discord.gg/SQ5DZEBt">Help And Support</a>  
 </p>
 
-  
 # Install with Npm [ref](https://docs.perfcheck.com/installation#install-with-npm)
     npm install loadster -g && loadster
     
+> Note: In case of permission issue try it with sudo.
     
 ## Run as a worker
     loadster --WORKER=true --MASTER_IP="MASTER_NODE_IP_OR_DNS"
 
 You have the convenience of directly incorporating a worker node into the master web UI and synchronizing from there, eliminating the need for the MASTER_IP argument.
+
+ 
 Steps: `Server` > `Add New Server` > `Sync With Master` ( In Web ui )
 
 # How to Use
