@@ -1,6 +1,6 @@
 {
   "name": "loadster",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Loadtester allows for the distribution of load tests across numerous computers, making it possible to simulate millions of concurrent users.",
   "main": "index.js",
   "homepage": "https://github.com/cirnum/loadtester#readme",

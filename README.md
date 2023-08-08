@@ -14,8 +14,9 @@
 </p>
 
 # Install - [ref](https://docs.perfcheck.com/installation)
-    sudo npm install perfcheck -g && perfcheck
+    sudo npm install loadster -g && loadster
 
+> Note: In case of permission issue try it with sudo.
         
 # How to Use
 
