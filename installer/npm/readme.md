@@ -4,7 +4,6 @@
 </h1>
 <b>Scale Your Load Testing Efforts with Loadtester.</b>
 <p>Loadtester is a powerful tool that helps you simulate millions of concurrent users by distributing load tests across multiple computers.
-
 </p>
 </div>
 
@@ -19,7 +18,10 @@
     
 ## Run as a worker
     loadster --WORKER=true --MASTER_IP="MASTER_NODE_IP_OR_DNS"
-     
+
+You have the convenience of directly incorporating a worker node into the master web UI and synchronizing from there, eliminating the need for the MASTER_IP argument.
+Steps: `Server` > `Add New Server` > `Sync With Master` ( In Web ui )
+
 # How to Use
 Scale Your Load Testing Efforts with Loadtester.
 
