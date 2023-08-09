@@ -12,6 +12,7 @@
 <p align="center">
   <a  target="_blank" href="https://docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a> | <a href="https://discord.gg/SQ5DZEBt"> Help And Support</a>  
 </p>
+  <img src="https://github.com/cirnum/loadtester/blob/main/ui/src/assets/loadtester.gif" >
 
 # Install - [ref](https://docs.perfcheck.com/installation)
 ### npm 
