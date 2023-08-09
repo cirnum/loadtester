@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"strings"
 	"sync"
 
 	_ "github.com/cirnum/loadtester/server/app/models"
@@ -60,6 +61,9 @@ func AddServer(c *fiber.Ctx) error {
 	}
 
 	serverPayload.UserID = c.Locals("userId").(string)
+	serverPayload.IP = strings.Trim(serverPayload.IP, " /")
+	serverPayload.Enabled = true
+
 	if pkgUtils.SendMasterIp(serverPayload.IP) {
 		serverPayload.Active = true
 	}
