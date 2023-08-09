@@ -20,7 +20,7 @@ export default function ImportCurl(props: ImportCurlProps) {
       dispatch(curlToRequest(payload as CurlToJSONPayload));
       setOpen(false);
     } catch (e: any) {
-      setError(e);
+      setError(e?.message || "Something went wrong");
     }
   };
   return (

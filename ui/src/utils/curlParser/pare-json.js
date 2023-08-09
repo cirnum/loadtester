@@ -36,8 +36,27 @@ export function parse(data) {
     }
   });
 
-  if (result.url) {
-    const url = new URL(result.url);
+  function isValidURL(url) {
+    try {
+      /* eslint-disable */
+      new URL(url);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+  function getMeValidUrl(result) {
+    const urlContainer = ["url", "location", "curl"];
+    const matchUrl = urlContainer.find((key) => {
+      return isValidURL(result[key]);
+    });
+    if (matchUrl) {
+      return matchUrl;
+    }
+    throw Error("Invalid URL passed in the curl command. Please verify the correctness of the URL provided and try again.");
+  }
+  if (result) {
+    const url = getMeValidUrl(result);
     result.url = url.origin + url.pathname;
     const params = new URLSearchParams(url.search);
     if (Array.from(params).length) {
