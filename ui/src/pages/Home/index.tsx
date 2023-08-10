@@ -1,7 +1,6 @@
 import { Container, Heading, Stack, Text, Button, Box } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { WithSubnavigation } from "./Nav";
-import OsArchitectureDropdown from "./Download";
 import FloatingButton from "./floatingButton";
 
 export default function CallToActionWithIllustration() {
@@ -42,7 +41,6 @@ export default function CallToActionWithIllustration() {
               </Button>
             </RouterLink>
           </Stack>
-          <OsArchitectureDropdown />
         </Stack>
         <FloatingButton />
       </Container>
