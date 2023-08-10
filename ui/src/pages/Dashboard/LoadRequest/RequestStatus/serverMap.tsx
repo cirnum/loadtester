@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Divider } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { Stats } from "../../../../components/Stats";
 import { StatFields } from "../../../../constants/request.const";
@@ -11,8 +11,8 @@ export default function ServerMap() {
       (worker) => id === worker.serverId
     );
     if (server) {
-      server.alias = server.id;
-      return server;
+      server.alias = server?.alias ? server?.alias : server?.id;
+      return { server };
     }
     return {
       server: {
@@ -28,12 +28,15 @@ export default function ServerMap() {
           ...server,
         };
         return (
-          <Stats
-            fieldsToPopulate={StatFields}
-            data={serverDetails}
-            // eslint-disable-next-line react/no-array-index-key
-            key={index}
-          />
+          <>
+            <Stats
+              fieldsToPopulate={StatFields}
+              data={serverDetails}
+              // eslint-disable-next-line react/no-array-index-key
+              key={index}
+            />
+            <Divider mt={4} />
+          </>
         );
       })}
     </Box>

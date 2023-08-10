@@ -20,6 +20,7 @@ const (
 )
 
 func GetLoadByRequestId(c *fiber.Ctx) error {
+	var workers []models.Worker
 	ctx := context.Background()
 	id := c.Params("id")
 
@@ -29,7 +30,16 @@ func GetLoadByRequestId(c *fiber.Ctx) error {
 	}, id)
 
 	workerData, err := db.Provider.GetWorkerByReqId(ctx, id)
+
 	load := pkgUtils.CalculateRPS(loads, workerData)
+	for _, load := range load.Workers {
+		data, _ := db.Provider.GetServerById(ctx, load.ServerId)
+		load.Alias = data.Alias
+		load.ServerDesc = data.Description
+		load.IP = data.IP
+		workers = append(workers, load)
+	}
+	load.Workers = workers
 
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
