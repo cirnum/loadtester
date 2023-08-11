@@ -42,14 +42,20 @@ func GetRunnerType(store configs.Store) bool {
 		*portPtr = configs.StoreProvider.PORT
 	}
 
+	// Initilize Store provider for config
+	configs.ConfigProvider = configs.Initialize(*portPtr, "", "")
+	if store.HostUrl == "" {
+		configs.ConfigProvider.HostUrl = formedUrl(*portPtr, localIp)
+	} else {
+		configs.ConfigProvider.HostUrl = store.HostUrl
+	}
+
 	// AWS integration check
 	available, errMsg := store.IsAwsAvailable()
 
-	configs.ConfigProvider = configs.Initialize(*portPtr, "", "")
 	configs.ConfigProvider.HostIp = localIp
 	configs.ConfigProvider.IsSlave = false
 	configs.ConfigProvider.IP = configs.StoreProvider.SERVER_HOST
-	configs.ConfigProvider.HostUrl = formedUrl(*portPtr, localIp)
 	configs.ConfigProvider.AwsErrorMessage = errMsg
 	configs.ConfigProvider.IsAwsAvailable = available
 	log.Info(string("\033[34m"), "Master service initiated.")
