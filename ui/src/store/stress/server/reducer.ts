@@ -72,7 +72,7 @@ export default (state = initialState, action: ServerAction) => {
         ...state,
         server: {
           loading: false,
-          data: undefined,
+          data: action.payload.data,
         },
       };
     }
