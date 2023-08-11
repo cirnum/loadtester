@@ -9,7 +9,7 @@ export default function Sidebar() {
   return (
     <Box
       width="20%"
-      minWidth="200px"
+      minWidth="300px"
       maxWidth="300px"
       color="grey"
       border="1px solid #EBEBEB"
@@ -42,7 +42,6 @@ export default function Sidebar() {
         </HStack>
       </Box>
       <Box
-        height="90vh"
         overflow="auto"
         css={{
           "&::-webkit-scrollbar": {

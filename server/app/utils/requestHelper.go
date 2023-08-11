@@ -3,7 +3,7 @@ package utils
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 
@@ -95,7 +95,7 @@ func TestRequest(request *models.Request) (helperModels.RequestResponse, error) 
 
 	defer response.Body.Close()
 
-	buf, err := ioutil.ReadAll(response.Body)
+	buf, err := io.ReadAll(response.Body)
 
 	requestResponse.Body = string(buf)
 

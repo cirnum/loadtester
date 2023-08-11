@@ -18,11 +18,12 @@ import (
 )
 
 type RequestSend struct {
-	cookies map[string]string
-	headers map[string]string
-	body    []byte
-	url     string
-	method  string
+	cookies     map[string]string
+	headers     map[string]string
+	body        []byte
+	url         string
+	method      string
+	statusCodes []int
 }
 
 type HttpClient struct {
@@ -95,6 +96,7 @@ func Initializer(request models.Request) (HttpClient, error) {
 	}
 
 	// Map headers with Http context
+	requestedData.statusCodes = utils.GetStatusCodeIncludes(request.StatusCodeIncludes)
 	requestedData.headers, err = utils.GetFormedHeader(request.Headers)
 	if err != nil {
 		return httpClient, err
@@ -192,12 +194,12 @@ func (h *HttpClient) do(method, url string, body []byte, headers map[string]stri
 			return
 		}
 
-		if res.StatusCode >= 300 || res.StatusCode < 200 {
+		statusOk := res.StatusCode >= 200 && res.StatusCode < 300
+		if (len(h.requested.statusCodes) == 0 && statusOk) || utils.IsCodeExist(h.requested.statusCodes, res.StatusCode) {
+			executor.Notify(h.title.success, 1)
+		} else {
 			executor.Notify(h.title.fail, 1)
-			return
 		}
-
-		executor.Notify(h.title.success, 1)
 	}()
 
 	req, err := http.NewRequest(method, url, strings.NewReader(string(body)))

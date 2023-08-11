@@ -77,6 +77,8 @@ const parseRequest = (
     time: parseInt(action.payload.time?.toString(), 10) || DEFAULT_TIME,
     qps: parseInt(action.payload.qps?.toString(), 10) || DEFAULT_QPS,
     url,
+    requestTimeout: action.payload.requestTimeout,
+    statusCodeIncludes: action.payload.statusCodeIncludes,
     headers,
     cookies,
     postData,
@@ -90,7 +92,9 @@ function* requestSaga(action: SendPayloadToSagaAction) {
   const selectedRequest: ReturnType<typeof getChangedSelectedRequest> =
     yield select(getChangedSelectedRequest);
   const payloadToSend = parseRequest(selectedRequest, action);
-  yield put(sendRequestAction(payloadToSend as RequestHistoryPayload));
+  yield put(
+    sendRequestAction(payloadToSend as unknown as RequestHistoryPayload) // TODO: Ts hack need to refactor
+  );
 }
 
 function* requestSuccessSaga(action: SelectRequestAndResponseOnGet) {

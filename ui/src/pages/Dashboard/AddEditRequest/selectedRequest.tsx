@@ -75,6 +75,8 @@ export default function SelectedAddEditRequest() {
   const sendRequest = () => {
     dispatch(
       sendPayloadToSaga({
+        requestTimeout: Number(selectedRequest?.requestTimeout || 10),
+        statusCodeIncludes: selectedRequest?.statusCodeIncludes,
         url,
         method,
         clients,

@@ -2,9 +2,11 @@ package utils
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -43,7 +45,7 @@ func Do(method, url string, body []byte, headers map[string]string) (*http.Respo
 
 func GetFormedHttpClient(request models.Request) (*http.Client, error) {
 	var cookiesBucket []*http.Cookie
-
+	var requestTimeout int = 10
 	// Verify if the URL is correct
 	parsedUrl, err := url.Parse(request.URL)
 	if err != nil {
@@ -70,12 +72,15 @@ func GetFormedHttpClient(request models.Request) (*http.Client, error) {
 
 	jar.SetCookies(parsedUrl, cookiesBucket)
 
+	if request.RequestTimeout > 0 {
+		requestTimeout = request.RequestTimeout
+	}
 	tr := &http.Transport{
-		MaxIdleConnsPerHost: 300,
+		MaxIdleConnsPerHost: 1000,
 	}
 	return &http.Client{
 		Transport: tr,
-		Timeout:   time.Second * 5,
+		Timeout:   time.Second * time.Duration(requestTimeout),
 		Jar:       jar,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
@@ -100,6 +105,32 @@ func GetFormedHeader(headers datatypes.JSON) (map[string]string, error) {
 	return nil, nil
 }
 
+func GetStatusCodeIncludes(codes string) []int {
+	if codes == "" {
+		return []int{}
+	}
+	parts := strings.Split(codes, ",")
+	numbers := make([]int, len(parts))
+	for i, part := range parts {
+		num, err := strconv.Atoi(part)
+		if err != nil {
+			log.Printf("Error converting %s to int: %v\n", part, err)
+			return nil
+		}
+		numbers[i] = num
+	}
+
+	return numbers
+}
+
+func IsCodeExist(slice []int, target int) bool {
+	for _, value := range slice {
+		if value == target {
+			return true
+		}
+	}
+	return false
+}
 func GetSelectedMethods(method string) string {
 	switch method {
 	case "GET":
