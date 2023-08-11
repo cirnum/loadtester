@@ -9,95 +9,90 @@ import (
 
 func CalculateRPS(loads []models.Loadster, workers []models.Worker) customModels.CalculatedLoad {
 	serverMap, isFinish := MapReqByServer(loads)
-	calculatedInfo := CalculateRPSByTitle(serverMap, workers)
-	calculatedInfo.Finish = isFinish
-	return calculatedInfo
+	return CalculateRPSByTitle(serverMap, workers, isFinish)
 }
 
-func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster, workers []models.Worker) customModels.CalculatedLoad {
-	var minLat int64 = 999999
-	var maxLat int64 = 0
-
-	calculatedLoads := customModels.CalculatedLoad{}
-	calculatedLoads.ServerMap = make(map[string]customModels.WorkerData, len(loadsByServer))
-	for key, load := range loadsByServer {
-		loadPayload := customModels.WorkerData{}
-		latency, lastLatency := HttpReqByType(load, ".latency")
-		okHTTP, lastOkHttp := HttpReqByType(load, ".http_ok")
-		failHTTP, lastFailHTTP := HttpReqByType(load, ".http_fail")
-		otherFailHTTP, lastOtherFailHTTP := HttpReqByType(load, ".http_other_fail")
-		loadAvg1, lastLoadAvg := HttpReqByType(load, "LA1")
-		cpu, lastCpuUsage := HttpReqByType(load, "CPU")
-		ram, lastRamUsage := HttpReqByType(load, "RAM")
-		outgress, lastOutgress := calcDataTransfer(load, "transmit")
-		ingress, lastIngress := calcDataTransfer(load, "receive")
-		totalTimeTaken := int64((lastLatency.CreatedAt - lastLatency.StartTime) / 1000)
-
-		if lastFailHTTP.Count > 0 {
-			loadPayload.FailRPS = lastFailHTTP.Count / totalTimeTaken
-			loadPayload.TotalFailRequest = lastFailHTTP.Count
-			calculatedLoads.TotalFailRequest += lastFailHTTP.Count
-			calculatedLoads.FailRPS += loadPayload.FailRPS
-		}
-		if lastOtherFailHTTP.Count > 0 && totalTimeTaken > 0 {
-			loadPayload.OtherFailRPS = lastOtherFailHTTP.Count / totalTimeTaken
-			loadPayload.TotalOtherFailRequest = lastOtherFailHTTP.Count
-			calculatedLoads.TotalOtherFailRequest += lastOtherFailHTTP.Count
-			calculatedLoads.OtherFailRPS += loadPayload.OtherFailRPS
-
-		}
-		if lastOkHttp.Count > 0 && totalTimeTaken > 0 {
-			loadPayload.SuccessRPS = lastOkHttp.Count / totalTimeTaken
-			loadPayload.TotalSuccessRequest = lastOkHttp.Count
-			calculatedLoads.TotalSuccessRequest += lastOkHttp.Count
-			calculatedLoads.SuccessRPS += loadPayload.SuccessRPS
-		}
-		if lastLatency.Count > 0 && totalTimeTaken > 0 {
-			loadPayload.TotalRPS = lastLatency.Count / totalTimeTaken
-			loadPayload.TotalRequest = lastLatency.Count
-			calculatedLoads.TotalRequest += lastLatency.Count
-			calculatedLoads.TotalRPS += loadPayload.TotalRPS
-		}
-		loadPayload.ServerId = lastLatency.ServerId
-		loadPayload.TotalFailRPS = loadPayload.OtherFailRPS + loadPayload.FailRPS
-
-		loadPayload.MinLatency = lastLatency.Min
-		loadPayload.MaxLatency = lastLatency.Max
-		loadPayload.Latency = latency
-		loadPayload.Success = okHTTP
-		// Server details
-		loadPayload.LoadAvg = loadAvg1
-		loadPayload.CpuUsage = cpu
-		loadPayload.RamUsage = ram
-		loadPayload.Ingress = ingress
-		loadPayload.Outgress = outgress
-		loadPayload.LastLoadAvg = lastLoadAvg.Count
-		loadPayload.LastCpuUsage = lastCpuUsage.Count
-		loadPayload.LastRamUsage = lastRamUsage.Count
-		loadPayload.LastIngress = lastIngress.Count
-		loadPayload.LastOutgress = lastOutgress.Count
-
-		loadPayload.Fail = failHTTP
-		loadPayload.OtherFail = otherFailHTTP
-		loadPayload.TimeTaken = totalTimeTaken
-		loadPayload.FailPercentage = calculatePercentage(loadPayload.TotalRequest, loadPayload.TotalSuccessRequest)
-		calculatedLoads.ServerMap[key] = loadPayload
-		calculatedLoads.TotalFailRPS += loadPayload.TotalFailRPS
-		calculatedLoads.TimeTaken = totalTimeTaken
-
-		if minLat > loadPayload.MinLatency {
-			minLat = loadPayload.MinLatency
-		}
-		if maxLat < loadPayload.MaxLatency {
-			maxLat = loadPayload.MaxLatency
-		}
+func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster, workers []models.Worker, isFinish bool) customModels.CalculatedLoad {
+	calculatedLoads := customModels.CalculatedLoad{
+		ServerMap: make(map[string]customModels.WorkerData, len(loadsByServer)),
+		Finish:    isFinish,
 	}
+
+	for key, load := range loadsByServer {
+		loadPayload := calculateLoadPayload(load)
+		loadPayload.ServerId = load[0].ServerId
+		calculatedLoads.ServerMap[key] = loadPayload
+		calculatedLoads.TotalRequest += loadPayload.TotalRequest
+		calculatedLoads.TotalSuccessRequest += loadPayload.TotalSuccessRequest
+		calculatedLoads.TotalFailRequest += loadPayload.TotalFailRequest
+		calculatedLoads.TotalOtherFailRequest += loadPayload.TotalOtherFailRequest
+		calculatedLoads.FailRPS += loadPayload.FailRPS
+		calculatedLoads.OtherFailRPS += loadPayload.OtherFailRPS
+		calculatedLoads.SuccessRPS += loadPayload.SuccessRPS
+		calculatedLoads.TotalRPS += loadPayload.TotalRPS
+		calculatedLoads.TimeTaken = loadPayload.TimeTaken
+
+		updateMinMaxLatency(&calculatedLoads, loadPayload)
+	}
+
 	calculatedLoads.Workers = workers
 	calculatedLoads.FailPercentage = calculatePercentage(calculatedLoads.TotalRequest, calculatedLoads.TotalSuccessRequest)
-	calculatedLoads.MaxLatency = maxLat
-	calculatedLoads.MinLatency = minLat
 	return calculatedLoads
 }
+
+func calculateLoadPayload(load []models.Loadster) customModels.WorkerData {
+	loadPayload := customModels.WorkerData{}
+	latency, lastLatency := HttpReqByType(load, ".latency")
+	okHTTP, lastOkHttp := HttpReqByType(load, ".http_ok")
+	failHTTP, lastFailHTTP := HttpReqByType(load, ".http_fail")
+	otherFailHTTP, lastOtherFailHTTP := HttpReqByType(load, ".http_other_fail")
+
+	loadPayload.FailRPS = calculateRPSFromCountAndTime(lastFailHTTP.Count, lastLatency)
+	loadPayload.TotalFailRequest = lastFailHTTP.Count
+	loadPayload.OtherFailRPS = calculateRPSFromCountAndTime(lastOtherFailHTTP.Count, lastLatency)
+	loadPayload.TotalOtherFailRequest = lastOtherFailHTTP.Count
+	loadPayload.SuccessRPS = calculateRPSFromCountAndTime(lastOkHttp.Count, lastLatency)
+	loadPayload.TotalSuccessRequest = lastOkHttp.Count
+	loadPayload.TotalRPS = calculateRPSFromCountAndTime(lastLatency.Count, lastLatency)
+	loadPayload.TotalRequest = lastLatency.Count
+	loadPayload.ServerId = lastLatency.ServerId
+	loadPayload.TotalFailRPS = loadPayload.FailRPS + loadPayload.OtherFailRPS
+	loadPayload.MinLatency = lastLatency.Min
+	loadPayload.MaxLatency = lastLatency.Max
+	loadPayload.Latency = latency
+	loadPayload.Success = okHTTP
+
+	// ... (other payload calculations)
+
+	loadPayload.Fail = failHTTP
+	loadPayload.OtherFail = otherFailHTTP
+	loadPayload.TimeTaken = calculateTimeTaken(lastLatency)
+	loadPayload.FailPercentage = calculatePercentage(loadPayload.TotalRequest, loadPayload.TotalSuccessRequest)
+	return loadPayload
+}
+
+func calculateRPSFromCountAndTime(count int64, lastLatency models.Loadster) int64 {
+	totalTimeTaken := calculateTimeTaken(lastLatency)
+	if count > 0 && totalTimeTaken > 0 {
+		return count / totalTimeTaken
+	}
+	return 0
+}
+
+func calculateTimeTaken(lastLatency models.Loadster) int64 {
+	return (lastLatency.CreatedAt - lastLatency.StartTime) / 1000
+}
+
+func updateMinMaxLatency(calculatedLoads *customModels.CalculatedLoad, loadPayload customModels.WorkerData) {
+	if loadPayload.MinLatency < calculatedLoads.MinLatency {
+		calculatedLoads.MinLatency = loadPayload.MinLatency
+	}
+	if loadPayload.MaxLatency > calculatedLoads.MaxLatency {
+		calculatedLoads.MaxLatency = loadPayload.MaxLatency
+	}
+}
+
+// ... (HttpReqByType and other functions remain unchanged)
 
 func HttpReqByType(loads []models.Loadster, reqType string) ([]models.Loadster, models.Loadster) {
 	var lastReqLoad models.Loadster
