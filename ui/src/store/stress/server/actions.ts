@@ -17,6 +17,9 @@ import {
   SELECT_DELETE_REQUEST,
   ADD_OR_EDIT_SERVER,
   SYNC_WITH_MASTER,
+  SERVER_CONFIG_REQUEST,
+  SERVER_CONFIG_SUCCESS,
+  SERVER_CONFIG_FAILURE,
 } from "./actionTypes";
 import {
   AddOrEditServer,
@@ -42,10 +45,15 @@ import {
   GetAllServerSuccess,
   SelectDeleteRequest,
   Server,
+  ServerConfigRequest,
+  ServerConfigSuccess,
+  ServerConfigFailure,
   ServerList,
   SynWithMasterAction,
   SyncResponse,
   SyncWithMaster,
+  ServerConfigSuccessPayload,
+  ServerConfigAction,
 } from "./types";
 
 // Send request
@@ -189,4 +197,37 @@ export const synWithMasterAction = (): SynWithMasterAction => ({
   onRequest: commonRequest,
   onSuccess: syncWithMaster,
   onFailure: syncWithMaster,
+});
+
+export const serverConfigRequest = (server: {
+  ip: string;
+}): ServerConfigRequest => ({
+  type: SERVER_CONFIG_REQUEST,
+  payload: server,
+});
+
+export const serverConfigSuccess = (
+  payload: ServerConfigSuccessPayload
+): ServerConfigSuccess => ({
+  type: SERVER_CONFIG_SUCCESS,
+  payload,
+});
+
+export const serverConfigFailure = (
+  payload: AddServerRequestFailed
+): ServerConfigFailure => ({
+  type: SERVER_CONFIG_FAILURE,
+  payload,
+});
+
+export const serverConfigAction = (payload: {
+  ip: string;
+}): ServerConfigAction => ({
+  type: "@app/API_CALL",
+  method: "POST",
+  payload,
+  path: "/server/config",
+  onRequest: serverConfigRequest,
+  onSuccess: serverConfigSuccess,
+  onFailure: serverConfigFailure,
 });

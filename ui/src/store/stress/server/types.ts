@@ -15,12 +15,32 @@ import {
   GET_ALL_SERVER_REQUEST,
   GET_ALL_SERVER_SUCCESS,
   SELECT_DELETE_REQUEST,
+  SERVER_CONFIG_FAILURE,
+  SERVER_CONFIG_REQUEST,
+  SERVER_CONFIG_SUCCESS,
   SYNC_WITH_MASTER,
   SYNC_WITH_MASTER_REQUEST,
 } from "./actionTypes";
 import { CommonRequest } from "../aws/types";
 
+type ServerConfig = {
+  token: string;
+  port: string;
+  masterIp: string;
+  ip: string;
+  hostIp: string;
+  hostUrl: string;
+  isAwsAvailable: boolean;
+  awsErrorMessage: string;
+  isSlave: boolean;
+};
+
 export interface IServer {
+  serverConfig: {
+    loading: boolean;
+    data?: ServerConfig;
+    error?: string;
+  };
   serverList: ServerList;
   server: {
     addOrEdit: AddOrEditServerPayload;
@@ -60,6 +80,10 @@ export interface ServerList {
   };
 }
 
+export interface ServerConfigSuccessPayload {
+  data: ServerConfig;
+}
+
 export interface SyncResponse {
   error: boolean;
   message: string;
@@ -90,7 +114,7 @@ export interface DeleteRequestResponse {
 }
 
 export interface AddOrEditServerPayload {
-  actionState: "ADD" | "EDIT" | undefined;
+  actionState: "ADD" | "EDIT" | "VIEW_CONFIG" | undefined;
   server?: Server;
 }
 // Get sevrer data
@@ -205,6 +229,30 @@ export interface SynWithMasterAction extends ApiCallAction {
   onFailure?: ActionCreator<SyncWithMaster>;
 }
 
+// Get Server config
+export interface ServerConfigRequest extends Action {
+  type: typeof SERVER_CONFIG_REQUEST;
+  payload: { ip: string };
+}
+
+export interface ServerConfigSuccess extends Action {
+  type: typeof SERVER_CONFIG_SUCCESS;
+  payload: ServerConfigSuccessPayload;
+}
+
+export interface ServerConfigFailure extends Action {
+  type: typeof SERVER_CONFIG_FAILURE;
+  payload: AddServerRequestFailed;
+}
+
+export interface ServerConfigAction extends ApiCallAction {
+  method: "POST";
+  payload?: { ip: string };
+  onRequest?: ActionCreator<ServerConfigRequest>;
+  onSuccess?: ActionCreator<ServerConfigSuccess>;
+  onFailure?: ActionCreator<ServerConfigFailure>;
+}
+
 export type ServerAction =
   | AddServerAction
   | AddServerRequest
@@ -224,4 +272,8 @@ export type ServerAction =
   | AddOrEditServer
   | SynWithMasterAction
   | SyncWithMaster
-  | EditServerAction;
+  | EditServerAction
+  | ServerConfigRequest
+  | ServerConfigSuccess
+  | ServerConfigFailure
+  | ServerConfigAction;

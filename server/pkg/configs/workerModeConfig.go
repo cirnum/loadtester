@@ -9,7 +9,11 @@ type Config struct {
 	HostUrl         string `json:"hostUrl"`
 	IsAwsAvailable  bool   `json:"isAwsAvailable"`
 	AwsErrorMessage string `json:"awsErrorMessage"`
-	IsSlave         bool   `json:"ssSlave"`
+	IsSlave         bool   `json:"isSlave"`
+}
+
+type ConfigResponse struct {
+	Data Config `json:"data"`
 }
 
 var ConfigProvider *Config

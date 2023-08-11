@@ -26,6 +26,7 @@ func GetRunnerType(store configs.Store) bool {
 	worker := flag.Bool("WORKER", false, "")
 
 	flag.Parse()
+
 	localIp := GetPublicIp()
 	if *worker == true || *token != "" || *masterIp != "" {
 		configs.ConfigProvider = configs.Initialize(*portPtr, *token, *masterIp)

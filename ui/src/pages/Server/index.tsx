@@ -18,7 +18,13 @@ import {
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { CheckIcon, CopyIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import {
+  CheckIcon,
+  CopyIcon,
+  DeleteIcon,
+  EditIcon,
+  ViewIcon,
+} from "@chakra-ui/icons";
 import {
   addOrEditServer,
   editServerAction,
@@ -44,6 +50,7 @@ import { CustomizeToolTipInfo } from "../Dashboard/AddEditRequest/selectedReques
 import { getSettigs } from "../../store/stress/common/selectors";
 import { paginationHandler } from "../../utils/_shared";
 import { PAGINATION, ServerHeader } from "../../constants/_shared.const";
+import ServerConfigComp from "./ViewConfig";
 
 function TableBody({
   server,
@@ -67,7 +74,10 @@ function TableBody({
   const dispatch = useDispatch();
   const [selectedServer, setSelected] = useState<Server | null>(null);
   const { loading } = useSelector(getAddServerState);
-  const onEdit = (action: "ADD" | "EDIT", serverDetails?: Server) => {
+  const onEdit = (
+    action: "ADD" | "EDIT" | "VIEW_CONFIG",
+    serverDetails?: Server
+  ) => {
     dispatch(
       addOrEditServer({
         actionState: action,
@@ -139,6 +149,10 @@ function TableBody({
             cursor="pointer"
             onClick={() => dispatch(selectDeleteRequest(server))}
           />
+          <ViewIcon
+            cursor="pointer"
+            onClick={() => onEdit("VIEW_CONFIG", server)}
+          />
         </Stack>
       </Td>
     </Tr>
@@ -183,6 +197,7 @@ export default function ServerBoard() {
   return (
     <Box w="100%" bg="white" h="calc(100vh - 65px)" p={10}>
       <AddOrEditComp />
+      <ServerConfigComp />
       <DeleteDialog />
       <TableContainer border="1px solid #f6f6f6">
         <Stack
@@ -200,10 +215,10 @@ export default function ServerBoard() {
               fontSize="sm"
               variant="outline"
               colorScheme="primary"
-              p={2}
+              p="var(--chakra-radii-md)"
               textTransform="lowercase"
             >
-              Master: {settings?.data?.hostUrl}
+              {settings?.data?.hostUrl}
             </Badge>
             <Button
               size="sm"
