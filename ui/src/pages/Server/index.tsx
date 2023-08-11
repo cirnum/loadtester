@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import {
   TableContainer,
   Table,
@@ -18,13 +19,7 @@ import {
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import {
-  CheckIcon,
-  CopyIcon,
-  DeleteIcon,
-  EditIcon,
-  ViewIcon,
-} from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, ViewIcon } from "@chakra-ui/icons";
 import {
   addOrEditServer,
   editServerAction,
@@ -54,12 +49,10 @@ import ServerConfigComp from "./ViewConfig";
 
 function TableBody({
   server,
-  copy,
-  onCopy,
 }: {
   server: Server;
-  copy: string;
-  onCopy: (val: string) => void;
+  _copy?: string;
+  _onCopy?: (val: string) => void;
 }) {
   const {
     id,
@@ -68,7 +61,6 @@ function TableBody({
     ip,
     updated_at: updatedAt,
     active,
-    token,
     enabled,
   } = server;
   const dispatch = useDispatch();
@@ -113,13 +105,6 @@ function TableBody({
       <Td>
         <Badge color={ip ? "grey" : "red"}>{ip || "Not connected"} </Badge>
       </Td>
-      <Td
-        cursor="pointer"
-        color={copy === token ? "green" : ""}
-        onClick={() => onCopy(token)}
-      >
-        {token} {copy === token ? <CheckIcon /> : <CopyIcon />}
-      </Td>
       <Td>{format(updatedAt, "dd, MMM, Y, HH:MM")}</Td>
       <Td>
         <Badge colorScheme={active ? "green" : "red"}>
@@ -162,7 +147,6 @@ function TableBody({
 export default function ServerBoard() {
   const { loading, data } = useSelector(getServerList);
   const settings = useSelector(getSettigs);
-  const [copy, setCopy] = useState<string>("");
   const [pagination, setPagination] = useState<typeof PAGINATION>(PAGINATION);
   const dispatch = useDispatch();
 
@@ -185,11 +169,6 @@ export default function ServerBoard() {
       dispatch(getAllServerAction(pagination));
     }
   }, [pagination]);
-
-  const onCopy = (text) => {
-    navigator.clipboard.writeText(text);
-    setCopy(() => text);
-  };
 
   if (loading && !data?.data) {
     return <Spinner />;
@@ -247,7 +226,7 @@ export default function ServerBoard() {
           </Thead>
           <Tbody>
             {data?.data?.map((server) => (
-              <TableBody server={server} copy={copy} onCopy={onCopy} />
+              <TableBody server={server} />
             ))}
           </Tbody>
         </Table>

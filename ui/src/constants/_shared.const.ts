@@ -29,7 +29,6 @@ export const ServerHeader = [
   "Server Alias",
   "Description",
   "IP",
-  "Token",
   "Last Update",
   "Active",
   "Action",
