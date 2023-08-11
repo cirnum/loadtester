@@ -28,8 +28,7 @@ export const AWSHeader = [
 export const ServerHeader = [
   "Server Alias",
   "Description",
-  "IP",
-  "Token",
+  "Worker URL",
   "Last Update",
   "Active",
   "Action",

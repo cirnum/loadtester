@@ -12,10 +12,18 @@ import {
   GET_ALL_SERVER_REQUEST,
   GET_ALL_SERVER_SUCCESS,
   SELECT_DELETE_REQUEST,
+  SERVER_CONFIG_FAILURE,
+  SERVER_CONFIG_REQUEST,
+  SERVER_CONFIG_SUCCESS,
 } from "./actionTypes";
 import { IServer, ServerAction } from "./types";
 
 const initialState: IServer = {
+  serverConfig: {
+    loading: false,
+    data: undefined,
+    error: undefined,
+  },
   serverList: {
     loading: false,
     data: undefined,
@@ -41,6 +49,33 @@ const initialState: IServer = {
 
 export default (state = initialState, action: ServerAction) => {
   switch (action.type) {
+    case SERVER_CONFIG_REQUEST:
+      return {
+        ...state,
+        serverConfig: {
+          ...state.serverConfig,
+          loading: true,
+        },
+      };
+    case SERVER_CONFIG_SUCCESS: {
+      return {
+        ...state,
+        serverConfig: {
+          error: undefined,
+          loading: false,
+          data: action.payload.data,
+        },
+      };
+    }
+    case SERVER_CONFIG_FAILURE: {
+      return {
+        ...state,
+        server: {
+          loading: false,
+          data: action.payload.data,
+        },
+      };
+    }
     case ADD_SERVER_REQUEST:
       return {
         ...state,

@@ -5,10 +5,9 @@ import { addOrEditServer } from "../../../store/stress/server/actions";
 import { getAddOrEditState } from "../../../store/stress/server/selectors";
 import AddOrEdit from "./form";
 
-export default function AddOrEditComp() {
+export default function ServerConfigComp() {
   const { actionState = undefined, server } = useSelector(getAddOrEditState);
   const dispatch = useDispatch();
-
   const onClose = () => {
     dispatch(
       addOrEditServer({
@@ -19,9 +18,9 @@ export default function AddOrEditComp() {
   };
   return (
     <Dialog
-      isOpen={actionState ? actionState !== "VIEW_CONFIG" : false}
+      isOpen={actionState === "VIEW_CONFIG"}
       onClose={onClose}
-      title="Add New Server"
+      title="View Server Config"
     >
       <AddOrEdit server={server} />
     </Dialog>

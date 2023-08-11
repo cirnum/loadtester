@@ -14,3 +14,7 @@ export const getDeleteRequest = (state: ApplicationState) => {
 export const getAddOrEditState = (state: ApplicationState) => {
   return state.server.server?.addOrEdit || {};
 };
+
+export const getServerConfig = (state: ApplicationState) => {
+  return state.server.serverConfig || {};
+};

@@ -21,7 +21,6 @@ export function parse(data) {
   if (argv._[1]) {
     result.url = argv._[1].replace(/'/g, "");
   }
-
   options.forEach((element) => {
     const { alias } = element;
     const value = alias
@@ -50,11 +49,12 @@ export function parse(data) {
     const matchUrl = urlContainer.find((key) => {
       return isValidURL(result[key]);
     });
-    if (matchUrl) {
-      return matchUrl;
+    if (result[matchUrl]) {
+      return new URL(result[matchUrl]);
     }
     throw Error("Invalid URL passed in the curl command. Please verify the correctness of the URL provided and try again.");
   }
+  
   if (result) {
     const url = getMeValidUrl(result);
     result.url = url.origin + url.pathname;

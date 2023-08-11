@@ -13,3 +13,6 @@ export const SELECT_DELETE_REQUEST = "@app/server/SELECT_DELETE_REQUEST";
 export const SYNC_WITH_MASTER = "@app/server/SYNC_WITH_MASTER";
 export const SYNC_WITH_MASTER_REQUEST = "@app/server/SYNC_WITH_MASTER_REQUEST";
 export const ADD_OR_EDIT_SERVER = "@app/server/ADD_OR_EDIT_SERVER";
+export const SERVER_CONFIG_REQUEST = "@app/server/SERVER_CONFIG_REQUEST";
+export const SERVER_CONFIG_SUCCESS = "@app/dashboard/SERVER_CONFIG_SUCCESS";
+export const SERVER_CONFIG_FAILURE = "@app/server/SERVER_CONFIG_FAILURE";
