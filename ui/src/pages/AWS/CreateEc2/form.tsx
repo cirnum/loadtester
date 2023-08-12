@@ -22,7 +22,8 @@ import {
 } from "../../../store/stress/aws/actions";
 import { EC2CreatePayload } from "../../../store/stress/aws/types";
 import CreatePem from "../Pem/createPem";
-import { AmiList, InstanceTypes } from "../../../constants/_shared.const";
+import { InstanceTypes } from "../../../constants/_shared.const";
+import AmiList from "../../../assets/ami.json";
 
 export default function Form() {
   const loading = useSelector(getCommonLoadingState);
@@ -61,8 +62,8 @@ export default function Form() {
         >
           {AmiList.map((item) => {
             return (
-              <option key={item} value={item}>
-                {item}
+              <option key={item?.version} value={item?.ami}>
+                {item?.version}
               </option>
             );
           })}
