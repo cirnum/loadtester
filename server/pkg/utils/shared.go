@@ -7,7 +7,7 @@ import (
 
 	"github.com/cirnum/loadtester/server/db/models"
 	"github.com/cirnum/loadtester/server/pkg/configs"
-	log "github.com/sirupsen/logrus"
+	"github.com/cirnum/loadtester/server/version"
 )
 
 func GetWorkerLoa(request models.Request) *models.Worker {
@@ -17,6 +17,18 @@ func GetWorkerLoa(request models.Request) *models.Worker {
 	worker.ReqId = request.ID
 	worker.Status = true
 	return worker
+}
+
+func PrintWelcome(service string, host string, port string) {
+	version := fmt.Sprintf("%d.%d.%d", version.Major, version.Minor, version.Patch)
+	serviceName := fmt.Sprintf("%s", service)
+	fmt.Printf("\n\n\n")
+	fmt.Println(string("\033[34m"), "              App Name:   LoadTester")
+	fmt.Println(string("\033[34m"), "              Version:   ", version)
+	fmt.Println(string("\033[34m"), "              Node:      ", serviceName)
+	fmt.Println(string("\033[34m"), "              PORT:      ", port)
+	fmt.Println(string("\033[34m"), "              Host:      ", host)
+	fmt.Printf("\n\n\n")
 }
 
 func GetRunnerType(store configs.Store) bool {
@@ -34,7 +46,7 @@ func GetRunnerType(store configs.Store) bool {
 		configs.ConfigProvider.IP = "0.0.0.0"
 		configs.ConfigProvider.HostIp = localIp + ":" + *portPtr
 		configs.ConfigProvider.MasterIp = *masterIp
-		log.Info(string("\033[34m"), "Worker service initiated.")
+		PrintWelcome("Worker", configs.ConfigProvider.HostIp, *portPtr)
 		return true
 	}
 
@@ -52,13 +64,12 @@ func GetRunnerType(store configs.Store) bool {
 
 	// AWS integration check
 	available, errMsg := store.IsAwsAvailable()
-
 	configs.ConfigProvider.HostIp = localIp
 	configs.ConfigProvider.IsSlave = false
 	configs.ConfigProvider.IP = configs.StoreProvider.SERVER_HOST
 	configs.ConfigProvider.AwsErrorMessage = errMsg
 	configs.ConfigProvider.IsAwsAvailable = available
-	log.Info(string("\033[34m"), "Master service initiated.")
+	PrintWelcome("Master", configs.ConfigProvider.HostIp, *portPtr)
 	return false
 }
 

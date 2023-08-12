@@ -27,7 +27,6 @@ func StoreInitialize() Store {
 		DB_DNS:              "loadtester-db",
 		DB_TYPE:             "sqlite",
 		SERVER_HOST:         "0.0.0.0",
-		PORT:                "3005",
 		SERVER_READ_TIMEOUT: "60",
 		HostUrl:             "",
 	}
