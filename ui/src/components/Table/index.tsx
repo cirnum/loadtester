@@ -21,7 +21,7 @@ export default function CustomTable({
   const textColor = useColorModeValue("white", "grey.700");
 
   return (
-    <Box overflowX="scroll">
+    <Box overflow="scroll">
       <TableContainer overflow="scroll">
         <Divider />
         <Table bg={textColor} size="md">

@@ -18,11 +18,12 @@ import (
 )
 
 type RequestSend struct {
-	cookies map[string]string
-	headers map[string]string
-	body    []byte
-	url     string
-	method  string
+	cookies     map[string]string
+	headers     map[string]string
+	body        []byte
+	url         string
+	method      string
+	statusCodes []int
 }
 
 type HttpClient struct {
@@ -39,50 +40,36 @@ type HttpClient struct {
 }
 
 func Initializer(request models.Request) (HttpClient, error) {
-	httpClient := HttpClient{}
-	httpClient.title.success = ".http_ok"
-	httpClient.title.otherFail = ".http_other_fail"
-	httpClient.title.fail = ".http_fail"
-	httpClient.title.latency = ".latency"
-
-	group := metrics.Group{
+	httpClient := HttpClient{
+		title: struct{ success, fail, otherFail, latency string }{
+			success:   ".http_ok",
+			fail:      ".http_fail",
+			otherFail: ".http_other_fail",
+			latency:   ".latency",
+		},
+	}
+	groups := []metrics.Group{{
 		Name: "HTTP (" + request.ID + ")",
 		Graphs: []metrics.Graph{
 			{
 				Title: "HTTP Response",
 				Unit:  "N",
 				Metrics: []metrics.Metric{
-					{
-						Title: httpClient.title.success,
-						Type:  metrics.Counter,
-					},
-					{
-						Title: httpClient.title.fail,
-						Type:  metrics.Counter,
-					},
-					{
-						Title: httpClient.title.otherFail,
-						Type:  metrics.Counter,
-					},
+					{Title: httpClient.title.success, Type: metrics.Counter},
+					{Title: httpClient.title.fail, Type: metrics.Counter},
+					{Title: httpClient.title.otherFail, Type: metrics.Counter},
 				},
 			},
 			{
 				Title: "Latency",
 				Unit:  "Microsecond",
 				Metrics: []metrics.Metric{
-					{
-						Title: httpClient.title.latency,
-						Type:  metrics.Histogram,
-					},
+					{Title: httpClient.title.latency, Type: metrics.Histogram},
 				},
 			},
 		},
-	}
-	groups := []metrics.Group{
-		group,
-	}
+	}}
 
-	// Create http client with cookies
 	client, err := utils.GetFormedHttpClient(request)
 	if err != nil {
 		return httpClient, err
@@ -90,11 +77,10 @@ func Initializer(request models.Request) (HttpClient, error) {
 	httpClient.client = client
 
 	requestedData := &RequestSend{
-		url:    request.URL,
-		method: utils.GetSelectedMethods(request.Method),
+		url:         request.URL,
+		method:      utils.GetSelectedMethods(request.Method),
+		statusCodes: utils.GetStatusCodeIncludes(request.StatusCodeIncludes),
 	}
-
-	// Map headers with Http context
 	requestedData.headers, err = utils.GetFormedHeader(request.Headers)
 	if err != nil {
 		return httpClient, err
@@ -117,14 +103,12 @@ func Initializer(request models.Request) (HttpClient, error) {
 
 func (h *HttpClient) RunScen(ctx context.Context, conf models.Request) {
 	finished := make(chan error)
-
 	go func() {
 		err := <-finished
 		if err != nil {
 			log.Error("Error:", err)
 		}
 	}()
-
 	h.Manager(ctx, conf, finished)
 }
 
@@ -154,7 +138,6 @@ func (h *HttpClient) Manager(ctx context.Context, conf models.Request, done chan
 			}
 		}()
 	}
-
 	wg.Wait()
 	done <- nil
 }
@@ -165,7 +148,6 @@ func (h *HttpClient) Request() ([]byte, error) {
 		return nil, err
 	}
 	defer res.Body.Close()
-
 	buf, err := ioutil.ReadAll(res.Body)
 	return buf, err
 }
@@ -182,7 +164,6 @@ func (h *HttpClient) ignoreRes(verb string, url string, body []byte, headers map
 
 func (h *HttpClient) do(method, url string, body []byte, headers map[string]string) (res *http.Response, err error) {
 	begin := time.Now()
-
 	defer func() {
 		diff := time.Since(begin)
 		executor.Notify(h.title.latency, diff.Microseconds())
@@ -192,12 +173,12 @@ func (h *HttpClient) do(method, url string, body []byte, headers map[string]stri
 			return
 		}
 
-		if res.StatusCode >= 300 || res.StatusCode < 200 {
+		statusOk := res.StatusCode >= 200 && res.StatusCode < 300
+		if (len(h.requested.statusCodes) == 0 && statusOk) || utils.IsCodeExist(h.requested.statusCodes, res.StatusCode) {
+			executor.Notify(h.title.success, 1)
+		} else {
 			executor.Notify(h.title.fail, 1)
-			return
 		}
-
-		executor.Notify(h.title.success, 1)
 	}()
 
 	req, err := http.NewRequest(method, url, strings.NewReader(string(body)))

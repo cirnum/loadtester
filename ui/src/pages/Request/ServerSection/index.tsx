@@ -30,7 +30,7 @@ function MapServerStats({
   data: LoadsterResponse[];
   title: string;
 }) {
-  if (data.length < 1) return null;
+  if (data?.length < 1) return null;
   const getLatencyOption = getServerStatsOptions(data || [], title);
 
   return <ELoadChart options={getLatencyOption} />;

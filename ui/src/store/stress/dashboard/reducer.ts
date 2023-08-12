@@ -25,6 +25,8 @@ import {
   SEND_REQUEST_REQUEST,
   SEND_REQUEST_SUCCESS,
   SEND_REQUEST_FAILURE,
+  ADD_REQUEST_TIMEOUT,
+  ADD_REQUEST_STATUS_CODES,
 } from "./actionTypes";
 import {
   IDashboard,
@@ -312,6 +314,28 @@ export default (state = initialState, action: DashboardAction) => {
           pending: false,
           data: undefined,
           error: action.payload,
+        },
+      };
+    case ADD_REQUEST_TIMEOUT:
+      return {
+        ...state,
+        selectedRequest: {
+          ...state.selectedRequest,
+          request: {
+            ...state.selectedRequest.request,
+            requestTimeout: Number(action.payload),
+          },
+        },
+      };
+    case ADD_REQUEST_STATUS_CODES:
+      return {
+        ...state,
+        selectedRequest: {
+          ...state.selectedRequest,
+          request: {
+            ...state.selectedRequest.request,
+            statusCodeIncludes: action.payload.join(","),
+          },
         },
       };
     default:

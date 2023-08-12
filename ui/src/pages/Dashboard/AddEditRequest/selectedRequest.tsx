@@ -75,6 +75,8 @@ export default function SelectedAddEditRequest() {
   const sendRequest = () => {
     dispatch(
       sendPayloadToSaga({
+        requestTimeout: Number(selectedRequest?.requestTimeout || 10),
+        statusCodeIncludes: selectedRequest?.statusCodeIncludes,
         url,
         method,
         clients,
@@ -85,12 +87,11 @@ export default function SelectedAddEditRequest() {
   };
   useEffect(() => {
     if (selectedRequest) {
-      setQPS(selectedRequest.qps);
-      setClients(selectedRequest?.clients);
-      setClients(selectedRequest?.clients);
-      setSeconds(selectedRequest?.time);
-      setURL(selectedRequest?.url);
-      setMethod(selectedRequest?.method);
+      setQPS(selectedRequest.qps || qps);
+      setClients(selectedRequest?.clients || clients);
+      setSeconds(selectedRequest?.time || seconds);
+      setURL(selectedRequest?.url || url);
+      setMethod(selectedRequest?.method || method);
     }
   }, [selectedRequest]);
 
@@ -106,7 +107,7 @@ export default function SelectedAddEditRequest() {
         <HStack m={2} justifyContent="space-between">
           <MethodInfo>
             <Text fontSize="sm" color="tomato.700" as="b">
-              {selectedRequest?.method}
+              {method || selectedRequest?.method}
             </Text>
           </MethodInfo>
           <Tag m={4}>{url}</Tag>
