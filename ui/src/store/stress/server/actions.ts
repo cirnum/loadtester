@@ -1,7 +1,6 @@
 // Get Loadster data
 
 import { PaginationPayload } from "../../types";
-import { commonRequest } from "../aws/actions";
 import {
   ADD_SERVER_FAILURE,
   ADD_SERVER_SUCCESS,
@@ -20,6 +19,7 @@ import {
   SERVER_CONFIG_REQUEST,
   SERVER_CONFIG_SUCCESS,
   SERVER_CONFIG_FAILURE,
+  SYNC_WITH_MASTER_REQUEST,
 } from "./actionTypes";
 import {
   AddOrEditServer,
@@ -54,6 +54,7 @@ import {
   SyncWithMaster,
   ServerConfigSuccessPayload,
   ServerConfigAction,
+  SyncWithMAsterRequest,
 } from "./types";
 
 // Send request
@@ -190,11 +191,15 @@ export const syncWithMaster = (payload: SyncResponse): SyncWithMaster => ({
   payload,
 });
 
+export const syncWithMasterRequest = (): SyncWithMAsterRequest => ({
+  type: SYNC_WITH_MASTER_REQUEST,
+});
+
 export const synWithMasterAction = (): SynWithMasterAction => ({
   type: "@app/API_CALL",
   method: "GET",
   path: "/syncmaster",
-  onRequest: commonRequest,
+  onRequest: syncWithMasterRequest,
   onSuccess: syncWithMaster,
   onFailure: syncWithMaster,
 });

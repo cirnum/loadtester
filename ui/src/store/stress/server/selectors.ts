@@ -18,3 +18,7 @@ export const getAddOrEditState = (state: ApplicationState) => {
 export const getServerConfig = (state: ApplicationState) => {
   return state.server.serverConfig || {};
 };
+
+export const getSyncWithMasterLoader = (state: ApplicationState) => {
+  return state.server.syncWithMaster.loading || false;
+};

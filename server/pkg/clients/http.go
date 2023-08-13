@@ -3,9 +3,12 @@ package httpRequest
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/http/cookiejar"
+	"net/url"
 	"strings"
 	"sync"
 	"time"
@@ -70,7 +73,7 @@ func Initializer(request models.Request) (HttpClient, error) {
 		},
 	}}
 
-	client, err := utils.GetFormedHttpClient(request)
+	client, err := GetFormedHttpClient(request)
 	if err != nil {
 		return httpClient, err
 	}
@@ -209,4 +212,49 @@ func (h *HttpClient) GetRequestHeaders(value []byte) map[string]string {
 	var data map[string]string
 	json.Unmarshal(value, &data)
 	return data
+}
+
+func GetFormedHttpClient(request models.Request) (*http.Client, error) {
+	var cookiesBucket []*http.Cookie
+	var requestTimeout int = 10
+	// Verify if the URL is correct
+	parsedUrl, err := url.Parse(request.URL)
+	if err != nil {
+		return nil, errors.New("Please pass a valid URL")
+	}
+
+	jar, _ := cookiejar.New(nil)
+
+	if request.Cookies != nil {
+		cookiesValue, err := json.Marshal(request.Cookies)
+		if err != nil {
+			return nil, errors.New("Cookies values seem incorrect. Please check and try again. Code: " + err.Error())
+		}
+		cookieData := utils.GetFormedMap(cookiesValue)
+		for k, v := range cookieData {
+			v = strings.ReplaceAll(v, `"`, `'`)
+			cookie := &http.Cookie{
+				Name:  k,
+				Value: v,
+			}
+			cookiesBucket = append(cookiesBucket, cookie)
+		}
+	}
+
+	jar.SetCookies(parsedUrl, cookiesBucket)
+
+	if request.RequestTimeout > 0 {
+		requestTimeout = request.RequestTimeout
+	}
+	tr := &http.Transport{
+		MaxIdleConnsPerHost: 1000,
+	}
+	return &http.Client{
+		Transport: tr,
+		Timeout:   time.Second * time.Duration(requestTimeout),
+		Jar:       jar,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}, nil
 }

@@ -4,13 +4,10 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"net/http/cookiejar"
-	"net/url"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/cirnum/loadtester/server/db/models"
 	"github.com/pkg/errors"
 	"gorm.io/datatypes"
 )
@@ -23,7 +20,7 @@ func init() {
 	}
 	httpClient = &http.Client{
 		Transport: tr,
-		Timeout:   time.Second * 5,
+		Timeout:   time.Second * 3,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
@@ -41,51 +38,6 @@ func Do(method, url string, body []byte, headers map[string]string) (*http.Respo
 	}
 	res, err := httpClient.Do(req)
 	return res, err
-}
-
-func GetFormedHttpClient(request models.Request) (*http.Client, error) {
-	var cookiesBucket []*http.Cookie
-	var requestTimeout int = 10
-	// Verify if the URL is correct
-	parsedUrl, err := url.Parse(request.URL)
-	if err != nil {
-		return nil, errors.New("Please pass a valid URL")
-	}
-
-	jar, _ := cookiejar.New(nil)
-
-	if request.Cookies != nil {
-		cookiesValue, err := json.Marshal(request.Cookies)
-		if err != nil {
-			return nil, errors.New("Cookies values seem incorrect. Please check and try again. Code: " + err.Error())
-		}
-		cookieData := GetFormedMap(cookiesValue)
-		for k, v := range cookieData {
-			v = strings.ReplaceAll(v, `"`, `'`)
-			cookie := &http.Cookie{
-				Name:  k,
-				Value: v,
-			}
-			cookiesBucket = append(cookiesBucket, cookie)
-		}
-	}
-
-	jar.SetCookies(parsedUrl, cookiesBucket)
-
-	if request.RequestTimeout > 0 {
-		requestTimeout = request.RequestTimeout
-	}
-	tr := &http.Transport{
-		MaxIdleConnsPerHost: 1000,
-	}
-	return &http.Client{
-		Transport: tr,
-		Timeout:   time.Second * time.Duration(requestTimeout),
-		Jar:       jar,
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
-	}, nil
 }
 
 func GetFormedMap(value []byte) map[string]string {

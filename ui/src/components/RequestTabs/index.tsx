@@ -121,8 +121,8 @@ function RequestParams() {
 }
 
 export default function RequestTabs() {
-  const TABS = ["Settings", "Params", "Headers", "Body", "Cookies"];
-  const [, setTabIndex] = useState(0);
+  const TABS = ["Params", "Headers", "Body", "Cookies", "Advance Options"];
+  const [, setTabIndex] = useState(1);
   return (
     <Tabs onChange={(index) => setTabIndex(index)} w="full">
       <TabList color="grey" paddingTop="12px">
@@ -146,9 +146,6 @@ export default function RequestTabs() {
       </TabList>
       <TabPanels>
         <TabPanel>
-          <Settings />
-        </TabPanel>
-        <TabPanel>
           <RequestParams />
         </TabPanel>
         <TabPanel>
@@ -159,6 +156,9 @@ export default function RequestTabs() {
         </TabPanel>
         <TabPanel>
           <RequestCookies />
+        </TabPanel>
+        <TabPanel>
+          <Settings />
         </TabPanel>
       </TabPanels>
     </Tabs>
