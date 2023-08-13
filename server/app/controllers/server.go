@@ -135,11 +135,13 @@ func SyncServerWithMaster(c *fiber.Ctx) error {
 	var wg sync.WaitGroup
 
 	ctx := context.WithValue(context.Background(), UserId, c.Locals(UserId).(string))
+
 	pagination := utils.GetPagination(c)
 
 	ec2s, err := db.Provider.GetAllEc2s(ctx, &pagination)
 	listServer, err := db.Provider.ListServer(ctx, &pagination)
-	pkgUtils.SyncWorker(listServer)
+
+	go pkgUtils.SyncWorker(listServer)
 
 	success, _ := pkgUtils.SyncWithMaster(ec2s)
 	serversToUpdate := pkgUtils.SaveEc2ToServer(success)
@@ -155,7 +157,6 @@ func SyncServerWithMaster(c *fiber.Ctx) error {
 
 	updatedListServer, err := db.Provider.ListServer(ctx, &pagination)
 	serverList := pkgUtils.ServerStatus(updatedListServer)
-
 	if err != nil {
 		return utils.ResponseError(c, err, failedToUpdateServerList, 0)
 	}

@@ -13,6 +13,7 @@ import {
   Badge,
   Image,
   Tooltip,
+  Spinner as SP,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
@@ -82,7 +83,8 @@ function TableBody({
         color={copy === publicIp ? "green" : ""}
         onClick={() => onCopy(publicIp)}
       >
-        {publicIp} {copy === publicIp ? <CheckIcon /> : <CopyIcon />}
+        {publicIp || <SP />}
+        {copy === publicIp ? <CheckIcon /> : publicIp && <CopyIcon />}
       </Td>
       <Td>
         <Tooltip label={publicDns}>

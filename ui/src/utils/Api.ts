@@ -15,7 +15,7 @@ const Instance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL
     ? import.meta.env.VITE_BASE_URL
     : window.location.origin + PATH_PREFIX,
-  timeout: 8000,
+  timeout: 15000,
   headers: {
     Authorization: `Bearer ${getToken(TOKEN)}`,
     "Content-Type": "application/json",

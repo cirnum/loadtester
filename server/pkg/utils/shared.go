@@ -19,7 +19,7 @@ func GetWorkerLoa(request models.Request) *models.Worker {
 	return worker
 }
 
-func PrintWelcome(service string, host string, port string) {
+func PrintWelcome(localIp string, service string, host string, port string) {
 	version := fmt.Sprintf("%d.%d.%d", version.Major, version.Minor, version.Patch)
 	serviceName := fmt.Sprintf("%s", service)
 	fmt.Printf("\n\n\n")
@@ -27,7 +27,8 @@ func PrintWelcome(service string, host string, port string) {
 	fmt.Println(string("\033[34m"), "              Version:   ", version)
 	fmt.Println(string("\033[34m"), "              Node:      ", serviceName)
 	fmt.Println(string("\033[34m"), "              PORT:      ", port)
-	fmt.Println(string("\033[34m"), "              Host:      ", host)
+	fmt.Println(string("\033[34m"), "              Host:      ", localIp)
+	fmt.Println(string("\033[34m"), "              URL:       ", formedUrl(port, localIp))
 	fmt.Printf("\n\n\n")
 }
 
@@ -39,14 +40,19 @@ func GetRunnerType(store configs.Store) bool {
 
 	flag.Parse()
 
-	localIp := GetPublicIp()
+	localIp, err := GetIP()
+
+	if err != nil {
+		fmt.Println("Error while getting local ip", err)
+	}
+
 	if *worker == true || *token != "" || *masterIp != "" {
 		configs.ConfigProvider = configs.Initialize(*portPtr, *token, *masterIp)
 		configs.ConfigProvider.IsSlave = true
-		configs.ConfigProvider.IP = "0.0.0.0"
-		configs.ConfigProvider.HostIp = localIp + ":" + *portPtr
+		configs.ConfigProvider.HostIp = localIp
+		configs.ConfigProvider.HostUrl = formedUrl(*portPtr, localIp)
 		configs.ConfigProvider.MasterIp = *masterIp
-		PrintWelcome("Worker", configs.ConfigProvider.HostIp, *portPtr)
+		PrintWelcome(localIp, "Worker", configs.ConfigProvider.HostIp, *portPtr)
 		return true
 	}
 
@@ -69,7 +75,7 @@ func GetRunnerType(store configs.Store) bool {
 	configs.ConfigProvider.IP = configs.StoreProvider.SERVER_HOST
 	configs.ConfigProvider.AwsErrorMessage = errMsg
 	configs.ConfigProvider.IsAwsAvailable = available
-	PrintWelcome("Master", configs.ConfigProvider.HostIp, *portPtr)
+	PrintWelcome(localIp, "Master", configs.ConfigProvider.HostIp, *portPtr)
 	return false
 }
 
