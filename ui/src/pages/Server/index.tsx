@@ -37,6 +37,7 @@ import Pause from "../../assets/pause.svg";
 import {
   getAddServerState,
   getServerList,
+  getSyncWithMasterLoader,
 } from "../../store/stress/server/selectors";
 import Spinner from "../../components/Spinner";
 import { DeleteDialog } from "./DeleteRequest";
@@ -146,6 +147,7 @@ function TableBody({
 
 export default function ServerBoard() {
   const { loading, data } = useSelector(getServerList);
+  const syncLoading = useSelector(getSyncWithMasterLoader);
   const settings = useSelector(getSettigs);
   const [pagination, setPagination] = useState<typeof PAGINATION>(PAGINATION);
   const dispatch = useDispatch();
@@ -205,7 +207,7 @@ export default function ServerBoard() {
               variant="outline"
               onClick={() => dispatch(synWithMasterAction())}
             >
-              Sync With Master
+              {syncLoading ? <SP /> : "Sync With Master"}
             </Button>
             <Button size="sm" onClick={() => onOpen("ADD")}>
               Add New Server

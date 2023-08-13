@@ -21,7 +21,6 @@ import {
   SYNC_WITH_MASTER,
   SYNC_WITH_MASTER_REQUEST,
 } from "./actionTypes";
-import { CommonRequest } from "../aws/types";
 
 type ServerConfig = {
   token: string;
@@ -36,6 +35,9 @@ type ServerConfig = {
 };
 
 export interface IServer {
+  syncWithMaster: {
+    loading: boolean;
+  };
   serverConfig: {
     loading: boolean;
     data?: ServerConfig;
@@ -153,6 +155,11 @@ export interface EditServerAction extends ApiCallAction {
   onFailure?: ActionCreator<AddServerFailure>;
 }
 
+// Sync with master
+export interface SyncWithMAsterRequest extends Action {
+  type: typeof SYNC_WITH_MASTER_REQUEST;
+}
+
 // Get all server data
 export interface GetAllServerRequest extends Action {
   type: typeof GET_ALL_SERVER_REQUEST;
@@ -224,7 +231,7 @@ export interface SyncWithMasterRequest extends Action {
 }
 export interface SynWithMasterAction extends ApiCallAction {
   method: "GET";
-  onRequest?: ActionCreator<CommonRequest>;
+  onRequest?: ActionCreator<SyncWithMAsterRequest>;
   onSuccess?: ActionCreator<SyncWithMaster>;
   onFailure?: ActionCreator<SyncWithMaster>;
 }
@@ -276,4 +283,5 @@ export type ServerAction =
   | ServerConfigRequest
   | ServerConfigSuccess
   | ServerConfigFailure
-  | ServerConfigAction;
+  | ServerConfigAction
+  | SyncWithMAsterRequest;
