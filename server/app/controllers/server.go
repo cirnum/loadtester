@@ -135,6 +135,7 @@ func SyncServerWithMaster(c *fiber.Ctx) error {
 	var wg sync.WaitGroup
 
 	ctx := context.WithValue(context.Background(), UserId, c.Locals(UserId).(string))
+	userId := c.Locals(UserId).(string)
 
 	pagination := utils.GetPagination(c)
 
@@ -148,11 +149,11 @@ func SyncServerWithMaster(c *fiber.Ctx) error {
 
 	wg.Add(len(serversToUpdate))
 	for _, server := range serversToUpdate {
-		go func(server models.Server) {
-			server.UserID = c.Locals(UserId).(string)
-			db.Provider.UpdateServerByIp(ctx, server)
+		go func(srv *models.Server) {
+			srv.UserID = userId
+			db.Provider.UpdateServerByIp(ctx, *srv)
 			wg.Done()
-		}(server)
+		}(&server)
 	}
 
 	updatedListServer, err := db.Provider.ListServer(ctx, &pagination)
