@@ -1,5 +1,9 @@
 import { useState } from "react";
 import {
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
   Tab,
   TabList,
   TabPanel,
@@ -9,6 +13,8 @@ import {
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import {
+  getRequestStatusCodes,
+  getRequestTimeout,
   getSelectedRequestCookies,
   getSelectedRequestHeaders,
   getSelectedRequestParams,
@@ -17,12 +23,46 @@ import {
   addRequestCookiesAction,
   addRequestHeaderAction,
   addRequestParamsAction,
+  addRequestStatusCodes,
+  addRequestTimeout,
   userClickCheckBoxAction,
 } from "../../store/stress/dashboard/actions";
 import CustomTable from "../CustomTable";
 import RequestBody from "./RequestBody";
 import { RequestHeadersAndParamsPayload } from "../../store/stress/dashboard/types";
+import TagInput from "../InputWithChip";
 
+function Settings() {
+  const dispatch = useDispatch();
+  const timeout = useSelector(getRequestTimeout);
+  const requestStatusCodes = useSelector(getRequestStatusCodes);
+  const onChange = (event: any) => {
+    dispatch(addRequestTimeout(event.target.value));
+  };
+  const onStatusCodeChange = (data: number[]) => {
+    dispatch(addRequestStatusCodes(data));
+  };
+  return (
+    <Flex gap={4}>
+      <FormControl flex={1}>
+        <FormLabel>Request Timeout</FormLabel>
+        <Input
+          value={timeout || ""}
+          placeholder="Request Timeout in secoonds ex - 10 default 10s"
+          variant="filled"
+          onChange={onChange}
+        />
+      </FormControl>
+      <FormControl flex={1}>
+        <FormLabel>Add Status codes to include</FormLabel>
+        <TagInput
+          defaultTags={requestStatusCodes}
+          onChangeTags={onStatusCodeChange}
+        />
+      </FormControl>
+    </Flex>
+  );
+}
 function RequestHeaders() {
   const params = useSelector(getSelectedRequestHeaders);
   const dispatch = useDispatch();
@@ -81,8 +121,8 @@ function RequestParams() {
 }
 
 export default function RequestTabs() {
-  const TABS = ["Params", "Headers", "Body", "Cookies"];
-  const [, setTabIndex] = useState(0);
+  const TABS = ["Params", "Headers", "Body", "Cookies", "Advance Options"];
+  const [, setTabIndex] = useState(1);
   return (
     <Tabs onChange={(index) => setTabIndex(index)} w="full">
       <TabList color="grey" paddingTop="12px">
@@ -116,6 +156,9 @@ export default function RequestTabs() {
         </TabPanel>
         <TabPanel>
           <RequestCookies />
+        </TabPanel>
+        <TabPanel>
+          <Settings />
         </TabPanel>
       </TabPanels>
     </Tabs>

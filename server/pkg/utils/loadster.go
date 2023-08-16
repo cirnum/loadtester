@@ -7,6 +7,19 @@ import (
 	"github.com/cirnum/loadtester/server/db/models"
 )
 
+const (
+	latencySuffix       = ".latency"
+	httpOkSuffix        = ".http_ok"
+	httpFailSuffix      = ".http_fail"
+	httpOtherFailSuffix = ".http_other_fail"
+	loadAvgSuffix       = "LA1"
+	cpuSuffix           = "CPU"
+	ramSuffix           = "RAM"
+	transmitSuffix      = "transmit"
+	receiveSuffix       = "receive"
+	masterServerId      = "MASTER"
+)
+
 func CalculateRPS(loads []models.Loadster, workers []models.Worker) customModels.CalculatedLoad {
 	serverMap, isFinish := MapReqByServer(loads)
 	calculatedInfo := CalculateRPSByTitle(serverMap, workers)
@@ -22,15 +35,15 @@ func CalculateRPSByTitle(loadsByServer map[string][]models.Loadster, workers []m
 	calculatedLoads.ServerMap = make(map[string]customModels.WorkerData, len(loadsByServer))
 	for key, load := range loadsByServer {
 		loadPayload := customModels.WorkerData{}
-		latency, lastLatency := HttpReqByType(load, ".latency")
-		okHTTP, lastOkHttp := HttpReqByType(load, ".http_ok")
-		failHTTP, lastFailHTTP := HttpReqByType(load, ".http_fail")
-		otherFailHTTP, lastOtherFailHTTP := HttpReqByType(load, ".http_other_fail")
-		loadAvg1, lastLoadAvg := HttpReqByType(load, "LA1")
-		cpu, lastCpuUsage := HttpReqByType(load, "CPU")
-		ram, lastRamUsage := HttpReqByType(load, "RAM")
-		outgress, lastOutgress := calcDataTransfer(load, "transmit")
-		ingress, lastIngress := calcDataTransfer(load, "receive")
+		latency, lastLatency := HttpReqByType(load, latencySuffix)
+		okHTTP, lastOkHttp := HttpReqByType(load, httpOkSuffix)
+		failHTTP, lastFailHTTP := HttpReqByType(load, httpFailSuffix)
+		otherFailHTTP, lastOtherFailHTTP := HttpReqByType(load, httpOtherFailSuffix)
+		loadAvg1, lastLoadAvg := HttpReqByType(load, loadAvgSuffix)
+		cpu, lastCpuUsage := HttpReqByType(load, cpuSuffix)
+		ram, lastRamUsage := HttpReqByType(load, ramSuffix)
+		outgress, lastOutgress := calcDataTransfer(load, transmitSuffix)
+		ingress, lastIngress := calcDataTransfer(load, receiveSuffix)
 		totalTimeTaken := int64((lastLatency.CreatedAt - lastLatency.StartTime) / 1000)
 
 		if lastFailHTTP.Count > 0 {
@@ -140,7 +153,7 @@ func calculatePercentage(total int64, amount int64) int {
 }
 
 func calculateRpsForEachLoad(load models.Loadster) int64 {
-	endTime := load.Created
+	endTime := load.CreatedAt
 	startTime := load.StartTime
 	if load.Count > 0 && ((endTime-startTime)/1000) > 0 {
 		return (load.Count / ((endTime - startTime) / 1000))
@@ -155,7 +168,7 @@ func MapReqByServer(loads []models.Loadster) (map[string][]models.Loadster, bool
 		serverId := load.ServerId
 		load.RPS = calculateRpsForEachLoad(load)
 		if serverId == "" {
-			serverId = "MASTER"
+			serverId = masterServerId
 			load.ServerId = serverId
 		}
 		if load.Finish {

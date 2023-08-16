@@ -116,7 +116,7 @@ export const router = createHashRouter(
           }
         />
         <Route
-          path="server"
+          path="workers"
           element={
             <Suspense fallback={<Spinner />}>
               <ServerPage />

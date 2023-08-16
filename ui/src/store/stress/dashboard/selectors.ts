@@ -45,3 +45,16 @@ export const getLoadsterList = (state: ApplicationState) => {
 export const getRequestResponseData = (state: ApplicationState) => {
   return state.dashboard?.selectedRequest.response;
 };
+
+export const getRequestTimeout = (state: ApplicationState) => {
+  return state.dashboard?.selectedRequest.request?.requestTimeout;
+};
+
+export const getRequestStatusCodes = (state: ApplicationState) => {
+  const statusCodes =
+    state.dashboard?.selectedRequest.request?.statusCodeIncludes;
+  if (statusCodes) {
+    return statusCodes?.split(",").map((statusCode) => Number(statusCode));
+  }
+  return [];
+};

@@ -4,6 +4,4 @@ services:
     build: .
     ports:
       - 3005:3005
-    env_file:
-      - .env
     image: manojown1/loadtester:latest

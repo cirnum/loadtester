@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 	"os"
 	"os/signal"
@@ -24,21 +25,24 @@ const (
 	ServerNotRunning       string = "Oops... Server is not running! Reason:"
 )
 const (
-	Protocol   string = "http://"
-	Http       string = "http"
-	Https      string = "https"
-	WorkerPath string = "/worker/connect"
-	WorkerReq  string = "/worker/request"
-	Fiber      string = "fiber"
+	Protocol     string = "http://"
+	Http         string = "http"
+	Https        string = "https"
+	WorkerPath   string = "/worker/connect"
+	WorkerReq    string = "/worker/request"
+	WorkerConfig string = "/worker/config"
+	Fiber        string = "fiber"
 )
 
 func SendMasterIp(publicIp string) bool {
+	publicIp = strings.Trim(publicIp, " /")
 	var url string
 	hostDetails := &reqModels.MasterDetails{
 		Address: configs.ConfigProvider.HostUrl,
 	}
 	postData, _ := json.Marshal(hostDetails)
-	if strings.Contains(publicIp, Http) || strings.Contains(publicIp, Https) {
+	lowercaseString := strings.ToLower(publicIp)
+	if strings.Contains(lowercaseString, Http) || strings.Contains(lowercaseString, Https) {
 		url = publicIp + WorkerPath
 	} else {
 		url = Protocol + publicIp + WorkerPath
@@ -59,6 +63,20 @@ func SendMasterIp(publicIp string) bool {
 
 	log.Info(WorkerConnectionFailed, res.StatusCode)
 	return false
+}
+
+func SyncWorker(servers *models.ServerList) {
+	var wg sync.WaitGroup
+	wg.Add(len(servers.Data))
+	for _, server := range servers.Data {
+		go func(server models.Server) {
+			if server.IP != "" {
+				SendMasterIp(server.IP)
+			}
+			wg.Done()
+		}(server)
+	}
+	wg.Wait()
 }
 
 // Sync server With Master
@@ -83,6 +101,27 @@ func SyncWithMaster(servers *models.EC2List) ([]models.EC2, []models.EC2) {
 	}
 	wg.Wait()
 	return success, failed
+}
+
+// Check server Status
+func GetServerDetails(ip string) (configs.Config, error) {
+	var config configs.Config
+	var confRes configs.ConfigResponse
+	url := ip + WorkerConfig
+	res, err := Do(http.MethodGet, url, nil, nil)
+	if err == nil && res.StatusCode == fiber.StatusOK {
+		body, err := io.ReadAll(res.Body)
+		if err != nil {
+			return config, err
+		}
+		err = json.Unmarshal(body, &confRes)
+		config = confRes.Data
+		if err != nil {
+			return config, err
+		}
+		return config, nil
+	}
+	return config, err
 }
 
 // Check server Status

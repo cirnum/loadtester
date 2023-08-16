@@ -1,11 +1,41 @@
-# Load tester (stress testing tool)
+<div align="center">
+<h1>
+  <img src="https://raw.githubusercontent.com/cirnum/loadtester/main/ui/src/assets/brand.svg" width="300">
+</h1>
+<b>Scale Your Load Testing Efforts with Loadtester.</b>
+<p>Loadtester is a powerful tool that helps you simulate millions of concurrent users by distributing load tests across multiple computers.
+</p>
+</div>
 
-  Demo - https://www.perfcheck.com/ 
+<p align="center">
+  <a  target="_blank" href="https://docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a> | <a href="https://discord.gg/SQ5DZEBt">Help And Support</a>  
+</p>
 
-  
-# Install with Npm and rum
-    1. npm install loadtesterr
-    2. loadster
+<img src="https://github.com/cirnum/loadtester/blob/main/ui/src/assets/loadtester.gif" >
+
+
+# Install - [ref](https://docs.perfcheck.com/installation)
+### npm 
+    npm install loadster -g && loadster
+
+> Note: In case of permission issue try it with sudo.
+
+### Script for linux and macOs versions
+    curl -sL https://raw.githubusercontent.com/cirnum/loadtester/main/installer/bash/install-loadtester.sh | sudo bash && loadster
+
+## binary 
+    https://docs.perfcheck.com/installation#install-with-shell-script
+    
+    
+## Run as a worker
+    loadster --WORKER=true --MASTER_IP="MASTER_NODE_IP_OR_DNS"
+
+You have the convenience of directly incorporating a worker node into the master web UI and synchronizing from there, eliminating the need for the MASTER_IP argument.
+
+> **--HOST_URL**=<Your Server URL where the master is hosted> (useful when your application is running within a Docker container or if you need to assign a specific DNS for the master) Optional.
+
+ 
+Steps: `Server` > `Add New Server` > `Sync With Master` ( In Web ui )
 
 # How to Use
 Scale Your Load Testing Efforts with Loadtester.
@@ -37,9 +67,11 @@ as many servers as you can run the test script across all the servers at the sam
 |-----------|---------------|------------------------------------------------------------------------------------------------------------------|
 | WORKER    | false         | User can run loadtester as a worker or as a Master node                                                            |
 | MASTER_IP | empty            | If the user runs the node as a Worker then the worker node can accept the MASTER_IP env which is the actual master ip |
+| HOST_URL | empty (Auto Detect)            | If the application is running inside a Docker container or if the Master Node has a particular DNS address, this information will be transmitted to the child node for synchronization and future updates. |
 
 
-1. Download binary from releases - https://github.com/cirnum/loadtester/releases/
+
+# Download binary - [ref](https://docs.perfcheck.com/installation#download-binary-releases)
 	1. `Darwin amd64` - For Mac user
 	2. `Darwin arm64` - For Mac users (new Mac)
 	3. `Linux amd64` - Linux arch `amd64` users (64-bit system)
@@ -67,10 +99,6 @@ as many servers as you can run the test script across all the servers at the sam
 | AWS_ACCESS_KEY |
 | AWS_SECRET_KEY |
 | AWS_REGION     |
-
-## How can I modify the .env file inside a running Docker container?
-	docker exec -it CONTAINER_ID_OR_NAME vim .env
-
 
 ## Request Page
 

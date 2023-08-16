@@ -19,7 +19,7 @@ export default function CommonStats({
         <Stat borderRight="1px solid #e2e8f0" mr={2}>
           <StatLabel>Total Worker Running</StatLabel>
           <StatNumber>
-            <Animate value={data.workers.length + 1} />
+            <Animate value={(data?.workers?.length || 0) + 1} />
           </StatNumber>
         </Stat>
         <Stat borderRight="1px solid #e2e8f0" mr={2}>

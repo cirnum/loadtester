@@ -30,7 +30,7 @@ function MapServerStats({
   data: LoadsterResponse[];
   title: string;
 }) {
-  if (data.length < 1) return null;
+  if (data?.length < 1) return null;
   const getLatencyOption = getServerStatsOptions(data || [], title);
 
   return <ELoadChart options={getLatencyOption} />;
@@ -40,7 +40,15 @@ export default function ServerSection() {
   const [selected, setSelected] = useState<string | null>(null);
   const data = useSelector(getLoadsterList);
   const serverNameList = Object.keys(data?.serverMap || {});
-
+  const list = serverNameList?.map((serverName) => {
+    const findWorker = data?.workers?.find((worker) => {
+      return serverName === worker?.serverId;
+    });
+    if (findWorker) {
+      return { id: findWorker.serverId, alias: findWorker.alias };
+    }
+    return { id: serverName, alias: serverName };
+  });
   const selectedServer = selected && data?.serverMap?.[selected];
 
   useEffect(() => {
@@ -57,11 +65,7 @@ export default function ServerSection() {
         <CommonStats data={data} />
       </Card>
       <Card mx={5}>
-        <Tabs
-          list={serverNameList}
-          setSelected={setSelected}
-          selected={selected}
-        >
+        <Tabs list={list} setSelected={setSelected} selected={selected}>
           <Card p={5}>
             {selectedServer && (
               <>

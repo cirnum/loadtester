@@ -29,7 +29,7 @@ function Tab({
 }
 
 interface TabsProps {
-  list: string[];
+  list: { alias: string; id: string }[];
   selected: string | null;
   setSelected: (_val) => void;
   children: ReactNode;
@@ -46,10 +46,10 @@ export default function Tabs({
       <HStack bg="white" borderBottom="1px solid #EBEBEB">
         {list.map((tab) => (
           <Tab
-            key={tab}
-            isSelected={selected === tab}
-            text={tab}
-            onClick={() => setSelected(tab)}
+            key={tab?.alias}
+            isSelected={selected === tab?.id}
+            text={tab?.alias}
+            onClick={() => setSelected(tab?.id)}
           />
         ))}
       </HStack>

@@ -9,7 +9,7 @@ export interface StatsFieldInterface {
 }
 export const StatFields: StatsFieldInterface[] = [
   {
-    title: "Server Alias",
+    title: "Server Name",
     key: "alias",
     type: "string",
   },
@@ -17,11 +17,6 @@ export const StatFields: StatsFieldInterface[] = [
     title: "Status",
     key: "finish",
     isStatus: true,
-  },
-  {
-    title: "Worker",
-    key: "clients",
-    toShowInWidget: true,
   },
   {
     title: "Time",

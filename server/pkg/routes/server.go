@@ -17,5 +17,6 @@ func ServerRoutes(a *fiber.App) {
 	route.Get(server+"/:id", middleware.JWTProtected, controllers.GetServerById)
 	route.Delete(server+"/:id", middleware.JWTProtected, controllers.DeleteServerById)
 	route.Put(server, middleware.JWTProtected, controllers.UpdateServer)
+	route.Post(server+"/config", middleware.JWTProtected, controllers.GetServerDetails)
 	route.Get("syncmaster", middleware.JWTProtected, controllers.SyncServerWithMaster)
 }

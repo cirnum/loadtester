@@ -1,48 +1,76 @@
 package utils
 
 import (
+	"fmt"
+	"io"
 	"net"
-	"os"
+	"net/http"
+	"strings"
+	"time"
 )
 
-func IsPublicIP(IP net.IP) bool {
-	if IP.IsLoopback() || IP.IsLinkLocalMulticast() || IP.IsLinkLocalUnicast() {
-		return false
+func GetIP() (string, error) {
+	// Try to get the public IP
+	publicIP, err := GetPublicIP()
+	if err == nil && IsServerReachable(publicIP) {
+		return publicIP, nil
 	}
-	if ip4 := IP.To4(); ip4 != nil {
-		switch {
-		case ip4[0] == 10:
-			return false
-		case ip4[0] == 172 && ip4[1] >= 16 && ip4[1] <= 31:
-			return false
-		case ip4[0] == 192 && ip4[1] == 168:
-			return false
-		default:
-			return true
-		}
+
+	// If public IP retrieval fails or is not reachable, try to get the local IP
+	localIP, err := GetLocalIP()
+	if err == nil {
+		return localIP, nil
 	}
-	return false
+
+	// If both public and local IP retrieval fail, return an error
+	return "", fmt.Errorf("unable to determine IP")
 }
 
-func GetPublicIp() string {
-	allIp := []string{}
+func GetPublicIP() (string, error) {
+	resp, err := http.Get("https://api64.ipify.org?format=text")
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	ip, err := ReadBody(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return strings.TrimSpace(ip), nil
+}
+
+func GetLocalIP() (string, error) {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
-		os.Stderr.WriteString("Oops: " + err.Error() + "\n")
-		os.Exit(1)
+		return "", err
 	}
-	for _, a := range addrs {
-		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil {
-				ip := ipnet.IP
-				if IsPublicIP(ip) {
-					allIp = append(allIp, ip.String())
-				}
-			}
+
+	for _, addr := range addrs {
+		ipNet, ok := addr.(*net.IPNet)
+		if ok && !ipNet.IP.IsLoopback() && ipNet.IP.To4() != nil {
+			return ipNet.IP.String(), nil
 		}
 	}
-	if len(allIp) > 0 {
-		return allIp[0]
+
+	return "", fmt.Errorf("no suitable local IP found")
+}
+
+func ReadBody(body io.Reader) (string, error) {
+	buf := new(strings.Builder)
+	_, err := io.Copy(buf, body)
+	if err != nil {
+		return "", err
 	}
-	return "localhost"
+	return buf.String(), nil
+}
+
+func IsServerReachable(host string) bool {
+	conn, err := net.DialTimeout("ip4:icmp", host, time.Second*5)
+	if err != nil {
+		return false
+	}
+	defer conn.Close()
+	return true
 }

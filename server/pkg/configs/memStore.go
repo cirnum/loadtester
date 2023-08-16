@@ -1,6 +1,8 @@
 package configs
 
-import "os"
+import (
+	"os"
+)
 
 type Store struct {
 	AWS_ACCESS_KEY            string
@@ -25,10 +27,13 @@ func StoreInitialize() Store {
 		DB_DNS:              "loadtester-db",
 		DB_TYPE:             "sqlite",
 		SERVER_HOST:         "0.0.0.0",
-		PORT:                "3005",
 		SERVER_READ_TIMEOUT: "60",
+		HostUrl:             "",
 	}
 
+	if os.Getenv("HOST_URL") != "" {
+		store.HostUrl = os.Getenv("HOST_URL")
+	}
 	if os.Getenv("JWT_SECRET_KEY") != "" {
 		store.JWT_SECRET_KEY = os.Getenv("JWT_SECRET_KEY")
 	}

@@ -3,8 +3,6 @@ export const PAGINATION = {
   page: 1,
 };
 
-export const AmiList = ["ami-0d1557d58f87569f8"];
-
 export const InstanceTypes = [
   "t2.nano",
   "t2.micro",
@@ -28,8 +26,7 @@ export const AWSHeader = [
 export const ServerHeader = [
   "Server Alias",
   "Description",
-  "IP",
-  "Token",
+  "Worker URL",
   "Last Update",
   "Active",
   "Action",

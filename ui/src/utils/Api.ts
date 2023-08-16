@@ -3,18 +3,23 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { TAxiosWrapper } from "../types";
 
+const getToken = (TOKEN) => {
+  return Cookies.get(TOKEN);
+};
+
 const TOKEN = "__session";
 const PATH_PREFIX = "/api/v1/";
 const Instance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL
     ? import.meta.env.VITE_BASE_URL
     : window.location.origin + PATH_PREFIX,
-  timeout: 8000,
+  timeout: 15000,
+  headers: {
+    Authorization: `Bearer ${getToken(TOKEN)}`,
+    "Content-Type": "application/json",
+  },
 });
 
-const getToken = () => {
-  return Cookies.get(TOKEN);
-};
 
 export default function ApiCall<T>({
   path,

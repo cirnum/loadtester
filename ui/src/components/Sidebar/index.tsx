@@ -33,7 +33,7 @@ import {
   FiChevronDown,
 } from "react-icons/fi";
 import { IconType } from "react-icons";
-import { SettingsIcon } from "@chakra-ui/icons";
+// import { SettingsIcon } from "@chakra-ui/icons";
 import LogoImg from "../../assets/brand.svg";
 
 interface LinkItemProps {
@@ -52,7 +52,7 @@ const LinkItems: Array<LinkItemProps> = [
 const Links: Array<LinkItemProps> = [
   { name: "Requests", path: "/dashboard" },
   // { name: "Performance", path: "performace" },
-  { name: "Server", path: "/server" },
+  { name: "Workers", path: "/workers" },
   { name: "AWS", path: "/aws" },
 
   // { name: "Download Client", path: "client" },
@@ -169,12 +169,12 @@ function MobileNav({ onOpen, ...rest }: MobileProps) {
         justifyContent={{ base: "space-between", md: "flex-end" }}
       >
         <Link to="/settings">
-          <IconButton
+          {/* <IconButton
             size="lg"
             variant="ghost"
             aria-label="open menu"
             icon={<SettingsIcon />}
-          />
+          /> */}
         </Link>
         <Flex alignItems="center" zIndex="dropdown">
           <Menu>

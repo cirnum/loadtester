@@ -39,6 +39,7 @@ import {
   DELETE_SERVER_FAILURE,
   DELETE_SERVER_SUCCESS,
   GET_ALL_SERVER_FAILURE,
+  SERVER_CONFIG_FAILURE,
   SYNC_WITH_MASTER,
 } from "../stress/server/actionTypes";
 import {
@@ -47,6 +48,7 @@ import {
   DeleteServerFailure,
   DeleteServerSuccess,
   GetAllServerFailure,
+  ServerConfigFailure,
   SyncWithMaster,
 } from "../stress/server/types";
 import { ApplicationActions } from "../types";
@@ -109,6 +111,10 @@ export const toastActions: {
     message: action.payload.message,
   }),
   [COMMON_FAILURE]: (action: CommonFailure) => ({
+    type: "error",
+    message: action.payload.message,
+  }),
+  [SERVER_CONFIG_FAILURE]: (action: ServerConfigFailure) => ({
     type: "error",
     message: action.payload.message,
   }),

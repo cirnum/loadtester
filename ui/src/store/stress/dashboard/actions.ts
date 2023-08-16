@@ -20,6 +20,8 @@ import {
   ADD_NEW_REQUEST,
   CURL_TO_REQUEST,
   PARSE_COOKIE,
+  ADD_REQUEST_TIMEOUT,
+  ADD_REQUEST_STATUS_CODES,
 } from "./actionTypes";
 import {
   FetchHistoryRequest,
@@ -57,6 +59,8 @@ import {
   CurlToRequest,
   CurlToJSONPayload,
   ParseCookie,
+  AddRequestTimeOut,
+  AddRequestStatusCodes,
 } from "./types";
 
 export const fetchHistoryRequest = (
@@ -244,5 +248,18 @@ export const saveRequestResponseAction = (
   payload?: RequestResponse
 ): SaveRequestResponseAction => ({
   type: SAVE_REQUEST_RESPONSE,
+  payload,
+});
+
+// Add Request timeout
+export const addRequestTimeout = (payload: string): AddRequestTimeOut => ({
+  type: ADD_REQUEST_TIMEOUT,
+  payload,
+});
+// Add Request timeout
+export const addRequestStatusCodes = (
+  payload: number[]
+): AddRequestStatusCodes => ({
+  type: ADD_REQUEST_STATUS_CODES,
   payload,
 });

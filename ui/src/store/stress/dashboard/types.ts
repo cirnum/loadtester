@@ -21,6 +21,8 @@ import {
   ADD_NEW_REQUEST,
   CURL_TO_REQUEST,
   PARSE_COOKIE,
+  ADD_REQUEST_TIMEOUT,
+  ADD_REQUEST_STATUS_CODES,
 } from "./actionTypes";
 import { ApiCallAction } from "../../types";
 import { Server } from "../server/types";
@@ -154,6 +156,8 @@ export interface RequestHistoryPayload {
   created: number;
   created_at: number;
   qps: number;
+  requestTimeout: string;
+  statusCodeIncludes: string;
   headers: Record<string, string>;
   cookies: Record<string, string>;
   id: string;
@@ -360,6 +364,8 @@ export interface SendRequestSagaPayload {
   method: string;
   time: number;
   qps: number;
+  requestTimeout: number;
+  statusCodeIncludes?: string;
 }
 export interface SendPayloadToSagaAction extends Action {
   type: typeof SEND_PAYLOAD_TO_SAGA;
@@ -374,6 +380,16 @@ export interface CurlToRequest extends Action {
 export interface ParseCookie extends Action {
   type: typeof PARSE_COOKIE;
   payload: Record<string, string>;
+}
+
+export interface AddRequestTimeOut extends Action {
+  type: typeof ADD_REQUEST_TIMEOUT;
+  payload: string;
+}
+
+export interface AddRequestStatusCodes extends Action {
+  type: typeof ADD_REQUEST_STATUS_CODES;
+  payload: number[];
 }
 
 export type DashboardAction =
@@ -400,4 +416,6 @@ export type DashboardAction =
   | PushToHistoryAction
   | AddNewRequestAction
   | CurlToRequest
-  | ParseCookie;
+  | ParseCookie
+  | AddRequestTimeOut
+  | AddRequestStatusCodes;

@@ -48,8 +48,7 @@ function getInstallationPath(callback) {
   });
 }
 
-function verifyAndPlaceBinary(binName, binPath, callback) {
-  console.log("adasd", binName, binPath);
+function verifyAndPlaceBinary(binName, packageName, binPath, callback) {
   binPath = binPath + "";
 
   if (!fs.existsSync(path.join(binPath, binName)))
@@ -60,11 +59,10 @@ function verifyAndPlaceBinary(binName, binPath, callback) {
   getInstallationPath(function (err, installationPath) {
     if (err)
       return callback("Error getting binary installation path from `npm bin`");
-
     // Move the binary file
     fs.renameSync(
       path.join(binPath, binName),
-      path.join(installationPath, binName)
+      path.join(installationPath, packageName)
     );
 
     callback(null);
@@ -130,6 +128,7 @@ function parsePackageJson() {
 
   // We have validated the config. It exists in all its glory
   let binName = packageJson.goBinary.name;
+  let packageName = packageJson.name;
   let binPath = packageJson.goBinary.path;
   let url = packageJson.goBinary.url;
   let version = packageJson.version;
@@ -149,6 +148,7 @@ function parsePackageJson() {
   return {
     binName: binName,
     binPath: binPath,
+    packageName: packageName,
     url: url,
     version: version,
   };
@@ -181,6 +181,7 @@ function install(callback) {
     verifyAndPlaceBinary.bind(
       null,
       opts.binName,
+      opts.packageName,
       opts.binPath + `/${folderName}`,
       callback
     )

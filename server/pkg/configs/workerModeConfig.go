@@ -12,7 +12,11 @@ type Config struct {
 	IsAwsAvailable  bool   `json:"isAwsAvailable"`
 	AwsErrorMessage string `json:"awsErrorMessage"`
 	AuthClient      clerk.Client
-	IsSlave         bool `json:"ssSlave"`
+	IsSlave         bool `json:"isSlave"`
+}
+
+type ConfigResponse struct {
+	Data Config `json:"data"`
 }
 
 var ConfigProvider *Config

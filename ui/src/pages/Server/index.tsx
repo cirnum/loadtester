@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import {
   TableContainer,
   Table,
@@ -18,7 +19,7 @@ import {
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { CheckIcon, CopyIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, ViewIcon } from "@chakra-ui/icons";
 import {
   addOrEditServer,
   editServerAction,
@@ -36,6 +37,7 @@ import Pause from "../../assets/pause.svg";
 import {
   getAddServerState,
   getServerList,
+  getSyncWithMasterLoader,
 } from "../../store/stress/server/selectors";
 import Spinner from "../../components/Spinner";
 import { DeleteDialog } from "./DeleteRequest";
@@ -44,15 +46,14 @@ import { CustomizeToolTipInfo } from "../Dashboard/AddEditRequest/selectedReques
 import { getSettigs } from "../../store/stress/common/selectors";
 import { paginationHandler } from "../../utils/_shared";
 import { PAGINATION, ServerHeader } from "../../constants/_shared.const";
+import ServerConfigComp from "./ViewConfig";
 
 function TableBody({
   server,
-  copy,
-  onCopy,
 }: {
   server: Server;
-  copy: string;
-  onCopy: (val: string) => void;
+  _copy?: string;
+  _onCopy?: (val: string) => void;
 }) {
   const {
     id,
@@ -61,13 +62,15 @@ function TableBody({
     ip,
     updated_at: updatedAt,
     active,
-    token,
     enabled,
   } = server;
   const dispatch = useDispatch();
   const [selectedServer, setSelected] = useState<Server | null>(null);
   const { loading } = useSelector(getAddServerState);
-  const onEdit = (action: "ADD" | "EDIT", serverDetails?: Server) => {
+  const onEdit = (
+    action: "ADD" | "EDIT" | "VIEW_CONFIG",
+    serverDetails?: Server
+  ) => {
     dispatch(
       addOrEditServer({
         actionState: action,
@@ -103,13 +106,6 @@ function TableBody({
       <Td>
         <Badge color={ip ? "grey" : "red"}>{ip || "Not connected"} </Badge>
       </Td>
-      <Td
-        cursor="pointer"
-        color={copy === token ? "green" : ""}
-        onClick={() => onCopy(token)}
-      >
-        {token} {copy === token ? <CheckIcon /> : <CopyIcon />}
-      </Td>
       <Td>{format(updatedAt, "dd, MMM, Y, HH:MM")}</Td>
       <Td>
         <Badge colorScheme={active ? "green" : "red"}>
@@ -139,6 +135,10 @@ function TableBody({
             cursor="pointer"
             onClick={() => dispatch(selectDeleteRequest(server))}
           />
+          <ViewIcon
+            cursor="pointer"
+            onClick={() => onEdit("VIEW_CONFIG", server)}
+          />
         </Stack>
       </Td>
     </Tr>
@@ -147,8 +147,8 @@ function TableBody({
 
 export default function ServerBoard() {
   const { loading, data } = useSelector(getServerList);
+  const syncLoading = useSelector(getSyncWithMasterLoader);
   const settings = useSelector(getSettigs);
-  const [copy, setCopy] = useState<string>("");
   const [pagination, setPagination] = useState<typeof PAGINATION>(PAGINATION);
   const dispatch = useDispatch();
 
@@ -172,17 +172,13 @@ export default function ServerBoard() {
     }
   }, [pagination]);
 
-  const onCopy = (text) => {
-    navigator.clipboard.writeText(text);
-    setCopy(() => text);
-  };
-
   if (loading && !data?.data) {
     return <Spinner />;
   }
   return (
     <Box w="100%" bg="white" h="calc(100vh - 65px)" p={10}>
       <AddOrEditComp />
+      <ServerConfigComp />
       <DeleteDialog />
       <TableContainer border="1px solid #f6f6f6">
         <Stack
@@ -196,14 +192,16 @@ export default function ServerBoard() {
             Server Details
           </Text>
           <HStack gap={3}>
+            Host:
             <Badge
+              display="flex"
               fontSize="sm"
               variant="outline"
               colorScheme="primary"
-              p={2}
-              textTransform="lowercase"
+              p="var(--chakra-radii-md)"
             >
-              Master: {settings?.data?.hostUrl}
+              Host:
+              <Text textTransform="lowercase"> {settings?.data?.hostUrl}</Text>
             </Badge>
             <Button
               size="sm"
@@ -211,7 +209,7 @@ export default function ServerBoard() {
               variant="outline"
               onClick={() => dispatch(synWithMasterAction())}
             >
-              Sync With Master
+              {syncLoading ? <SP /> : "Sync With Master"}
             </Button>
             <Button size="sm" onClick={() => onOpen("ADD")}>
               Add New Server
@@ -232,7 +230,7 @@ export default function ServerBoard() {
           </Thead>
           <Tbody>
             {data?.data?.map((server) => (
-              <TableBody server={server} copy={copy} onCopy={onCopy} />
+              <TableBody server={server} />
             ))}
           </Tbody>
         </Table>
