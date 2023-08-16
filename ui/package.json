@@ -1,7 +1,7 @@
 {
-  "name": "strain-ui",
+  "name": "loadtester",
   "homepage": ".",
-  "version": "0.0.0",
+  "version": "1.1.0",
   "type": "commonjs",
   "scripts": {
     "dev": "vite",
