@@ -192,14 +192,16 @@ export default function ServerBoard() {
             Server Details
           </Text>
           <HStack gap={3}>
+            Host:
             <Badge
+              display="flex"
               fontSize="sm"
               variant="outline"
               colorScheme="primary"
               p="var(--chakra-radii-md)"
-              textTransform="lowercase"
             >
-              {settings?.data?.hostUrl}
+              Host:
+              <Text textTransform="lowercase"> {settings?.data?.hostUrl}</Text>
             </Badge>
             <Button
               size="sm"

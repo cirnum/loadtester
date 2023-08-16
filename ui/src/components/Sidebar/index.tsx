@@ -52,7 +52,7 @@ const LinkItems: Array<LinkItemProps> = [
 const Links: Array<LinkItemProps> = [
   { name: "Requests", path: "/dashboard" },
   // { name: "Performance", path: "performace" },
-  { name: "Server", path: "/server" },
+  { name: "Workers", path: "/workers" },
   { name: "AWS", path: "/aws" },
 
   // { name: "Download Client", path: "client" },
