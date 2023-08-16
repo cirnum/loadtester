@@ -3,6 +3,7 @@ package utils
 import (
 	"flag"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/cirnum/loadtester/server/db/models"
@@ -22,22 +23,33 @@ func GetWorkerLoa(request models.Request) *models.Worker {
 func PrintWelcome(localIp string, service string, host string, port string) {
 	version := fmt.Sprintf("%d.%d.%d", version.Major, version.Minor, version.Patch)
 	serviceName := fmt.Sprintf("%s", service)
+	hostUrl := configs.ConfigProvider.HostUrl
 	fmt.Printf("\n\n\n")
 	fmt.Println(string("\033[34m"), "              App Name:   LoadTester")
 	fmt.Println(string("\033[34m"), "              Version:   ", version)
 	fmt.Println(string("\033[34m"), "              Node:      ", serviceName)
 	fmt.Println(string("\033[34m"), "              PORT:      ", port)
-	fmt.Println(string("\033[34m"), "              Host:      ", localIp)
-	fmt.Println(string("\033[34m"), "              URL:       ", formedUrl(port, localIp))
+	if hostUrl != "" {
+		fmt.Println(string("\033[34m"), "              URL:       ", hostUrl)
+	} else {
+		fmt.Println(string("\033[34m"), "              URL:       ", formedUrl(port, localIp))
+	}
 	fmt.Printf("\n\n\n")
+}
+
+func isRunningInContainer() bool {
+	if _, err := os.Stat("/.dockerenv"); err != nil {
+		return false
+	}
+	return true
 }
 
 func GetRunnerType(store configs.Store) bool {
 	portPtr := flag.String("PORT", "3005", "Take the dafault port if port is empty")
 	token := flag.String("TOKEN", "", "Please pass the token (Required)")
+	hostUrl := flag.String("HOST_URL", "", "Please pass the Host Url")
 	masterIp := flag.String("MASTER_IP", "", "Please pass the master node ip. (Required)")
 	worker := flag.Bool("WORKER", false, "")
-
 	flag.Parse()
 
 	localIp, err := GetIP()
@@ -66,6 +78,10 @@ func GetRunnerType(store configs.Store) bool {
 		configs.ConfigProvider.HostUrl = formedUrl(*portPtr, localIp)
 	} else {
 		configs.ConfigProvider.HostUrl = store.HostUrl
+	}
+
+	if *hostUrl != "" {
+		configs.ConfigProvider.HostUrl = *hostUrl
 	}
 
 	// AWS integration check
