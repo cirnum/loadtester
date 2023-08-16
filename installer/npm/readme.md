@@ -32,6 +32,8 @@
 
 You have the convenience of directly incorporating a worker node into the master web UI and synchronizing from there, eliminating the need for the MASTER_IP argument.
 
+> **--HOST_URL**=<Your Server URL where the master is hosted> (useful when your application is running within a Docker container or if you need to assign a specific DNS for the master) Optional.
+
  
 Steps: `Server` > `Add New Server` > `Sync With Master` ( In Web ui )
 
@@ -65,6 +67,7 @@ as many servers as you can run the test script across all the servers at the sam
 |-----------|---------------|------------------------------------------------------------------------------------------------------------------|
 | WORKER    | false         | User can run loadtester as a worker or as a Master node                                                            |
 | MASTER_IP | empty            | If the user runs the node as a Worker then the worker node can accept the MASTER_IP env which is the actual master ip |
+| HOST_URL | empty (Auto Detect)            | If the application is running inside a Docker container or if the Master Node has a particular DNS address, this information will be transmitted to the child node for synchronization and future updates. |
 
 
 
