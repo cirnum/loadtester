@@ -15,10 +15,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// WorkerInfo represents the IP of a worker.
 type WorkerInfo struct {
 	IP string `json:"ip"`
 }
 
+// Constants for server operations.
 const (
 	invalidBody                  = constants.InvalidBody
 	serverAddedSuccess           = "Server added successfully."
@@ -34,6 +36,7 @@ const (
 	serverIdMissingToUpdate      = "Server id missing to update."
 )
 
+// GetServerDetails retrieves the details of a server.
 func GetServerDetails(c *fiber.Ctx) error {
 	workerInfo := &WorkerInfo{}
 
@@ -47,7 +50,7 @@ func GetServerDetails(c *fiber.Ctx) error {
 	return utils.ResponseSuccess(c, workerConfig, workerConfigRetrievedSuccess, 0)
 }
 
-// To Get all the Server
+// GetAllServer retrieves all servers.
 func GetAllServer(c *fiber.Ctx) error {
 	ctx := context.WithValue(context.Background(), UserId, c.Locals(UserId).(string))
 
@@ -62,7 +65,7 @@ func GetAllServer(c *fiber.Ctx) error {
 
 }
 
-// To Update server
+// UpdateServer updates a server.
 func UpdateServer(c *fiber.Ctx) error {
 	ctx := context.Background()
 	serverPayload := &models.Server{}
@@ -83,6 +86,7 @@ func UpdateServer(c *fiber.Ctx) error {
 
 }
 
+// AddServer adds a server.
 func AddServer(c *fiber.Ctx) error {
 
 	ctx := context.Background()
@@ -107,6 +111,7 @@ func AddServer(c *fiber.Ctx) error {
 	return utils.ResponseSuccess(c, server, serverAddedSuccess, fiber.StatusOK)
 }
 
+// GetServerById retrieves a server by ID.
 func GetServerById(c *fiber.Ctx) error {
 	ctx := context.Background()
 	id := c.Params("id")
@@ -118,6 +123,7 @@ func GetServerById(c *fiber.Ctx) error {
 	return utils.ResponseSuccess(c, server, serverRetrievedSuccess, fiber.StatusOK)
 }
 
+// DeleteServerById deletes a server by ID.
 func DeleteServerById(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -130,7 +136,7 @@ func DeleteServerById(c *fiber.Ctx) error {
 	return utils.ResponseSuccess(c, nil, serverDeletedSuccess, fiber.StatusOK)
 }
 
-// To Update server
+// SyncServerWithMaster synchronizes a server with the master.
 func SyncServerWithMaster(c *fiber.Ctx) error {
 	var wg sync.WaitGroup
 
@@ -149,11 +155,11 @@ func SyncServerWithMaster(c *fiber.Ctx) error {
 
 	wg.Add(len(serversToUpdate))
 	for _, server := range serversToUpdate {
-		go func(srv *models.Server) {
+		go func(srv models.Server) {
 			srv.UserID = userId
-			db.Provider.UpdateServerByIp(ctx, *srv)
+			db.Provider.UpdateServerByIp(ctx, srv)
 			wg.Done()
-		}(&server)
+		}(server)
 	}
 
 	updatedListServer, err := db.Provider.ListServer(ctx, &pagination)

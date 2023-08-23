@@ -1,3 +1,4 @@
+// Package controllers provides functions to handle HTTP requests related to EC2 instances.
 package controllers
 
 import (
@@ -11,6 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Constants for response messages.
 const (
 	KeyCreateMSG         = "Key created successfuly."
 	GetKeyMSG            = "Get keys successfuly."
@@ -23,6 +25,7 @@ const (
 	Terminated           = "terminated"
 )
 
+// CreatePemKey creates a new PEM key.
 func CreatePemKey(c *fiber.Ctx) error {
 	err := utils.CreatePem()
 
@@ -32,6 +35,7 @@ func CreatePemKey(c *fiber.Ctx) error {
 	return utils.ResponseSuccess(c, KeyCreateMSG, KeyCreateMSG, fiber.StatusOK)
 }
 
+// GetPemKey returns all the PEM keys.
 func GetPemKey(c *fiber.Ctx) error {
 	keyPairs, err := utils.GetKeyPair()
 
@@ -41,6 +45,7 @@ func GetPemKey(c *fiber.Ctx) error {
 	return utils.ResponseSuccess(c, keyPairs, GetKeyMSG, fiber.StatusOK)
 }
 
+// CreateEC2 creates a new EC2 instance.
 func CreateEC2(c *fiber.Ctx) error {
 	var ec2Options models.CreateEC2Options
 	ctx := context.Background()
@@ -57,12 +62,12 @@ func CreateEC2(c *fiber.Ctx) error {
 	return utils.ResponseSuccess(c, workerData, EC2CreatedMSG, fiber.StatusOK)
 }
 
+// GetRunningEC2 returns all the running EC2 instances.
 func GetRunningEC2(c *fiber.Ctx) error {
 	ctx := context.WithValue(context.Background(), UserId, c.Locals(UserId).(string))
 
 	pagination := utils.GetPagination(c)
 	ec2s, err := db.Provider.GetAllEc2s(ctx, &pagination)
-	// ec, err := utils.GetRunningInstance(ec2s)
 
 	if err != nil {
 		return utils.ResponseError(c, err, err.Error(), fiber.StatusInternalServerError)
@@ -70,6 +75,7 @@ func GetRunningEC2(c *fiber.Ctx) error {
 	return utils.ResponseSuccess(c, ec2s, GetEC2MSG, fiber.StatusOK)
 }
 
+// TerminateEC2 terminates the specified EC2 instances.
 func TerminateEC2(c *fiber.Ctx) error {
 	ctx := context.Background()
 	var instanceIdsList models.InstanceIdList
