@@ -91,7 +91,7 @@ as many servers as you can run the test script across all the servers at the sam
 | AWS_REGION     |
 
 ## How can I modify the .env file inside a running Docker container?
-	docker exec -it CONTAINER_ID_OR_NAME vim .env
+	docker exec -it CONTAINER_ID_OR_NAME vi .env
 
 
 ## Request Page
