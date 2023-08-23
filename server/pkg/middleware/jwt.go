@@ -6,7 +6,6 @@ import (
 
 	"github.com/cirnum/loadtester/server/app/utils"
 	"github.com/cirnum/loadtester/server/pkg/configs"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 )
 
