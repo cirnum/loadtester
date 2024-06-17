@@ -10,11 +10,11 @@
 </div>
 
 <p align="center">
-  <a  target="_blank" href="https://docs.perfcheck.com/">Docs</a> | <a href="https://www.perfcheck.com/">Demo</a> | <a href="https://discord.gg/SQ5DZEBt"> Help And Support</a>  
+  <a  target="_blank" href="https://docs-perfcheck.vercel.app/">Docs</a> | <a href="https://perfcheck.up.railway.app/">Demo</a> | <a href="https://discord.gg/SQ5DZEBt"> Help And Support</a>  
 </p>
   <img src="https://github.com/cirnum/loadtester/blob/main/ui/src/assets/loadtester.gif" >
 
-# Install - [ref](https://docs.perfcheck.com/installation)
+# Install - [ref](https://docs-perfcheck.vercel.app/installation)
 ### npm 
     sudo npm install loadster -g && loadster
 
@@ -62,7 +62,7 @@ as many servers as you can run the test script across all the servers at the sam
 
   
 
-## Download binary [ref](https://docs.perfcheck.com/installation#download-binary-releases)
+## Download binary [ref](https://docs-perfcheck.vercel.app/installation#download-binary-releases)
 	1. `Darwin amd64` - For Mac user
 	2. `Darwin arm64` - For Mac users (new Mac)
 	3. `Linux amd64` - Linux arch `amd64` users (64-bit system)
